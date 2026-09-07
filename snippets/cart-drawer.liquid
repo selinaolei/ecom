@@ -137,6 +137,12 @@
 {%- endif -%}
 
 {% stylesheet %}
+  /* Dear Paws: keep the cart a side drawer on phones too (page stays visible on the left). */
+  @media screen and (max-width: 989px) {
+    #cart-drawer .theme-drawer__dialog { --theme-drawer-width: min(86vw, 420px); border-radius: 18px 0 0 18px; box-shadow: -12px 0 40px rgba(0,0,0,.25); }
+  }
+  #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(15, 30, 20, .55); }
+
   cart-drawer-component {
     --cart-drawer-padding: var(--theme-drawer-padding);
     --font-paragraph--line-height: 1;

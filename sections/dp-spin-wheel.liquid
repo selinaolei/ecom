@@ -35,8 +35,8 @@
             {%- endfor -%}
             <span class="dpw__hub" aria-hidden="true"><span class="dpw__paw"></span></span>
           </div>
-          <button type="button" class="dpw__spin" data-dp-wheel-spin>{{ section.settings.spin_label }}</button>
         </div>
+        <button type="button" class="dpw__spin" data-dp-wheel-spin>{{ section.settings.spin_label }}</button>
         <p class="dpw__fine">{{ section.settings.fine_print }}</p>
       </div>
 
@@ -202,10 +202,10 @@
   .dpw__paw { width: 22px; height: 22px; border-radius: 50%; background: var(--dp-forest); position: relative; }
   .dpw__paw::before, .dpw__paw::after { content: ""; position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--dp-forest); top: -9px; left: -3px; box-shadow: 16px 0 0 var(--dp-forest); }
   .dpw__paw::after { top: -14px; left: 5px; width: 8px; height: 8px; box-shadow: none; }
-  .dpw__spin { position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%); z-index: 4; border: 0; border-radius: 999px; padding: 14px 32px; background: linear-gradient(135deg, #E8D5A0, #C9A96E 60%, #B8924A); color: var(--dp-forest); font: inherit; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 24px rgba(201,169,110,.5); animation: dpw-pulse 1.6s ease-in-out infinite; white-space: nowrap; }
+  .dpw__spin { display: block; margin: 5px auto 0; border: 0; border-radius: 999px; padding: 14px 32px; background: linear-gradient(135deg, #E8D5A0, #C9A96E 60%, #B8924A); color: var(--dp-forest); font: inherit; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 24px rgba(201,169,110,.5); animation: dpw-pulse 1.6s ease-in-out infinite; white-space: nowrap; }
   .dpw__spin:disabled { animation: none; opacity: .7; cursor: default; }
-  @keyframes dpw-pulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.06); } }
-  .dpw__step--spin .dpw__fine { margin-top: 34px; }
+  @keyframes dpw-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  .dpw__step--spin .dpw__fine { margin-top: 12px; }
 
   .dpw__step--win { position: relative; padding-top: 8px; }
   .dpw__confetti { position: absolute; inset: -28px -22px auto; height: 120px; pointer-events: none; background-image: radial-gradient(circle, var(--dp-gold) 3px, transparent 3.5px), radial-gradient(circle, #1F3D2B 3px, transparent 3.5px), radial-gradient(circle, #e2b7b0 3px, transparent 3.5px), radial-gradient(circle, var(--dp-gold-light) 2px, transparent 2.5px); background-size: 42px 42px, 56px 56px, 38px 38px, 30px 30px; background-position: 0 0, 12px 18px, 24px 6px, 6px 28px; opacity: .8; mask-image: linear-gradient(to bottom, #000, transparent); }

@@ -280,8 +280,11 @@
           },
         });
       } else {
-        window.location.href = '/cart';
+        // Fallback when the theme event bus is unavailable: refresh the drawer markup ourselves.
+        await refreshDrawer(data.sections);
       }
+      // Make sure the drawer is open even if the theme did not auto-open it.
+      setTimeout(openDrawer, 150);
       btn.classList.add('is-added');
       setTimeout(() => btn.classList.remove('is-added'), 2000);
     } catch (e) {
@@ -295,6 +298,35 @@
       btn.disabled = false;
       render();
     }
+  }
+
+  async function refreshDrawer(sections) {
+    const wrapper = document.getElementById('shopify-section-cart-drawer-section');
+    if (!wrapper) return;
+    try {
+      let html = sections && sections['cart-drawer-section'];
+      if (!html) {
+        const r = await fetch(`${window.location.pathname}?sections=cart-drawer-section`, { headers: { Accept: 'application/json' } });
+        html = (await r.json())['cart-drawer-section'];
+      }
+      if (!html) return;
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const fresh = doc.getElementById('shopify-section-cart-drawer-section') || doc.body;
+      wrapper.innerHTML = fresh.innerHTML;
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function openDrawer() {
+    const drawer = document.getElementById('cart-drawer');
+    if (!drawer) return;
+    if (typeof drawer.open === 'function') {
+      if (!drawer.hasAttribute('open')) drawer.open();
+      return;
+    }
+    const dialog = drawer.querySelector('dialog');
+    if (dialog && !dialog.open && typeof dialog.showModal === 'function') dialog.showModal();
   }
 
   q('[data-dp-atc]')?.addEventListener('click', (e) => {
