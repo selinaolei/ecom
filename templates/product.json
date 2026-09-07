@@ -139,43 +139,49 @@
         "p1": {
           "type": "photo",
           "settings": {
-            "handle": "@luna.the.golden",
-            "caption": "Door 1 opened at 6am. No regrets."
+            "handle": "@winston.the.corgi",
+            "caption": "Morning routine: coffee for me, door number 3 for him.",
+            "image": "shopify://shop_images/dp-ugc-1.png"
           }
         },
         "p2": {
           "type": "photo",
           "settings": {
             "handle": "@biscuit_and_co",
-            "caption": "He sits next to it every morning now."
+            "caption": "Eight weeks old and already obsessed with the box.",
+            "image": "shopify://shop_images/dp-ugc-2.png"
           }
         },
         "p3": {
           "type": "photo",
           "settings": {
-            "handle": "@maxthefrenchie",
-            "caption": "Best Christmas gift we have ever bought him."
+            "handle": "@finn.collie",
+            "caption": "Rope toy from day 9 has not left his mouth since.",
+            "image": "shopify://shop_images/dp-ugc-3.png"
           }
         },
         "p4": {
           "type": "photo",
           "settings": {
-            "handle": "@twodoodles",
-            "caption": "Two calendars, zero fights. Worth it."
+            "handle": "@oldman.buddy",
+            "caption": "Twelve years old and still loses it over a squeaky.",
+            "image": "shopify://shop_images/dp-ugc-4.png"
           }
         },
         "p5": {
           "type": "photo",
           "settings": {
-            "handle": "@rosie.dachshund",
-            "caption": "The squeaky bone from day 4 is her new favourite."
+            "handle": "@cloud.the.samoyed",
+            "caption": "Sat next to it and refused to move until we opened one.",
+            "image": "shopify://shop_images/dp-ugc-5.png"
           }
         },
         "p6": {
           "type": "photo",
           "settings": {
-            "handle": "@oliver.lab",
-            "caption": "Under the tree and very much guarded."
+            "handle": "@rocky.boxer",
+            "caption": "Guarding his calendar like it is a bone.",
+            "image": "shopify://shop_images/dp-ugc-6.png"
           }
         }
       },
@@ -279,7 +285,8 @@
             "title": "He waits by it every morning",
             "text": "Our golden figured out the routine by day two. He sits in front of the box and stares at us until we open the next door. The toys are good quality, not the flimsy stuff.",
             "name": "Sarah M.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-1.png"
           }
         },
         "v2": {
@@ -289,7 +296,8 @@
             "title": "Perfect gift",
             "text": "Bought the Duo for my two nieces' pups. The packaging looks lovely under the tree and the treats were gone in seconds.",
             "name": "James T.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-3.png"
           }
         },
         "v3": {
@@ -299,7 +307,8 @@
             "title": "Worth every penny",
             "text": "24 days of my spaniel losing her mind with excitement. The rope toy from day 9 is still her favourite.",
             "name": "Rachel P.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-8.png"
           }
         },
         "v4": {
@@ -309,7 +318,8 @@
             "title": "Great variety",
             "text": "Nice mix of chews, plush and treats. One of the plush toys did not last long with our husky, but everything else was solid.",
             "name": "Tom S.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-7.png"
           }
         },
         "v5": {
@@ -319,7 +329,8 @@
             "title": "Shipping was fast",
             "text": "Ordered on a Monday, arrived Thursday. Box was in perfect shape and the dog approved immediately.",
             "name": "Priya K.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-2.png"
           }
         },
         "v6": {
@@ -329,7 +340,8 @@
             "title": "Our new tradition",
             "text": "Second year buying this. It has become part of our Christmas mornings and the kids love opening the doors with the dog.",
             "name": "Daniel R.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-6.png"
           }
         },
         "v7": {
@@ -339,7 +351,8 @@
             "title": "Small dog approved",
             "text": "I have a 5 lb chihuahua and everything was the right size for her. The treats are soft enough for her teeth.",
             "name": "Megan L.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-5.png"
           }
         },
         "v8": {
@@ -349,7 +362,8 @@
             "title": "Beautiful box",
             "text": "The forest green and gold looks so classy under the tree. Honestly nicer than I expected.",
             "name": "Olivia W.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-review-4.png"
           }
         }
       },
