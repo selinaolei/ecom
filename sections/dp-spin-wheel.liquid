@@ -119,10 +119,12 @@
 
     function open() {
       overlay.hidden = false;
+      overlay.style.display = '';
       document.body.classList.add('dpw-open');
     }
     function close() {
       overlay.hidden = true;
+      overlay.style.display = 'none';
       document.body.classList.remove('dpw-open');
       store(KEY_SEEN, '1');
     }
@@ -173,6 +175,7 @@
 {% stylesheet %}
   .dpw { --dp-forest: #1F3D2B; --dp-forest-2: #2D4A2D; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-ink: #1a2e1a; --dp-muted: #6B6B5E; font-family: var(--font-body--family, Inter, sans-serif); }
   .dpw *, .dpw *::before, .dpw *::after { box-sizing: border-box; }
+  .dpw [hidden], .dpw__overlay[hidden], .dpw__step[hidden], .dpw__bar[hidden] { display: none !important; }
   body.dpw-open { overflow: hidden; }
   .dpw__overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(15, 30, 20, .72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; animation: dpw-fade .3s ease; }
   @keyframes dpw-fade { from { opacity: 0; } to { opacity: 1; } }
