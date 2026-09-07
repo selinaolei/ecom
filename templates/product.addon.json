@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "dp_addon_redirect": {
+      "type": "dp-addon-redirect",
+      "settings": {
+        "target_handle": "spiderjet-glove",
+        "text": "This add-on is only available together with the Paw Advent Calendar.",
+        "button": "Go to the Advent Calendar"
+      }
+    }
+  },
+  "order": ["dp_addon_redirect"]
+}

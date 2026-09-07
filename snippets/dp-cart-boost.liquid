@@ -1,0 +1,47 @@
+{%- comment -%}
+  Dear Paws – conversion block rendered inside the cart drawer: social proof counter,
+  rating, guarantee row and delivery urgency. Edit the numbers below.
+{%- endcomment -%}
+{%- liquid
+  assign dp_rating = '4.9'
+  assign dp_reviews = '2,483'
+  assign dp_buyers_base = 118
+  assign dp_quote = 'He sits in front of the box every morning and waits. Best gift we have ever bought him.'
+  assign dp_quote_name = 'Sarah M.'
+  assign dp_deadline = 'Order before Nov 20 for delivery before Dec 1'
+  assign seed = 'now' | date: '%j' | plus: 0 | times: 7 | modulo: 43
+  assign dp_buyers = dp_buyers_base | plus: seed
+-%}
+<div class="dpcb">
+  <div class="dpcb__live">
+    <span class="dpcb__pulse" aria-hidden="true"></span>
+    <strong>{{ dp_buyers }} people</strong>&nbsp;bought the Paw Advent Calendar in the last 24 hours
+  </div>
+  <div class="dpcb__review">
+    <span class="dpcb__stars" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}</span>
+    <span class="dpcb__rating"><strong>{{ dp_rating }}/5</strong> from {{ dp_reviews }} verified reviews</span>
+    <p class="dpcb__quote">&ldquo;{{ dp_quote }}&rdquo; <span>&mdash; {{ dp_quote_name }}, verified buyer</span></p>
+  </div>
+  <ul class="dpcb__badges">
+    <li><svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Free shipping</li>
+    <li><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day guarantee</li>
+    <li><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure checkout</li>
+  </ul>
+  <p class="dpcb__deadline"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>{{ dp_deadline }}</p>
+</div>
+{% stylesheet %}
+  .dpcb { margin: 14px 0 4px; padding: 14px; border: 1px solid #E4DCC8; border-radius: 14px; background: #FBF8F0; font-family: var(--font-body--family, Inter, sans-serif); color: #1a2e1a; }
+  .dpcb__live { display: flex; align-items: center; gap: 8px; font-size: 13px; padding-bottom: 12px; border-bottom: 1px dashed #E4DCC8; }
+  .dpcb__pulse { width: 9px; height: 9px; border-radius: 50%; background: #c8473b; box-shadow: 0 0 0 0 rgba(200,71,59,.5); animation: dpcb-pulse 1.6s infinite; flex: 0 0 9px; }
+  @keyframes dpcb-pulse { 0% { box-shadow: 0 0 0 0 rgba(200,71,59,.5); } 100% { box-shadow: 0 0 0 9px rgba(200,71,59,0); } }
+  .dpcb__review { padding: 12px 0; border-bottom: 1px dashed #E4DCC8; }
+  .dpcb__stars { display: inline-flex; gap: 2px; vertical-align: middle; margin-right: 6px; }
+  .dpcb__stars svg { width: 14px; height: 14px; fill: #C9A96E; }
+  .dpcb__rating { font-size: 13px; vertical-align: middle; }
+  .dpcb__quote { font-size: 12px; line-height: 1.5; color: #4a4a3e; margin: 8px 0 0; font-style: italic; }
+  .dpcb__quote span { font-style: normal; color: #6B6B5E; }
+  .dpcb__badges { list-style: none; margin: 0; padding: 12px 0 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; font-weight: 600; color: #1F3D2B; }
+  .dpcb__badges li { display: inline-flex; align-items: center; gap: 5px; }
+  .dpcb__badges svg, .dpcb__deadline svg { width: 15px; height: 15px; fill: none; stroke: #C9A96E; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dpcb__deadline { display: flex; align-items: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: #b0483a; }
+{% endstylesheet %}

@@ -1,0 +1,35 @@
+{%- comment -%}
+  Dear Paws – used by templates/product.addon.json. Add-on products (shipping protection,
+  30-day warranty, mystery box) are only sold together with the calendar, so their own
+  product pages send visitors to the calendar page instead.
+{%- endcomment -%}
+{%- liquid
+  assign target = all_products[section.settings.target_handle]
+  assign target_url = target.url | default: '/'
+-%}
+<meta name="robots" content="noindex, nofollow">
+{%- unless request.design_mode -%}
+  <meta http-equiv="refresh" content="0; url={{ target_url }}">
+  <script>window.location.replace({{ target_url | json }});</script>
+{%- endunless -%}
+<div class="dpar">
+  <p class="dpar__text">{{ section.settings.text }}</p>
+  <a class="dpar__btn" href="{{ target_url }}">{{ section.settings.button }}</a>
+</div>
+{% stylesheet %}
+  .dpar { min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 40px 20px; }
+  .dpar__text { font-size: 15px; color: #6B6B5E; margin: 0; }
+  .dpar__btn { display: inline-block; background: #1F3D2B; color: #fff; font-weight: 800; padding: 14px 26px; border-radius: 12px; text-decoration: none; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "DP Add-on redirect",
+  "settings": [
+    { "type": "text", "id": "target_handle", "label": "Redirect to product (handle)", "default": "spiderjet-glove" },
+    { "type": "text", "id": "text", "label": "Text", "default": "This add-on is only available together with the Paw Advent Calendar." },
+    { "type": "text", "id": "button", "label": "Button", "default": "Go to the Advent Calendar" }
+  ],
+  "presets": [ { "name": "DP Add-on redirect" } ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

@@ -1,0 +1,88 @@
+{%- comment -%}
+  Dear Paws – cart guard. Add-on products can only be bought together with the calendar.
+  If the cart holds add-ons without the calendar (test orders, direct /cart/add calls),
+  they are removed, the drawer is refreshed and a short notice is shown.
+{%- endcomment -%}
+<script type="module">
+  (function () {
+    var MAIN_HANDLE = 'spiderjet-glove';
+    var ADDON_HANDLES = ['shipping-protection', '30-day-warranty', 'mystery-box'];
+    var busy = false;
+    var ownRequest = false;
+
+    function notice() {
+      if (document.getElementById('dp-cart-guard-notice')) return;
+      var n = document.createElement('div');
+      n.id = 'dp-cart-guard-notice';
+      n.textContent = 'Shipping protection, warranty and mystery box can only be added together with the Paw Advent Calendar.';
+      n.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;background:#1F3D2B;color:#fff;font:600 13px/1.4 Inter,sans-serif;padding:12px 16px;border-radius:12px;max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,.25)';
+      document.body.appendChild(n);
+      setTimeout(function () { n.remove(); }, 6000);
+    }
+
+    async function refreshTheme(cartAfter, removed) {
+      try {
+        var ev = await import('@shopify/events');
+        var d = ev.CartLinesUpdateEvent.createPromise();
+        document.dispatchEvent(new ev.CartLinesUpdateEvent({
+          action: 'remove',
+          context: 'cart',
+          lines: removed.map(function (i) { return { id: i.key, quantity: 0 }; }),
+          promise: d.promise,
+        }));
+        d.resolve({
+          cart: ev.CartLinesUpdateEvent.createCartFromAjaxResponse(cartAfter),
+          detail: { items: cartAfter.items, source: 'dp-cart-guard', didError: false },
+        });
+      } catch (e) {
+        if (window.location.pathname.indexOf('/cart') === 0) window.location.reload();
+      }
+    }
+
+    async function check() {
+      if (busy) return;
+      busy = true;
+      try {
+        ownRequest = true;
+        var cart = await (await fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' })).json();
+        ownRequest = false;
+        var items = cart.items || [];
+        var hasMain = items.some(function (i) { return i.handle === MAIN_HANDLE; });
+        var strays = items.filter(function (i) { return ADDON_HANDLES.indexOf(i.handle) !== -1; });
+        if (hasMain || strays.length === 0) return;
+        var updates = {};
+        strays.forEach(function (i) { updates[i.key] = 0; });
+        ownRequest = true;
+        var after = await (await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ updates: updates }),
+        })).json();
+        ownRequest = false;
+        notice();
+        await refreshTheme(after, strays);
+        if (window.location.pathname.indexOf('/cart') === 0) window.location.reload();
+      } catch (e) {
+        ownRequest = false;
+      } finally {
+        busy = false;
+      }
+    }
+
+    // Re-check after any cart mutation made by the theme or an app.
+    var origFetch = window.fetch;
+    window.fetch = function () {
+      var p = origFetch.apply(this, arguments);
+      try {
+        var url = typeof arguments[0] === 'string' ? arguments[0] : (arguments[0] && arguments[0].url) || '';
+        if (!ownRequest && /\/cart\/(add|change|update|clear)/.test(url)) {
+          p.then(function () { setTimeout(check, 350); }).catch(function () {});
+        }
+      } catch (e) {}
+      return p;
+    };
+
+    check();
+    window.addEventListener('pageshow', function (e) { if (e.persisted) check(); });
+  })();
+</script>
