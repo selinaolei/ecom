@@ -3,35 +3,11 @@
     "dp_main": {
       "type": "dp-product-main",
       "blocks": {
-        "f1": {
-          "type": "feature",
-          "settings": {
-            "text": "24 daily surprise toys, chews and treats"
-          }
-        },
-        "f2": {
-          "type": "feature",
-          "settings": {
-            "text": "Safe for all breeds and sizes"
-          }
-        },
-        "f3": {
-          "type": "feature",
-          "settings": {
-            "text": "Gift-ready forest green and gold packaging"
-          }
-        },
-        "f4": {
-          "type": "feature",
-          "settings": {
-            "text": "Free shipping and 30-day happiness guarantee"
-          }
-        },
         "t1": {
           "type": "tier",
           "settings": {
             "title": "Single",
-            "subtitle": "1 calendar",
+            "subtitle": "Standard price",
             "tag": "",
             "quantity": 1,
             "discount": 0
@@ -41,20 +17,10 @@
           "type": "tier",
           "settings": {
             "title": "Duo",
-            "subtitle": "2 calendars",
+            "subtitle": "You save 15%",
             "tag": "Most popular",
             "quantity": 2,
             "discount": 15
-          }
-        },
-        "t3": {
-          "type": "tier",
-          "settings": {
-            "title": "Trio",
-            "subtitle": "3 calendars",
-            "tag": "Best value",
-            "quantity": 3,
-            "discount": 25
           }
         },
         "a1": {
@@ -114,16 +80,35 @@
             "icon": "heart",
             "text": "Loved by 2,000+ dogs"
           }
+        },
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "gift",
+            "text": "24 daily surprise toys, chews and treats"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "paw",
+            "text": "Safe for every breed and size"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
         }
       },
       "block_order": [
         "f1",
         "f2",
         "f3",
-        "f4",
         "t1",
         "t2",
-        "t3",
         "a1",
         "a2",
         "a3",
@@ -136,18 +121,16 @@
         "eyebrow": "Limited Christmas Edition",
         "badge_text": "24 days of joy",
         "rating_text": "Rated 4.9 based on 2,483 reviews",
-        "subtext": "24 numbered doors. 24 daily surprise toys and treats. One very happy dog every morning until Christmas.",
         "bundle_heading": "Bundle & Save",
         "default_tier": 0,
-        "addons_heading": "Complete your gift",
         "button_text": "Add to cart",
         "show_payment_icons": true,
         "show_description": true,
         "description_label": "What is inside the calendar?",
         "sticky_bar": true,
         "button_subtext": "Order today, ships within 24 hours",
-        "savings_note": "vs. buying toys one by one",
-        "reviews_anchor": "#shopify-section-dp_reviews"
+        "reviews_anchor": "#shopify-section-dp_reviews",
+        "unit_label": "Calendar"
       }
     },
     "dp_ugc": {
@@ -209,7 +192,7 @@
         "heading": "People keep posting about Dear Paws",
         "text": "Tag @dearpaws and show us door number one. We repost our favourites every week.",
         "columns": "3",
-        "button_text": "See more on Instagram",
+        "button_text": "",
         "button_link": ""
       }
     },

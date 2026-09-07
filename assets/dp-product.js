@@ -1,7 +1,7 @@
 /**
  * Dear Paws – product page controller
- * Handles: gallery, variant pills, bundle tiers, add-on toggles, live totals,
- * and multi-item add-to-cart that plays nicely with Horizon's cart drawer.
+ * Gallery, stacked bundle rows (per-unit variant pickers + add-on toggles),
+ * live totals, and multi-item add-to-cart that plays nicely with Horizon's cart drawer.
  */
 (function () {
   const root = document.querySelector('[data-dp-product]');
@@ -11,12 +11,13 @@
   if (!cfgEl) return;
   const cfg = JSON.parse(cfgEl.textContent || '{}');
 
+  const q = (sel, el = root) => el.querySelector(sel);
+  const qa = (sel, el = root) => Array.from(el.querySelectorAll(sel));
+
   const state = {
-    variantId: cfg.selectedVariantId,
     tierIndex: cfg.defaultTier || 0,
     addons: new Set(),
   };
-
   cfg.addons.forEach((a, i) => {
     if (a.defaultOn && a.variantId) state.addons.add(i);
   });
@@ -31,11 +32,22 @@
       .replace('{{amount_no_decimals}}', Math.round(cents / 100).toString())
       .replace('{{amount_with_comma_separator}}', amount.replace('.', ','));
   };
-  const currentVariant = () => cfg.variants.find((v) => String(v.id) === String(state.variantId)) || cfg.variants[0];
+  const variantById = (id) => cfg.variants.find((v) => String(v.id) === String(id));
   const currentTier = () => cfg.tiers[state.tierIndex] || { quantity: 1, discount: 0 };
+  const tierEl = (i) => q(`[data-dp-tier="${i}"]`);
 
-  const q = (sel, el = root) => el.querySelector(sel);
-  const qa = (sel, el = root) => Array.from(el.querySelectorAll(sel));
+  /** Variant ids chosen for each unit of a tier (falls back to the default variant). */
+  function unitVariants(tierIndex) {
+    const tier = cfg.tiers[tierIndex] || { quantity: 1 };
+    const el = tierEl(tierIndex);
+    const selects = el ? qa('[data-dp-unit]', el) : [];
+    const ids = [];
+    for (let u = 0; u < tier.quantity; u++) {
+      const sel = selects[u];
+      ids.push(sel ? sel.value : cfg.selectedVariantId);
+    }
+    return ids;
+  }
 
   /* ---------- gallery ---------- */
   const mainImg = q('[data-dp-main-image]');
@@ -56,7 +68,6 @@
   q('[data-dp-prev]')?.addEventListener('click', () => showImage(galleryIndex - 1));
   q('[data-dp-next]')?.addEventListener('click', () => showImage(galleryIndex + 1));
 
-  // swipe on main image
   let touchX = null;
   mainImg?.addEventListener('touchstart', (e) => (touchX = e.touches[0].clientX), { passive: true });
   mainImg?.addEventListener(
@@ -70,144 +81,139 @@
     { passive: true }
   );
 
-  /* ---------- variants ---------- */
-  qa('[data-dp-variant]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.variantId = btn.dataset.dpVariant;
-      qa('[data-dp-variant]').forEach((b) => b.classList.toggle('is-active', b === btn));
-      const label = q('[data-dp-variant-label]');
-      if (label) label.textContent = btn.dataset.title || '';
-      const v = currentVariant();
-      if (v && v.imageIndex != null && v.imageIndex >= 0) showImage(v.imageIndex);
-      render();
-    });
-  });
-
   /* ---------- tiers ---------- */
-  qa('[data-dp-tier]').forEach((card) => {
-    card.addEventListener('click', () => {
-      state.tierIndex = Number(card.dataset.dpTier);
-      qa('[data-dp-tier]').forEach((c) => c.classList.toggle('is-active', c === card));
-      render();
-    });
-  });
-
-  /* ---------- add-ons ---------- */
-  qa('[data-dp-addon]').forEach((row) => {
-    const i = Number(row.dataset.dpAddon);
-    const input = row.querySelector('input[type="checkbox"]');
-    const sync = () => {
-      if (input.checked) state.addons.add(i);
-      else state.addons.delete(i);
-      row.classList.toggle('is-on', input.checked);
+  qa('[data-dp-tier]').forEach((el) => {
+    const head = q('[data-dp-tier-select]', el);
+    const select = () => {
+      state.tierIndex = Number(el.dataset.dpTier);
+      qa('[data-dp-tier]').forEach((c) => {
+        const on = c === el;
+        c.classList.toggle('is-active', on);
+        q('[data-dp-tier-select]', c)?.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
       render();
     };
-    input?.addEventListener('change', sync);
-    row.classList.toggle('is-on', !!input?.checked);
+    head?.addEventListener('click', select);
+    // clicking anywhere on an inactive row (except controls) selects it
+    el.addEventListener('click', (e) => {
+      if (el.classList.contains('is-active')) return;
+      if (e.target.closest('select, input, label')) return;
+      select();
+    });
+  });
+
+  /* ---------- per-unit variant pickers ---------- */
+  qa('[data-dp-unit]').forEach((sel) => {
+    sel.addEventListener('change', () => {
+      const v = variantById(sel.value);
+      if (v && v.imageIndex != null && v.imageIndex >= 0 && sel.dataset.dpUnit === '0') showImage(v.imageIndex);
+      render();
+    });
+  });
+
+  /* ---------- add-ons (same add-on appears inside every tier; keep them in sync) ---------- */
+  qa('[data-dp-addon-input]').forEach((input) => {
+    input.addEventListener('change', () => {
+      const i = Number(input.dataset.dpAddonInput);
+      if (input.checked) state.addons.add(i);
+      else state.addons.delete(i);
+      qa(`[data-dp-addon-input="${i}"]`).forEach((other) => {
+        other.checked = input.checked;
+        other.closest('[data-dp-addon]')?.classList.toggle('is-on', input.checked);
+      });
+      render();
+    });
   });
 
   /* ---------- totals ---------- */
+  function tierTotals(tierIndex) {
+    const tier = cfg.tiers[tierIndex] || { quantity: 1, discount: 0 };
+    const ids = unitVariants(tierIndex);
+    let gross = 0;
+    let compare = 0;
+    ids.forEach((id) => {
+      const v = variantById(id) || cfg.variants[0];
+      if (!v) return;
+      gross += v.price;
+      compare += v.compareAtPrice && v.compareAtPrice > v.price ? v.compareAtPrice : v.price;
+    });
+    const now = Math.round(gross * (1 - (tier.discount || 0) / 100));
+    return { now, was: compare, quantity: tier.quantity };
+  }
+
   function computeTotals() {
-    const v = currentVariant();
-    const tier = currentTier();
-    const unit = v ? v.price : 0;
-    const compareUnit = v && v.compareAtPrice && v.compareAtPrice > unit ? v.compareAtPrice : unit;
-    const gross = unit * tier.quantity;
-    const discounted = Math.round(gross * (1 - (tier.discount || 0) / 100));
+    const t = tierTotals(state.tierIndex);
     let addonTotal = 0;
     state.addons.forEach((i) => (addonTotal += cfg.addons[i]?.price || 0));
-    return {
-      unit,
-      compareUnit,
-      quantity: tier.quantity,
-      bundleWas: compareUnit * tier.quantity,
-      bundleNow: discounted,
-      total: discounted + addonTotal,
-      totalWas: compareUnit * tier.quantity + addonTotal,
-    };
+    return { ...t, total: t.now + addonTotal, totalWas: t.was + addonTotal };
   }
 
   function render() {
-    const t = computeTotals();
-    const v = currentVariant();
+    const firstId = unitVariants(state.tierIndex)[0];
+    const v = variantById(firstId) || cfg.variants[0];
 
-    // tier prices (per card)
-    qa('[data-dp-tier]').forEach((card, i) => {
-      const tier = cfg.tiers[i];
-      const gross = t.unit * tier.quantity;
-      const now = Math.round(gross * (1 - (tier.discount || 0) / 100));
-      const was = t.compareUnit * tier.quantity;
-      const nowEl = card.querySelector('[data-dp-tier-now]');
-      const wasEl = card.querySelector('[data-dp-tier-was]');
-      const eachEl = card.querySelector('[data-dp-tier-each]');
-      const saveEl = card.querySelector('[data-dp-tier-save]');
-      if (nowEl) nowEl.textContent = money(now);
+    // per-row pricing
+    cfg.tiers.forEach((_, i) => {
+      const el = tierEl(i);
+      if (!el) return;
+      const t = tierTotals(i);
+      const nowEl = q('[data-dp-tier-now]', el);
+      const wasEl = q('[data-dp-tier-was]', el);
+      const saveEl = q('[data-dp-tier-save]', el);
+      if (nowEl) nowEl.textContent = money(t.now);
       if (wasEl) {
-        wasEl.textContent = was > now ? money(was) : '';
-        wasEl.hidden = !(was > now);
+        wasEl.textContent = t.was > t.now ? money(t.was) : '';
+        wasEl.hidden = !(t.was > t.now);
       }
-      if (eachEl) eachEl.textContent = money(Math.round(now / tier.quantity)) + ' ' + (cfg.text.each || 'each');
       if (saveEl) {
-        const save = was - now;
+        const save = t.was - t.now;
         saveEl.textContent = save > 0 ? (cfg.text.save || 'Save') + ' ' + money(save) : '';
         saveEl.hidden = !(save > 0);
       }
     });
 
-    // header price
+    // header price (single unit)
     const priceNow = q('[data-dp-price-now]');
     const priceWas = q('[data-dp-price-was]');
     const pricePill = q('[data-dp-price-pill]');
-    if (priceNow) priceNow.textContent = money(t.unit);
+    const unit = v ? v.price : 0;
+    const compareUnit = v && v.compareAtPrice > unit ? v.compareAtPrice : unit;
+    if (priceNow) priceNow.textContent = money(unit);
     if (priceWas) {
-      priceWas.textContent = t.compareUnit > t.unit ? money(t.compareUnit) : '';
-      priceWas.hidden = !(t.compareUnit > t.unit);
+      priceWas.textContent = compareUnit > unit ? money(compareUnit) : '';
+      priceWas.hidden = !(compareUnit > unit);
     }
     if (pricePill) {
-      const pct = t.compareUnit > t.unit ? Math.round((1 - t.unit / t.compareUnit) * 100) : 0;
+      const pct = compareUnit > unit ? Math.round((1 - unit / compareUnit) * 100) : 0;
       pricePill.textContent = pct > 0 ? (cfg.text.savePct || 'SAVE {pct}%').replace('{pct}', pct) : '';
       pricePill.hidden = !(pct > 0);
     }
 
-    // button
-    const btnTotal = q('[data-dp-btn-total]');
-    const btnWas = q('[data-dp-btn-was]');
-    if (btnTotal) btnTotal.textContent = money(t.total);
-    if (btnWas) {
-      btnWas.textContent = t.totalWas > t.total ? money(t.totalWas) : '';
-      btnWas.hidden = !(t.totalWas > t.total);
-    }
-
+    // button state
+    const allAvailable = unitVariants(state.tierIndex).every((id) => variantById(id)?.available);
     const btn = q('[data-dp-atc]');
     if (btn) {
-      const available = v ? v.available : false;
-      btn.disabled = !available;
-      const label = btn.querySelector('[data-dp-btn-label]');
-      if (label) label.textContent = available ? cfg.text.addToCart : cfg.text.soldOut;
+      btn.disabled = !allAvailable;
+      const label = q('[data-dp-btn-label]', btn);
+      if (label) label.textContent = allAvailable ? cfg.text.addToCart : cfg.text.soldOut;
     }
 
-    // savings line
-    const savings = q('[data-dp-savings]');
-    const savingsAmount = q('[data-dp-savings-amount]');
-    const saved = t.totalWas - t.total;
-    if (savings) savings.hidden = !(saved > 0);
-    if (savingsAmount) savingsAmount.textContent = money(saved);
-
-    // sticky bar mirror
+    // sticky bar
+    const totals = computeTotals();
     const stickyTotal = q('[data-dp-sticky-total]');
     const stickyWas = q('[data-dp-sticky-was]');
-    if (stickyTotal) stickyTotal.textContent = money(t.total);
+    if (stickyTotal) stickyTotal.textContent = money(totals.total);
     if (stickyWas) {
-      stickyWas.textContent = t.totalWas > t.total ? money(t.totalWas) : '';
-      stickyWas.hidden = !(t.totalWas > t.total);
+      stickyWas.textContent = totals.totalWas > totals.total ? money(totals.totalWas) : '';
+      stickyWas.hidden = !(totals.totalWas > totals.total);
     }
   }
 
   /* ---------- add to cart ---------- */
   function buildItems() {
-    const v = currentVariant();
-    const tier = currentTier();
-    const items = [{ id: Number(v.id), quantity: tier.quantity }];
+    const counts = new Map();
+    unitVariants(state.tierIndex).forEach((id) => counts.set(String(id), (counts.get(String(id)) || 0) + 1));
+    const items = Array.from(counts, ([id, quantity]) => ({ id: Number(id), quantity }));
     state.addons.forEach((i) => {
       const a = cfg.addons[i];
       if (a && a.variantId) items.push({ id: Number(a.variantId), quantity: 1 });
