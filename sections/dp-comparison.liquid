@@ -1,0 +1,127 @@
+{%- comment -%} Dear Paws – "Regular toys vs Dear Paws" comparison table {%- endcomment -%}
+<section class="dpc" id="dp-comparison-{{ section.id }}">
+  <div class="dpc__inner">
+    <div class="dpc__head">
+      {%- if section.settings.eyebrow != blank -%}<span class="dpc__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="dpc__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="dpc__text">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="dpc__table-wrap">
+      <table class="dpc__table">
+        <thead>
+          <tr>
+            <th scope="col" class="dpc__feature-head"><span class="visually-hidden">Feature</span></th>
+            <th scope="col" class="dpc__them">{{ section.settings.them_label }}</th>
+            <th scope="col" class="dpc__us">
+              {%- if section.settings.us_image != blank -%}
+                {{ section.settings.us_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: section.settings.us_label, class: 'dpc__us-img' }}
+              {%- endif -%}
+              <span>{{ section.settings.us_label }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            <tr {{ block.shopify_attributes }}>
+              <th scope="row">{{ block.settings.feature }}</th>
+              <td class="dpc__them">
+                {%- if block.settings.them_text != blank -%}
+                  <span class="dpc__cell-text">{{ block.settings.them_text }}</span>
+                {%- elsif block.settings.them_check -%}
+                  <span class="dpc__mark dpc__mark--ok dpc__mark--muted" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                {%- else -%}
+                  <span class="dpc__mark dpc__mark--no" aria-label="No"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+                {%- endif -%}
+              </td>
+              <td class="dpc__us">
+                {%- if block.settings.us_text != blank -%}
+                  <span class="dpc__cell-text dpc__cell-text--us">{{ block.settings.us_text }}</span>
+                {%- else -%}
+                  <span class="dpc__mark dpc__mark--ok" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                {%- endif -%}
+              </td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+    {%- if section.settings.button_text != blank -%}
+      <div class="dpc__cta"><a class="dpc__btn" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_text }}</a></div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dpc { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-line: #E4DCC8; --dp-muted: #6B6B5E;
+    background: #fff; color: #1a2e1a; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; }
+  .dpc__inner { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+  .dpc__head { text-align: center; max-width: 620px; margin: 0 auto 26px; }
+  .dpc__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 12px; }
+  .dpc__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 10px; color: var(--dp-forest); }
+  .dpc__text { font-size: 15px; line-height: 1.6; color: var(--dp-muted); margin: 0; }
+  .dpc__table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--dp-line); }
+  .dpc__table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 480px; background: #fff; }
+  .dpc__table th, .dpc__table td { padding: 14px 12px; text-align: center; font-size: 14px; border-bottom: 1px solid var(--dp-line); }
+  .dpc__table tbody tr:last-child th, .dpc__table tbody tr:last-child td { border-bottom: 0; }
+  .dpc__table tbody th { text-align: left; font-weight: 600; width: 46%; padding-left: 18px; }
+  .dpc__table thead th { font-weight: 800; font-size: 13px; letter-spacing: .3px; padding: 16px 12px; }
+  .dpc__table thead .dpc__them { color: var(--dp-muted); }
+  .dpc__table .dpc__us { background: var(--dp-forest); color: #fff; }
+  .dpc__table thead .dpc__us { border-radius: 14px 14px 0 0; }
+  .dpc__table thead .dpc__us span { display: block; }
+  .dpc__us-img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; display: block; margin: 0 auto 6px; border: 2px solid var(--dp-gold); }
+  .dpc__table .dpc__us td, .dpc__table td.dpc__us { border-bottom-color: rgba(255,255,255,.12); }
+  .dpc__mark { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; }
+  .dpc__mark svg { width: 14px; height: 14px; }
+  .dpc__mark--ok { background: var(--dp-gold); color: var(--dp-forest); }
+  .dpc__mark--muted { background: #ece8dc; color: var(--dp-muted); }
+  .dpc__mark--no { background: #f3e3e0; color: #b0483a; }
+  .dpc__cell-text { font-size: 13px; color: var(--dp-muted); }
+  .dpc__cell-text--us { color: var(--dp-gold-light); font-weight: 700; }
+  .dpc__cta { text-align: center; margin-top: 26px; }
+  .dpc__btn { display: inline-block; background: var(--dp-forest); color: #fff; font-weight: 800; font-size: 14px; padding: 14px 28px; border-radius: 12px; text-decoration: none; }
+  .dpc__btn:hover { background: #2D4A2D; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP Comparison table",
+  "tag": "section",
+  "class": "dp-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why Dear Paws" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Regular dog toys vs Dear Paws" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "One box replaces a month of last-minute pet store runs and keeps the excitement going every single morning." },
+    { "type": "text", "id": "them_label", "label": "Competitor column label", "default": "Store-bought toys" },
+    { "type": "text", "id": "us_label", "label": "Our column label", "default": "Dear Paws" },
+    { "type": "image_picker", "id": "us_image", "label": "Our column image" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Get the calendar" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature", "default": "24 different surprises" },
+        { "type": "checkbox", "id": "them_check", "label": "Competitor gets a checkmark", "default": false },
+        { "type": "text", "id": "them_text", "label": "Competitor custom text (optional)" },
+        { "type": "text", "id": "us_text", "label": "Our custom text (optional)" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    { "name": "DP Comparison table", "blocks": [
+      { "type": "row", "settings": { "feature": "24 different toys and treats", "them_check": false } },
+      { "type": "row", "settings": { "feature": "New surprise every single day", "them_check": false } },
+      { "type": "row", "settings": { "feature": "Safe for all breeds and sizes", "them_check": true } },
+      { "type": "row", "settings": { "feature": "Gift-ready festive box", "them_check": false } },
+      { "type": "row", "settings": { "feature": "Vet-approved chew materials", "them_check": false } },
+      { "type": "row", "settings": { "feature": "Price per item", "them_text": "$8 to $15 each", "us_text": "Under $3 each" } },
+      { "type": "row", "settings": { "feature": "Free shipping and 30-day guarantee", "them_check": false } }
+    ] }
+  ]
+}
+{% endschema %}

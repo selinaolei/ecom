@@ -1,0 +1,124 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "footer_m9NzUG": {
+      "type": "footer",
+      "blocks": {
+        "group_H6VpwJ": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "footer_logo": { "type": "logo", "settings": {} },
+            "footer_tagline": {
+              "type": "text",
+              "settings": {
+                "text": "<p>24 days of tail wags. Handpicked toys and treats, wrapped in forest green and gold, delivered before the first door opens.</p>",
+                "width": "100%",
+                "alignment": "left",
+                "type_preset": "rte"
+              }
+            }
+          },
+          "block_order": ["footer_logo", "footer_tagline"]
+        },
+        "email_signup_crihX7": {
+          "type": "email-signup",
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "heading": "Join the pack",
+            "heading_text_color": "",
+            "heading_preset": "h4",
+            "border_style": "all",
+            "input_style": "custom",
+            "border_width": 1,
+            "border_radius": 100,
+            "input_background_color": "#ffffff",
+            "input_text_color": "#1F3D2B",
+            "input_border_color": "#C9A96E",
+            "input_type_preset": "paragraph",
+            "style_class": "button-unstyled",
+            "custom_button_background": "#C9A96E",
+            "custom_button_text": "#1F3D2B",
+            "custom_button_border": "#C9A96E",
+            "link_text_color": "",
+            "display_type": "arrow",
+            "label": "Sign up",
+            "integrated_button": true,
+            "button_type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["group_H6VpwJ", "email_signup_crihX7"],
+      "name": "t:names.footer",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 24,
+        "background_color": "#1F3D2B",
+        "padding-block-start": 44,
+        "padding-block-end": 30
+      }
+    },
+    "footer_utilities_jLGE8U": {
+      "type": "footer-utilities",
+      "name": "t:names.utilities",
+      "blocks": {
+        "copyright": { "type": "footer-copyright", "settings": {} },
+        "policy_list": { "type": "footer-policy-list", "settings": {} },
+        "payment": { "type": "social-links", "settings": {} }
+      },
+      "block_order": ["copyright", "policy_list", "payment"],
+      "settings": {
+        "section_width": "page-width",
+        "gap": 24,
+        "background_color": "#1F3D2B",
+        "divider_thickness": 1,
+        "divider_color": "#3A5C46",
+        "padding-block-start": 20,
+        "padding-block-end": 40
+      }
+    }
+  },
+  "order": ["footer_m9NzUG", "footer_utilities_jLGE8U"]
+}

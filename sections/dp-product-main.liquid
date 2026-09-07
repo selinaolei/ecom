@@ -1,0 +1,515 @@
+{%- comment -%}
+  Dear Paws – Product hero (Petalia-style layout)
+  Gallery + details, bundle tiers (Single / Duo / Trio), add-on toggles, add to cart.
+{%- endcomment -%}
+{%- liquid
+  assign product = section.settings.product | default: product
+  assign current_variant = product.selected_or_first_available_variant
+  assign media_list = product.media
+  assign has_variants = false
+  if product.variants.size > 1
+    assign has_variants = true
+  endif
+-%}
+
+<section class="dpm" id="dp-product-{{ section.id }}" data-dp-product>
+  <div class="dpm__inner">
+
+    {%- comment -%} ===== GALLERY ===== {%- endcomment -%}
+    <div class="dpm__gallery">
+      <div class="dpm__main">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="dpm__badge">{{ section.settings.badge_text }}</span>
+        {%- endif -%}
+        {%- if media_list.size > 0 -%}
+          {%- assign first = media_list.first -%}
+          <img
+            data-dp-main-image
+            src="{{ first | image_url: width: 1000 }}"
+            srcset="{{ first | image_url: width: 600 }} 600w, {{ first | image_url: width: 1000 }} 1000w, {{ first | image_url: width: 1400 }} 1400w"
+            sizes="(min-width: 990px) 560px, 100vw"
+            width="1000" height="1000"
+            alt="{{ first.alt | default: product.title | escape }}"
+            fetchpriority="high"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'dpm__placeholder' }}
+        {%- endif -%}
+        {%- if media_list.size > 1 -%}
+          <button type="button" class="dpm__arrow dpm__arrow--prev" data-dp-prev aria-label="Previous image">&#8249;</button>
+          <button type="button" class="dpm__arrow dpm__arrow--next" data-dp-next aria-label="Next image">&#8250;</button>
+        {%- endif -%}
+      </div>
+      {%- if media_list.size > 1 -%}
+        <div class="dpm__thumbs" role="list">
+          {%- for media in media_list -%}
+            <button
+              type="button"
+              role="listitem"
+              class="dpm__thumb{% if forloop.first %} is-active{% endif %}"
+              data-dp-thumb
+              data-src="{{ media | image_url: width: 1000 }}"
+              data-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 1000 }} 1000w, {{ media | image_url: width: 1400 }} 1400w"
+              data-alt="{{ media.alt | default: product.title | escape }}"
+              aria-label="Show image {{ forloop.index }}"
+            >
+              <img src="{{ media | image_url: width: 160 }}" width="80" height="80" loading="lazy" alt="">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ===== DETAILS ===== {%- endcomment -%}
+    <div class="dpm__details">
+
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="dpm__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+      <h1 class="dpm__title">{{ section.settings.title_override | default: product.title }}</h1>
+
+      <div class="dpm__rating">
+        <span class="dpm__stars" aria-hidden="true">
+          {%- for i in (1..5) -%}
+            <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+          {%- endfor -%}
+        </span>
+        <span class="dpm__rating-text">{{ section.settings.rating_text }}</span>
+      </div>
+
+      <div class="dpm__price">
+        <span class="dpm__price-now" data-dp-price-now>{{ current_variant.price | money }}</span>
+        <s class="dpm__price-was" data-dp-price-was {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
+        <span class="dpm__pill" data-dp-price-pill {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}></span>
+      </div>
+
+      {%- if section.settings.subtext != blank -%}
+        <p class="dpm__subtext">{{ section.settings.subtext }}</p>
+      {%- endif -%}
+
+      {%- comment -%} Feature checklist {%- endcomment -%}
+      {%- assign features = section.blocks | where: 'type', 'feature' -%}
+      {%- if features.size > 0 -%}
+        <ul class="dpm__features">
+          {%- for block in features -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="dpm__check" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} Variant pills {%- endcomment -%}
+      {%- if has_variants -%}
+        <div class="dpm__variants">
+          <p class="dpm__label">{{ product.options.first }}: <strong data-dp-variant-label>{{ current_variant.title }}</strong></p>
+          <div class="dpm__variant-list">
+            {%- for variant in product.variants -%}
+              {%- assign img_index = -1 -%}
+              {%- if variant.featured_media -%}
+                {%- for media in media_list -%}
+                  {%- if media.id == variant.featured_media.id -%}{%- assign img_index = forloop.index0 -%}{%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+              <button type="button" class="dpm__variant{% if variant.id == current_variant.id %} is-active{% endif %}{% unless variant.available %} is-soldout{% endunless %}" data-dp-variant="{{ variant.id }}" data-title="{{ variant.title | escape }}">
+                {%- if variant.featured_media -%}
+                  <img src="{{ variant.featured_media | image_url: width: 80 }}" width="40" height="40" loading="lazy" alt="">
+                {%- endif -%}
+                <span>{{ variant.title }}</span>
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Bundle tiers {%- endcomment -%}
+      {%- assign tiers = section.blocks | where: 'type', 'tier' -%}
+      {%- if tiers.size > 0 -%}
+        <div class="dpm__bundle">
+          <p class="dpm__label dpm__label--center"><span>{{ section.settings.bundle_heading }}</span></p>
+          <div class="dpm__tiers dpm__tiers--{{ tiers.size }}">
+            {%- for block in tiers -%}
+              {%- assign idx = forloop.index0 -%}
+              <button type="button" class="dpm__tier{% if idx == section.settings.default_tier %} is-active{% endif %}" data-dp-tier="{{ idx }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.tag != blank -%}<span class="dpm__tier-tag">{{ block.settings.tag }}</span>{%- endif -%}
+                <span class="dpm__tier-boxes" aria-hidden="true">
+                  {%- for i in (1..block.settings.quantity) -%}
+                    {%- if i <= 3 -%}
+                    <span class="dpm__tier-box">
+                      {%- if product.featured_media -%}<img src="{{ product.featured_media | image_url: width: 120 }}" width="48" height="48" loading="lazy" alt="">{%- endif -%}
+                    </span>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </span>
+                <span class="dpm__tier-name">{{ block.settings.title }}</span>
+                {%- if block.settings.subtitle != blank -%}<span class="dpm__tier-sub">{{ block.settings.subtitle }}</span>{%- endif -%}
+                <span class="dpm__tier-price"><span data-dp-tier-now></span> <s data-dp-tier-was hidden></s></span>
+                <span class="dpm__tier-each" data-dp-tier-each></span>
+                <span class="dpm__tier-save" data-dp-tier-save hidden></span>
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Add-ons {%- endcomment -%}
+      {%- assign addons = section.blocks | where: 'type', 'addon' -%}
+      {%- if addons.size > 0 -%}
+        <div class="dpm__addons">
+          {%- if section.settings.addons_heading != blank -%}
+            <p class="dpm__label">{{ section.settings.addons_heading }}</p>
+          {%- endif -%}
+          {%- for block in addons -%}
+            {%- assign idx = forloop.index0 -%}
+            {%- assign ap = block.settings.product -%}
+            {%- assign av = ap.selected_or_first_available_variant -%}
+            <label class="dpm__addon{% if block.settings.default_on %} is-on{% endif %}" data-dp-addon="{{ idx }}" {{ block.shopify_attributes }}>
+              <span class="dpm__addon-img">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: block.settings.title }}
+                {%- elsif block.settings.icon != blank -%}
+                  <img src="{{ block.settings.icon | asset_url }}" width="80" height="80" loading="lazy" alt="">
+                {%- elsif ap.featured_media -%}
+                  {{ ap.featured_media | image_url: width: 160 | image_tag: loading: 'lazy', alt: block.settings.title }}
+                {%- endif -%}
+              </span>
+              <span class="dpm__addon-body">
+                <span class="dpm__addon-title">{{ block.settings.title | default: ap.title }}</span>
+                {%- if block.settings.text != blank -%}<span class="dpm__addon-text">{{ block.settings.text }}</span>{%- endif -%}
+              </span>
+              <span class="dpm__addon-right">
+                <span class="dpm__addon-price">{%- if av -%}+{{ av.price | money }}{%- else -%}<em>Select product</em>{%- endif -%}</span>
+                <input type="checkbox" class="dpm__switch-input" {% if block.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ block.settings.title | default: ap.title | escape }}">
+                <span class="dpm__switch" aria-hidden="true"></span>
+              </span>
+            </label>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Add to cart {%- endcomment -%}
+      <button type="button" class="dpm__atc" data-dp-atc {% unless current_variant.available %}disabled{% endunless %}>
+        <span class="dpm__atc-label" data-dp-btn-label>{{ section.settings.button_text }}</span>
+        <span class="dpm__atc-price"><s data-dp-btn-was hidden></s> <span data-dp-btn-total></span></span>
+        <span class="dpm__atc-spinner" aria-hidden="true"></span>
+      </button>
+      <p class="dpm__error" data-dp-error hidden role="alert"></p>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="dpm__payments" aria-label="Accepted payment methods">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'dpm__payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Trust strip {%- endcomment -%}
+      {%- assign trusts = section.blocks | where: 'type', 'trust' -%}
+      {%- if trusts.size > 0 -%}
+        <ul class="dpm__trust">
+          {%- for block in trusts -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="dpm__trust-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                  {%- when 'lock' -%}<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  {%- when 'gift' -%}<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-3-5-1s5 1 5 1zm0 0c2-4 6-3 5-1s-5 1-5 1z"/></svg>
+                  {%- when 'heart' -%}<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+                  {%- when 'leaf' -%}<svg viewBox="0 0 24 24"><path d="M4 20C6 10 12 4 20 4c0 8-6 14-16 16z"/><path d="M4 20l8-8"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <details class="dpm__desc">
+          <summary>{{ section.settings.description_label }}</summary>
+          <div class="dpm__desc-body rte">{{ product.description }}</div>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- comment -%} Sticky mobile bar {%- endcomment -%}
+  {%- if section.settings.sticky_bar -%}
+    <div class="dpm__sticky" data-dp-sticky>
+      <div class="dpm__sticky-inner">
+        {%- if product.featured_media -%}<img src="{{ product.featured_media | image_url: width: 100 }}" width="48" height="48" alt="" loading="lazy">{%- endif -%}
+        <div class="dpm__sticky-meta">
+          <strong>{{ product.title }}</strong>
+          <span data-dp-sticky-total></span>
+        </div>
+        <button type="button" class="dpm__sticky-btn" data-dp-sticky-atc>{{ section.settings.button_text }}</button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Config for JS {%- endcomment -%}
+  <script type="application/json" data-dp-config>
+    {
+      "productId": {{ product.id | json }},
+      "selectedVariantId": {{ current_variant.id | json }},
+      "moneyFormat": {{ shop.money_format | json }},
+      "defaultTier": {{ section.settings.default_tier | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {%- assign img_index = -1 -%}
+          {%- if variant.featured_media -%}
+            {%- for media in media_list -%}
+              {%- if media.id == variant.featured_media.id -%}{%- assign img_index = forloop.index0 -%}{%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "price": {{ variant.price | json }}, "compareAtPrice": {{ variant.compare_at_price | default: 0 | json }}, "available": {{ variant.available | json }}, "imageIndex": {{ img_index }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "tiers": [
+        {%- for block in tiers -%}
+          { "quantity": {{ block.settings.quantity | json }}, "discount": {{ block.settings.discount | json }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "addons": [
+        {%- for block in addons -%}
+          {%- assign ap = block.settings.product -%}
+          {%- assign av = ap.selected_or_first_available_variant -%}
+          { "variantId": {{ av.id | default: null | json }}, "price": {{ av.price | default: 0 | json }}, "defaultOn": {{ block.settings.default_on | json }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "text": {
+        "addToCart": {{ section.settings.button_text | json }},
+        "soldOut": {{ 'products.product.sold_out' | t | default: 'Sold out' | json }},
+        "each": "each",
+        "save": "Save",
+        "savePct": "SAVE {pct}%"
+      }
+    }
+  </script>
+</section>
+
+<script type="module" src="{{ 'dp-product.js' | asset_url }}"></script>
+
+{% stylesheet %}
+  .dpm { --dp-forest: #1F3D2B; --dp-forest-2: #2D4A2D; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-ink: #1a2e1a; --dp-muted: #6B6B5E; --dp-line: #E4DCC8; --dp-radius: 14px;
+    background: #fff; color: var(--dp-ink); font-family: var(--font-body--family, Inter, sans-serif); padding: 12px 0 40px; }
+  .dpm *, .dpm *::before, .dpm *::after { box-sizing: border-box; }
+  .dpm__inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: grid; gap: 22px; }
+  @media (min-width: 990px) {
+    .dpm { padding: 32px 0 64px; }
+    .dpm__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: start; padding: 0 32px; }
+    .dpm__gallery { position: sticky; top: 90px; }
+  }
+
+  /* gallery */
+  .dpm__main { position: relative; aspect-ratio: 1 / 1; border-radius: var(--dp-radius); overflow: hidden; background: var(--dp-cream); }
+  .dpm__main img, .dpm__placeholder { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dpm__badge { position: absolute; top: 14px; left: 14px; z-index: 2; background: var(--dp-forest); color: var(--dp-gold-light); font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
+  .dpm__arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--dp-forest); font-size: 26px; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+  .dpm__arrow--prev { left: 12px; } .dpm__arrow--next { right: 12px; }
+  .dpm__thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .dpm__thumbs::-webkit-scrollbar { display: none; }
+  .dpm__thumb { flex: 0 0 auto; width: 68px; height: 68px; padding: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; background: var(--dp-cream); cursor: pointer; opacity: .75; transition: .2s; }
+  .dpm__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dpm__thumb.is-active { border-color: var(--dp-forest); opacity: 1; }
+
+  /* details */
+  .dpm__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 8px; }
+  .dpm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--dp-forest); }
+  .dpm__rating { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .dpm__stars { display: inline-flex; gap: 2px; }
+  .dpm__stars svg { width: 16px; height: 16px; fill: var(--dp-gold); }
+  .dpm__rating-text { font-size: 13px; font-weight: 600; color: var(--dp-ink); }
+  .dpm__price { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .dpm__price-now { font-size: 30px; font-weight: 800; color: var(--dp-forest); letter-spacing: -0.5px; }
+  .dpm__price-was { font-size: 18px; color: #9a9a8c; }
+  .dpm__pill { background: var(--dp-gold); color: var(--dp-forest); font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 5px 10px; border-radius: 999px; }
+  .dpm__subtext { font-size: 14px; color: var(--dp-muted); line-height: 1.6; margin: 0 0 16px; }
+
+  .dpm__features { list-style: none; margin: 0 0 20px; padding: 16px 18px; border: 1px solid var(--dp-line); border-radius: var(--dp-radius); background: #fff; display: grid; gap: 10px; }
+  .dpm__features li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; font-weight: 500; line-height: 1.45; }
+  .dpm__check { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--dp-forest); color: var(--dp-gold-light); display: inline-flex; align-items: center; justify-content: center; }
+  .dpm__check svg { width: 12px; height: 12px; }
+
+  .dpm__label { font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--dp-ink); margin: 0 0 10px; }
+  .dpm__label--center { text-align: center; position: relative; }
+  .dpm__label--center::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--dp-line); }
+  .dpm__label--center span { position: relative; background: #fff; padding: 0 12px; }
+
+  .dpm__variants { margin-bottom: 18px; }
+  .dpm__variant-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dpm__variant { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--dp-line); background: #fff; font: inherit; font-size: 13px; font-weight: 600; text-transform: capitalize; color: var(--dp-ink); cursor: pointer; transition: .15s; }
+  .dpm__variant img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+  .dpm__variant.is-active { border-color: var(--dp-forest); background: var(--dp-forest); color: #fff; }
+  .dpm__variant.is-soldout { opacity: .5; text-decoration: line-through; }
+
+  .dpm__bundle { margin-bottom: 18px; }
+  .dpm__tiers { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dpm__tiers--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dpm__tiers--1 { grid-template-columns: 1fr; }
+  .dpm__tier { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 8px 14px; border-radius: var(--dp-radius); border: 1.5px solid var(--dp-line); background: #fff; font: inherit; color: var(--dp-ink); cursor: pointer; text-align: center; transition: .15s; }
+  .dpm__tier:hover { border-color: var(--dp-gold); }
+  .dpm__tier.is-active { border-color: var(--dp-forest); box-shadow: 0 0 0 2px var(--dp-forest) inset; background: #FBF8F0; }
+  .dpm__tier-tag { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--dp-gold); color: var(--dp-forest); font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
+  .dpm__tier-boxes { display: flex; justify-content: center; margin-bottom: 4px; }
+  .dpm__tier-box { width: 34px; height: 34px; border-radius: 8px; background: var(--dp-cream); border: 1px solid var(--dp-line); overflow: hidden; margin-left: -8px; }
+  .dpm__tier-box:first-child { margin-left: 0; }
+  .dpm__tier-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dpm__tier-name { font-size: 15px; font-weight: 800; }
+  .dpm__tier-sub { font-size: 11px; color: var(--dp-muted); }
+  .dpm__tier-price { font-size: 15px; font-weight: 800; color: var(--dp-forest); margin-top: 4px; }
+  .dpm__tier-price s { font-size: 12px; font-weight: 500; color: #9a9a8c; margin-left: 2px; }
+  .dpm__tier-each { font-size: 11px; color: var(--dp-muted); }
+  .dpm__tier-save { font-size: 11px; font-weight: 700; color: #1f7a3a; }
+
+  .dpm__addons { display: grid; gap: 8px; margin-bottom: 18px; }
+  .dpm__addon { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1.5px solid var(--dp-line); border-radius: var(--dp-radius); background: #fff; cursor: pointer; transition: .15s; }
+  .dpm__addon.is-on { border-color: var(--dp-forest); background: #FBF8F0; }
+  .dpm__addon-img { width: 56px; height: 56px; border-radius: 10px; overflow: hidden; background: var(--dp-cream); }
+  .dpm__addon-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dpm__addon-title { display: block; font-size: 14px; font-weight: 700; }
+  .dpm__addon-text { display: block; font-size: 12px; color: var(--dp-muted); line-height: 1.4; margin-top: 2px; }
+  .dpm__addon-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .dpm__addon-price { font-size: 13px; font-weight: 700; color: var(--dp-forest); }
+  .dpm__addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
+  .dpm__switch-input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .dpm__switch { position: relative; width: 42px; height: 24px; border-radius: 999px; background: #d8d3c4; transition: .2s; }
+  .dpm__switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: .2s; }
+  .dpm__switch-input:checked + .dpm__switch { background: var(--dp-forest); }
+  .dpm__switch-input:checked + .dpm__switch::after { transform: translateX(18px); background: var(--dp-gold-light); }
+  .dpm__switch-input:focus-visible + .dpm__switch { outline: 2px solid var(--dp-gold); outline-offset: 2px; }
+
+  .dpm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px; border: 0; border-radius: var(--dp-radius); background: var(--dp-forest); color: #fff; font: inherit; font-size: 16px; font-weight: 800; letter-spacing: .3px; cursor: pointer; transition: .15s; box-shadow: 0 10px 24px rgba(31,61,43,.28); }
+  .dpm__atc:hover { background: var(--dp-forest-2); transform: translateY(-1px); }
+  .dpm__atc:disabled { background: #b9b5a8; box-shadow: none; cursor: not-allowed; }
+  .dpm__atc-price { color: var(--dp-gold-light); font-weight: 800; }
+  .dpm__atc-price s { color: rgba(255,255,255,.55); font-weight: 500; font-size: 13px; margin-right: 4px; }
+  .dpm__atc-spinner { display: none; position: absolute; right: 20px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: dpm-spin .7s linear infinite; }
+  .dpm__atc.is-loading .dpm__atc-spinner { display: block; }
+  .dpm__atc.is-loading .dpm__atc-price { visibility: hidden; }
+  .dpm__atc.is-added .dpm__atc-label::after { content: " \2713"; }
+  @keyframes dpm-spin { to { transform: rotate(360deg); } }
+  .dpm__error { color: #b0483a; font-size: 13px; margin: 8px 0 0; }
+
+  .dpm__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0 4px; }
+  .dpm__payment-icon { width: 38px; height: 24px; border-radius: 4px; }
+
+  .dpm__trust { list-style: none; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--dp-line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .dpm__trust li { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+  .dpm__trust-icon { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--dp-cream); display: inline-flex; align-items: center; justify-content: center; }
+  .dpm__trust-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--dp-forest); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  .dpm__desc { margin-top: 18px; border-top: 1px solid var(--dp-line); border-bottom: 1px solid var(--dp-line); }
+  .dpm__desc summary { cursor: pointer; padding: 14px 0; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .dpm__desc summary::-webkit-details-marker { display: none; }
+  .dpm__desc summary::after { content: "+"; font-size: 18px; color: var(--dp-gold); }
+  .dpm__desc[open] summary::after { content: "\2013"; }
+  .dpm__desc-body { padding: 0 0 16px; font-size: 14px; line-height: 1.7; color: var(--dp-muted); }
+
+  .dpm__sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid var(--dp-line); box-shadow: 0 -8px 24px rgba(0,0,0,.08); transform: translateY(110%); transition: transform .25s; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .dpm__sticky.is-visible { transform: translateY(0); }
+  .dpm__sticky-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .dpm__sticky img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+  .dpm__sticky-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; }
+  .dpm__sticky-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dpm__sticky-meta span { color: var(--dp-forest); font-weight: 800; }
+  .dpm__sticky-btn { border: 0; border-radius: 10px; background: var(--dp-forest); color: #fff; font: inherit; font-weight: 800; font-size: 14px; padding: 12px 18px; cursor: pointer; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP Product hero",
+  "tag": "section",
+  "class": "dp-section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "Leave empty to use the current page product." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Limited Christmas Edition" },
+    { "type": "text", "id": "title_override", "label": "Title override" },
+    { "type": "text", "id": "badge_text", "label": "Image badge", "default": "24 days of joy" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 2,483 reviews" },
+    { "type": "textarea", "id": "subtext", "label": "Short description", "default": "24 numbered doors. 24 daily surprise toys and treats. One very happy dog every morning until Christmas." },
+    { "type": "text", "id": "bundle_heading", "label": "Bundle heading", "default": "Bundle & Save" },
+    { "type": "range", "id": "default_tier", "label": "Default selected bundle (index)", "min": 0, "max": 2, "step": 1, "default": 0 },
+    { "type": "text", "id": "addons_heading", "label": "Add-ons heading", "default": "Complete your gift" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to cart" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show product description accordion", "default": true },
+    { "type": "text", "id": "description_label", "label": "Description label", "default": "What is inside the calendar?" },
+    { "type": "checkbox", "id": "sticky_bar", "label": "Sticky add-to-cart bar", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature bullet",
+      "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "24 daily surprise toys and treats" } ]
+    },
+    {
+      "type": "tier",
+      "name": "Bundle tier",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Single" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "1 calendar" },
+        { "type": "text", "id": "tag", "label": "Tag (e.g. Most popular)" },
+        { "type": "range", "id": "quantity", "label": "Quantity", "min": 1, "max": 6, "step": 1, "default": 1 },
+        { "type": "range", "id": "discount", "label": "Bundle discount %", "min": 0, "max": 60, "step": 1, "default": 0, "info": "Display only. Create a matching automatic quantity discount in Shopify Admin so the same price applies at checkout." }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Add-on product",
+      "limit": 4,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Add-on product" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "text", "label": "Description" },
+        { "type": "image_picker", "id": "image", "label": "Image (optional override)" },
+        { "type": "select", "id": "icon", "label": "Built-in illustration", "options": [
+          { "value": "", "label": "None (use product image)" },
+          { "value": "dp-addon-shipping.png", "label": "Shipping protection" },
+          { "value": "dp-addon-warranty.png", "label": "30-day warranty" },
+          { "value": "dp-addon-mystery.png", "label": "Mystery box" }
+        ], "default": "" },
+        { "type": "checkbox", "id": "default_on", "label": "Selected by default", "default": false }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust item",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "truck", "label": "Truck" }, { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" },
+          { "value": "heart", "label": "Heart" }, { "value": "leaf", "label": "Leaf" }, { "value": "shield", "label": "Shield" }
+        ], "default": "truck" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "DP Product hero",
+      "blocks": [
+        { "type": "feature", "settings": { "text": "24 daily surprise toys, chews and treats" } },
+        { "type": "feature", "settings": { "text": "Safe for all breeds and sizes" } },
+        { "type": "feature", "settings": { "text": "Gift-ready festive packaging" } },
+        { "type": "feature", "settings": { "text": "Free shipping and 30-day guarantee" } },
+        { "type": "tier", "settings": { "title": "Single", "subtitle": "1 calendar", "quantity": 1, "discount": 0 } },
+        { "type": "tier", "settings": { "title": "Duo", "subtitle": "2 calendars", "tag": "Most popular", "quantity": 2, "discount": 15 } },
+        { "type": "tier", "settings": { "title": "Trio", "subtitle": "3 calendars", "tag": "Best value", "quantity": 3, "discount": 25 } },
+        { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "icon": "dp-addon-shipping.png", "default_on": true } },
+        { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "icon": "dp-addon-warranty.png" } },
+        { "type": "addon", "settings": { "title": "Mystery box", "text": "3 bonus surprise toys picked for your pup", "icon": "dp-addon-mystery.png" } },
+        { "type": "trust", "settings": { "icon": "truck", "text": "Free shipping" } },
+        { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "30-day guarantee" } },
+        { "type": "trust", "settings": { "icon": "heart", "text": "Loved by 2,000+ dogs" } }
+      ]
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

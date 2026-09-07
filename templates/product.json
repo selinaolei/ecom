@@ -1,0 +1,468 @@
+{
+  "sections": {
+    "dp_main": {
+      "type": "dp-product-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "text": "24 daily surprise toys, chews and treats"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "text": "Safe for all breeds and sizes"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "text": "Gift-ready forest green and gold packaging"
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "text": "Free shipping and 30-day happiness guarantee"
+          }
+        },
+        "t1": {
+          "type": "tier",
+          "settings": {
+            "title": "Single",
+            "subtitle": "1 calendar",
+            "tag": "",
+            "quantity": 1,
+            "discount": 0
+          }
+        },
+        "t2": {
+          "type": "tier",
+          "settings": {
+            "title": "Duo",
+            "subtitle": "2 calendars",
+            "tag": "Most popular",
+            "quantity": 2,
+            "discount": 15
+          }
+        },
+        "t3": {
+          "type": "tier",
+          "settings": {
+            "title": "Trio",
+            "subtitle": "3 calendars",
+            "tag": "Best value",
+            "quantity": 3,
+            "discount": 25
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "shipping-protection",
+            "title": "Shipping protection",
+            "text": "Covers loss, theft or damage in transit",
+            "icon": "dp-addon-shipping.png",
+            "default_on": true
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "30-day-warranty",
+            "title": "30-day warranty",
+            "text": "Fast replacement if anything arrives damaged",
+            "icon": "dp-addon-warranty.png",
+            "default_on": false
+          }
+        },
+        "a3": {
+          "type": "addon",
+          "settings": {
+            "product": "mystery-box",
+            "title": "Mystery box",
+            "text": "3 bonus surprise toys picked for your pup",
+            "icon": "dp-addon-mystery.png",
+            "default_on": false
+          }
+        },
+        "tr1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping"
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "heart",
+            "text": "Loved by 2,000+ dogs"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "t1",
+        "t2",
+        "t3",
+        "a1",
+        "a2",
+        "a3",
+        "tr1",
+        "tr2",
+        "tr3",
+        "tr4"
+      ],
+      "settings": {
+        "eyebrow": "Limited Christmas Edition",
+        "badge_text": "24 days of joy",
+        "rating_text": "Rated 4.9 based on 2,483 reviews",
+        "subtext": "24 numbered doors. 24 daily surprise toys and treats. One very happy dog every morning until Christmas.",
+        "bundle_heading": "Bundle & Save",
+        "default_tier": 0,
+        "addons_heading": "Complete your gift",
+        "button_text": "Add to cart",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "What is inside the calendar?",
+        "sticky_bar": true
+      }
+    },
+    "dp_ugc": {
+      "type": "dp-ugc-grid",
+      "blocks": {
+        "p1": {
+          "type": "photo",
+          "settings": {
+            "handle": "@luna.the.golden",
+            "caption": "Door 1 opened at 6am. No regrets."
+          }
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {
+            "handle": "@biscuit_and_co",
+            "caption": "He sits next to it every morning now."
+          }
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {
+            "handle": "@maxthefrenchie",
+            "caption": "Best Christmas gift we have ever bought him."
+          }
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {
+            "handle": "@twodoodles",
+            "caption": "Two calendars, zero fights. Worth it."
+          }
+        },
+        "p5": {
+          "type": "photo",
+          "settings": {
+            "handle": "@rosie.dachshund",
+            "caption": "The squeaky bone from day 4 is her new favourite."
+          }
+        },
+        "p6": {
+          "type": "photo",
+          "settings": {
+            "handle": "@oliver.lab",
+            "caption": "Under the tree and very much guarded."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
+      ],
+      "settings": {
+        "eyebrow": "Real pups. Real mornings.",
+        "heading": "People keep posting about Dear Paws",
+        "text": "Tag @dearpaws and show us door number one. We repost our favourites every week.",
+        "columns": "3",
+        "button_text": "See more on Instagram",
+        "button_link": ""
+      }
+    },
+    "dp_compare": {
+      "type": "dp-comparison",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "feature": "24 different toys and treats",
+            "them_check": false
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "feature": "New surprise every single day",
+            "them_check": false
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "feature": "Safe for all breeds and sizes",
+            "them_check": true
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "feature": "Gift-ready festive box",
+            "them_check": false
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "feature": "Vet-approved chew materials",
+            "them_check": false
+          }
+        },
+        "r6": {
+          "type": "row",
+          "settings": {
+            "feature": "Price per item",
+            "them_text": "$8 to $15 each",
+            "us_text": "Under $3 each"
+          }
+        },
+        "r7": {
+          "type": "row",
+          "settings": {
+            "feature": "Free shipping and 30-day guarantee",
+            "them_check": false
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6",
+        "r7"
+      ],
+      "settings": {
+        "eyebrow": "Why Dear Paws",
+        "heading": "Regular dog toys vs Dear Paws",
+        "text": "One box replaces a month of last-minute pet store runs and keeps the excitement going every single morning.",
+        "them_label": "Store-bought toys",
+        "us_label": "Dear Paws",
+        "button_text": "Get the calendar",
+        "button_link": "#dp-product-dp_main"
+      }
+    },
+    "dp_reviews": {
+      "type": "dp-reviews",
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "He waits by it every morning",
+            "text": "Our golden figured out the routine by day two. He sits in front of the box and stares at us until we open the next door. The toys are good quality, not the flimsy stuff.",
+            "name": "Sarah M.",
+            "verified": true
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Perfect gift",
+            "text": "Bought the Duo for my two nieces' pups. The packaging looks lovely under the tree and the treats were gone in seconds.",
+            "name": "James T.",
+            "verified": true
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Worth every penny",
+            "text": "24 days of my spaniel losing her mind with excitement. The rope toy from day 9 is still her favourite.",
+            "name": "Rachel P.",
+            "verified": true
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "title": "Great variety",
+            "text": "Nice mix of chews, plush and treats. One of the plush toys did not last long with our husky, but everything else was solid.",
+            "name": "Tom S.",
+            "verified": true
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Shipping was fast",
+            "text": "Ordered on a Monday, arrived Thursday. Box was in perfect shape and the dog approved immediately.",
+            "name": "Priya K.",
+            "verified": true
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Our new tradition",
+            "text": "Second year buying this. It has become part of our Christmas mornings and the kids love opening the doors with the dog.",
+            "name": "Daniel R.",
+            "verified": true
+          }
+        },
+        "v7": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Small dog approved",
+            "text": "I have a 5 lb chihuahua and everything was the right size for her. The treats are soft enough for her teeth.",
+            "name": "Megan L.",
+            "verified": true
+          }
+        },
+        "v8": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Beautiful box",
+            "text": "The forest green and gold looks so classy under the tree. Honestly nicer than I expected.",
+            "name": "Olivia W.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8"
+      ],
+      "settings": {
+        "heading": "What people say about Dear Paws",
+        "rating": "4.9",
+        "rating_text": "Based on 2,483 reviews",
+        "bar_5": 88,
+        "bar_4": 9,
+        "bar_3": 2,
+        "bar_2": 1,
+        "bar_1": 0
+      }
+    },
+    "dp_faq": {
+      "type": "dp-faq",
+      "blocks": {
+        "q1": {
+          "type": "faq",
+          "settings": {
+            "question": "What is inside the Dear Paws Advent Calendar?",
+            "answer": "<p>24 numbered doors, each hiding a different surprise: plush toys, rope and rubber chews, squeakers and natural treats. No two days are the same.</p>"
+          }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": {
+            "question": "Is it suitable for all dog breeds and sizes?",
+            "answer": "<p>Yes. Toys are sized to be safe for small breeds and durable enough for large ones. Always supervise your dog with new toys.</p>"
+          }
+        },
+        "q3": {
+          "type": "faq",
+          "settings": {
+            "question": "When should I order to receive it before December 1st?",
+            "answer": "<p>Orders placed before November 20th typically arrive in time for the first door. We ship from Canada with tracking on every order.</p>"
+          }
+        },
+        "q4": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it come ready to gift?",
+            "answer": "<p>It does. The calendar arrives in a forest green and gold gift box with no prices shown, so it can go straight under the tree.</p>"
+          }
+        },
+        "q5": {
+          "type": "faq",
+          "settings": {
+            "question": "Are the toys safe for my dog?",
+            "answer": "<p>All toys use vet-approved materials and the treats are made with natural ingredients. Check the ingredient list on each pack if your dog has allergies.</p>"
+          }
+        },
+        "q6": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>If you or your pup are not happy within 30 days, contact us and we will make it right with a replacement or a full refund.</p>"
+          }
+        },
+        "q7": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions",
+        "text": "Everything you need to know before your pup opens door number one.",
+        "open_first": true
+      }
+    }
+  },
+  "order": [
+    "dp_main",
+    "dp_ugc",
+    "dp_compare",
+    "dp_reviews",
+    "dp_faq"
+  ]
+}

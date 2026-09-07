@@ -1,0 +1,76 @@
+{%- comment -%} Dear Paws – FAQ accordion (details/summary, no JS) {%- endcomment -%}
+<section class="dpf" id="dp-faq-{{ section.id }}">
+  <div class="dpf__inner">
+    <div class="dpf__head">
+      {%- if section.settings.eyebrow != blank -%}<span class="dpf__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="dpf__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="dpf__text">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="dpf__list">
+      {%- for block in section.blocks -%}
+        <details class="dpf__item" {% if forloop.first and section.settings.open_first %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="dpf__q"><span>{{ block.settings.question }}</span><span class="dpf__icon" aria-hidden="true"></span></summary>
+          <div class="dpf__a">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dpf { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-cream: #F7F2E6; --dp-line: #E4DCC8; --dp-muted: #6B6B5E;
+    background: #fff; color: #1a2e1a; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .dpf *, .dpf *::before, .dpf *::after { box-sizing: border-box; }
+  .dpf__inner { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+  .dpf__head { text-align: center; margin-bottom: 26px; }
+  .dpf__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 12px; }
+  .dpf__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 10px; color: var(--dp-forest); }
+  .dpf__text { font-size: 15px; line-height: 1.6; color: var(--dp-muted); margin: 0; }
+  .dpf__list { display: grid; gap: 10px; }
+  .dpf__item { border: 1px solid var(--dp-line); border-radius: 14px; background: #fff; overflow: hidden; }
+  .dpf__item[open] { border-color: var(--dp-forest); }
+  .dpf__q { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px; font-size: 15px; font-weight: 700; }
+  .dpf__q::-webkit-details-marker { display: none; }
+  .dpf__icon { position: relative; flex: 0 0 26px; width: 26px; height: 26px; border-radius: 50%; background: var(--dp-cream); }
+  .dpf__icon::before, .dpf__icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: var(--dp-forest); transform: translate(-50%, -50%); transition: .2s; }
+  .dpf__icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .dpf__item[open] .dpf__icon::after { transform: translate(-50%, -50%) rotate(0); }
+  .dpf__a { padding: 0 18px 16px; font-size: 14px; line-height: 1.7; color: var(--dp-muted); }
+  .dpf__a p { margin: 0 0 8px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP FAQ",
+  "tag": "section",
+  "class": "dp-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Good to know" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently asked questions" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Everything you need to know before your pup opens door number one." },
+    { "type": "checkbox", "id": "open_first", "label": "Open first question by default", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    { "name": "DP FAQ", "blocks": [
+      { "type": "faq", "settings": { "question": "What is inside the Dear Paws Advent Calendar?", "answer": "<p>24 numbered doors, each hiding a different surprise: plush toys, rope and rubber chews, squeakers and natural treats. No two days are the same.</p>" } },
+      { "type": "faq", "settings": { "question": "Is it suitable for all dog breeds and sizes?", "answer": "<p>Yes. Toys are sized to be safe for small breeds and durable enough for large ones. Always supervise your dog with new toys.</p>" } },
+      { "type": "faq", "settings": { "question": "When should I order to receive it before December 1st?", "answer": "<p>Orders placed before November 20th typically arrive in time for the first door. We ship from Canada with tracking on every order.</p>" } },
+      { "type": "faq", "settings": { "question": "Does it come ready to gift?", "answer": "<p>It does. The calendar arrives in a forest green and gold gift box with no prices shown, so it can go straight under the tree.</p>" } },
+      { "type": "faq", "settings": { "question": "Are the treats safe for my dog?", "answer": "<p>All treats are made with natural ingredients and free from artificial colours. Check the ingredient list on each pack if your dog has allergies.</p>" } },
+      { "type": "faq", "settings": { "question": "What is your return policy?", "answer": "<p>If you or your pup are not happy within 30 days, contact us and we will make it right with a replacement or a full refund.</p>" } },
+      { "type": "faq", "settings": { "question": "Do you offer free shipping?", "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>" } }
+    ] }
+  ]
+}
+{% endschema %}

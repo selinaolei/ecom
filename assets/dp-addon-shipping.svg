@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="dpsG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8D5A0"/><stop offset="0.5" stop-color="#C9A96E"/><stop offset="1" stop-color="#A9843F"/></linearGradient>
+    <linearGradient id="dpsF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F5A3D"/><stop offset="1" stop-color="#1F3D2B"/></linearGradient>
+    <filter id="dpsS" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#1F3D2B" flood-opacity="0.22"/></filter>
+  </defs>
+  <rect width="400" height="400" rx="40" fill="#F7F2E6"/>
+  <circle cx="200" cy="205" r="150" fill="#EFE6CF"/>
+  <g filter="url(#dpsS)">
+    <path d="M110 250 L110 165 L200 125 L290 165 L290 250 L200 290 Z" fill="#D9C59A"/>
+    <path d="M110 165 L200 205 L290 165 L200 125 Z" fill="#E8D5A0"/>
+    <path d="M110 165 L200 205 L200 290 L110 250 Z" fill="#C9A96E"/>
+    <path d="M200 205 L290 165 L290 250 L200 290 Z" fill="#B8924A"/>
+    <path d="M155 145 L245 185 L245 210 L155 170 Z" fill="#1F3D2B" opacity="0.9"/>
+  </g>
+  <g filter="url(#dpsS)" transform="translate(200 128)">
+    <path d="M0 0 L62 20 L62 78 C62 118 30 146 0 158 C-30 146 -62 118 -62 78 L-62 20 Z" fill="url(#dpsF)"/>
+    <path d="M0 14 L48 30 L48 78 C48 108 24 130 0 141 C-24 130 -48 108 -48 78 L-48 30 Z" fill="none" stroke="url(#dpsG)" stroke-width="5"/>
+    <path d="M-26 76 L-8 94 L28 54" fill="none" stroke="url(#dpsG)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g fill="#C9A96E">
+    <path d="M76 96 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z"/>
+    <path d="M320 92 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z"/>
+    <path d="M330 300 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z"/>
+  </g>
+</svg>

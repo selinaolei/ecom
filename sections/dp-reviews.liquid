@@ -1,0 +1,130 @@
+{%- comment -%} Dear Paws – Reviews: rating summary + photo review masonry {%- endcomment -%}
+<section class="dpr" id="dp-reviews-{{ section.id }}">
+  <div class="dpr__inner">
+    <div class="dpr__head">
+      {%- if section.settings.heading != blank -%}<h2 class="dpr__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      <div class="dpr__summary">
+        <div class="dpr__score">
+          <span class="dpr__score-num">{{ section.settings.rating }}</span>
+          <span class="dpr__stars" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}</span>
+          <span class="dpr__score-text">{{ section.settings.rating_text }}</span>
+        </div>
+        <ul class="dpr__bars">
+          {%- assign labels = '5,4,3,2,1' | split: ',' -%}
+          {%- assign values = section.settings.bar_5 | append: ',' | append: section.settings.bar_4 | append: ',' | append: section.settings.bar_3 | append: ',' | append: section.settings.bar_2 | append: ',' | append: section.settings.bar_1 | split: ',' -%}
+          {%- for label in labels -%}
+            {%- assign v = values[forloop.index0] | plus: 0 -%}
+            <li><span class="dpr__bar-label">{{ label }} <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg></span><span class="dpr__bar"><span style="width: {{ v }}%"></span></span><span class="dpr__bar-pct">{{ v }}%</span></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="dpr__grid">
+      {%- for block in section.blocks -%}
+        <article class="dpr__card" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="dpr__media">{{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', alt: block.settings.name }}</div>
+          {%- endif -%}
+          <div class="dpr__body">
+            <span class="dpr__stars dpr__stars--sm" aria-label="{{ block.settings.stars }} out of 5 stars">
+              {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" class="{% if i > block.settings.stars %}is-off{% endif %}"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}
+            </span>
+            {%- if block.settings.title != blank -%}<h3 class="dpr__title">{{ block.settings.title }}</h3>{%- endif -%}
+            <p class="dpr__text">{{ block.settings.text }}</p>
+            <div class="dpr__meta">
+              <span class="dpr__avatar" aria-hidden="true">{{ block.settings.name | slice: 0 }}</span>
+              <span class="dpr__name">{{ block.settings.name }}</span>
+              {%- if block.settings.verified -%}
+                <span class="dpr__verified"><svg viewBox="0 0 20 20"><path d="M10 1l2.4 2 3-.3.9 2.9 2.6 1.6-1.2 2.8 1.2 2.8-2.6 1.6-.9 2.9-3-.3-2.4 2-2.4-2-3 .3-.9-2.9L1.1 12.8l1.2-2.8L1.1 7.2l2.6-1.6.9-2.9 3 .3z"/><path d="M6.5 10.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified buyer</span>
+              {%- endif -%}
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dpr { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-line: #E4DCC8; --dp-muted: #6B6B5E;
+    background: var(--dp-cream); color: #1a2e1a; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .dpr *, .dpr *::before, .dpr *::after { box-sizing: border-box; }
+  .dpr__inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .dpr__head { text-align: center; margin-bottom: 28px; }
+  .dpr__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 20px; color: var(--dp-forest); }
+  .dpr__summary { display: grid; gap: 20px; justify-content: center; align-items: center; max-width: 620px; margin: 0 auto; background: #fff; border: 1px solid var(--dp-line); border-radius: 16px; padding: 20px; }
+  @media (min-width: 750px) { .dpr__summary { grid-template-columns: auto 1fr; gap: 32px; text-align: left; } }
+  .dpr__score { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .dpr__score-num { font-size: 56px; font-weight: 800; line-height: 1; color: var(--dp-forest); }
+  .dpr__stars { display: inline-flex; gap: 2px; }
+  .dpr__stars svg { width: 20px; height: 20px; fill: var(--dp-gold); }
+  .dpr__stars--sm svg { width: 15px; height: 15px; }
+  .dpr__stars svg.is-off { fill: #ddd6c4; }
+  .dpr__score-text { font-size: 12px; color: var(--dp-muted); }
+  .dpr__bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; min-width: 240px; }
+  .dpr__bars li { display: grid; grid-template-columns: 34px 1fr 40px; align-items: center; gap: 8px; font-size: 12px; }
+  .dpr__bar-label { display: inline-flex; align-items: center; gap: 2px; font-weight: 700; }
+  .dpr__bar-label svg { width: 11px; height: 11px; fill: var(--dp-gold); }
+  .dpr__bar { height: 8px; border-radius: 999px; background: #ece8dc; overflow: hidden; }
+  .dpr__bar span { display: block; height: 100%; background: var(--dp-gold) !important; border-radius: 999px; }
+  .dpr__bar-pct { text-align: right; color: var(--dp-muted); }
+  .dpr__grid { columns: 2; column-gap: 12px; }
+  @media (min-width: 750px) { .dpr__grid { columns: 3; column-gap: 16px; } }
+  @media (min-width: 1100px) { .dpr__grid { columns: 4; } }
+  .dpr__card { break-inside: avoid; display: inline-block; width: 100%; margin: 0 0 12px; background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--dp-line); }
+  .dpr__media img { width: 100%; height: auto; display: block; }
+  .dpr__body { padding: 14px; }
+  .dpr__title { font-size: 14px; font-weight: 800; margin: 8px 0 4px; }
+  .dpr__text { font-size: 13px; line-height: 1.55; color: #3a3a30; margin: 6px 0 12px; }
+  .dpr__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+  .dpr__avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--dp-forest); color: var(--dp-gold-light); font-weight: 800; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+  .dpr__name { font-weight: 700; }
+  .dpr__verified { display: inline-flex; align-items: center; gap: 4px; color: #1f7a3a; font-weight: 600; font-size: 11px; }
+  .dpr__verified svg { width: 14px; height: 14px; fill: #1f7a3a; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP Reviews",
+  "tag": "section",
+  "class": "dp-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What people say about Dear Paws" },
+    { "type": "text", "id": "rating", "label": "Average rating", "default": "4.9" },
+    { "type": "text", "id": "rating_text", "label": "Rating subtext", "default": "Based on 2,483 reviews" },
+    { "type": "range", "id": "bar_5", "label": "5 star %", "min": 0, "max": 100, "step": 1, "default": 88 },
+    { "type": "range", "id": "bar_4", "label": "4 star %", "min": 0, "max": 100, "step": 1, "default": 9 },
+    { "type": "range", "id": "bar_3", "label": "3 star %", "min": 0, "max": 100, "step": 1, "default": 2 },
+    { "type": "range", "id": "bar_2", "label": "2 star %", "min": 0, "max": 100, "step": 1, "default": 1 },
+    { "type": "range", "id": "bar_1", "label": "1 star %", "min": 0, "max": 100, "step": 1, "default": 0 }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Review", "default": "Replace with a real customer review." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Customer name" },
+        { "type": "checkbox", "id": "verified", "label": "Verified buyer", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    { "name": "DP Reviews", "blocks": [
+      { "type": "review", "settings": { "stars": 5, "title": "He waits by it every morning", "text": "Our golden figured out the routine by day two. He sits in front of the box and stares at us until we open the next door. The toys are good quality, not the flimsy stuff.", "name": "Sarah M." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Perfect gift for my parents' dog", "text": "Bought the Duo for my two nieces' pups. The packaging looks lovely under the tree and the treats were gone in seconds.", "name": "James T." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Worth every penny", "text": "24 days of my spaniel losing her mind with excitement. The rope toy from day 9 is still her favourite.", "name": "Rachel P." } },
+      { "type": "review", "settings": { "stars": 4, "title": "Great variety", "text": "Nice mix of chews, plush and treats. One of the plush toys did not last long with our husky, but everything else was solid.", "name": "Tom S." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Shipping was fast", "text": "Ordered on a Monday, arrived Thursday. Box was in perfect shape and the dog approved immediately.", "name": "Priya K." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Our new tradition", "text": "Second year buying this. It has become part of our Christmas mornings and the kids love opening the doors with the dog.", "name": "Daniel R." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Small dog approved", "text": "I have a 5 lb chihuahua and everything was the right size for her. The treats are soft enough for her teeth.", "name": "Megan L." } },
+      { "type": "review", "settings": { "stars": 5, "title": "Beautiful box", "text": "The forest green and gold looks so classy under the tree. Honestly nicer than I expected.", "name": "Olivia W." } }
+    ] }
+  ]
+}
+{% endschema %}
