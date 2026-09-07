@@ -61,6 +61,7 @@
         ownRequest = false;
         notice();
         await refreshTheme(after, strays);
+        if (typeof window.dpCartRender === 'function') await window.dpCartRender();
         if (window.location.pathname.indexOf('/cart') === 0) window.location.reload();
       } catch (e) {
         ownRequest = false;

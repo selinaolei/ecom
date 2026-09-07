@@ -279,8 +279,10 @@
             didError: false,
           },
         });
-      } else {
-        // Fallback when the theme event bus is unavailable: refresh the drawer markup ourselves.
+      }
+      if (typeof window.dpCartRender === 'function') {
+        await window.dpCartRender(data.sections && data.sections['cart-drawer-section']);
+      } else if (!(deferred && events)) {
         await refreshDrawer(data.sections);
       }
       // Make sure the drawer is open even if the theme did not auto-open it.
