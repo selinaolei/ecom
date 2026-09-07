@@ -37,7 +37,8 @@
 {% stylesheet %}
   .dpu { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6;
     background: var(--dp-forest); color: #fff; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
-  .dpu *, .dpu *::before, .dpu *::after { box-sizing: border-box; }
+  .dpu *, .dpu *::before, .dpu *::after { box-sizing: border-box; min-width: 0; }
+  .dpu { width: 100%; max-width: 100%; overflow-x: clip; }
   .dpu__inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
   .dpu__head { text-align: center; max-width: 640px; margin: 0 auto 28px; }
   .dpu__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 12px; }

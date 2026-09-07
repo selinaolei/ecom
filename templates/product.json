@@ -74,7 +74,7 @@
             "title": "30-day warranty",
             "text": "Fast replacement if anything arrives damaged",
             "icon": "dp-addon-warranty.png",
-            "default_on": false
+            "default_on": true
           }
         },
         "a3": {
@@ -144,7 +144,10 @@
         "show_payment_icons": true,
         "show_description": true,
         "description_label": "What is inside the calendar?",
-        "sticky_bar": true
+        "sticky_bar": true,
+        "button_subtext": "Order today, ships within 24 hours",
+        "savings_note": "vs. buying toys one by one",
+        "reviews_anchor": "#shopify-section-dp_reviews"
       }
     },
     "dp_ugc": {

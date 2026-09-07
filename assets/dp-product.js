@@ -186,9 +186,21 @@
       if (label) label.textContent = available ? cfg.text.addToCart : cfg.text.soldOut;
     }
 
+    // savings line
+    const savings = q('[data-dp-savings]');
+    const savingsAmount = q('[data-dp-savings-amount]');
+    const saved = t.totalWas - t.total;
+    if (savings) savings.hidden = !(saved > 0);
+    if (savingsAmount) savingsAmount.textContent = money(saved);
+
     // sticky bar mirror
     const stickyTotal = q('[data-dp-sticky-total]');
+    const stickyWas = q('[data-dp-sticky-was]');
     if (stickyTotal) stickyTotal.textContent = money(t.total);
+    if (stickyWas) {
+      stickyWas.textContent = t.totalWas > t.total ? money(t.totalWas) : '';
+      stickyWas.hidden = !(t.totalWas > t.total);
+    }
   }
 
   /* ---------- add to cart ---------- */

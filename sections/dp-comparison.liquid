@@ -54,17 +54,19 @@
 {% stylesheet %}
   .dpc { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-line: #E4DCC8; --dp-muted: #6B6B5E;
     background: #fff; color: #1a2e1a; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
-  .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; }
+  .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; min-width: 0; }
+  .dpc { width: 100%; max-width: 100%; overflow-x: clip; }
   .dpc__inner { max-width: 900px; margin: 0 auto; padding: 0 16px; }
   .dpc__head { text-align: center; max-width: 620px; margin: 0 auto 26px; }
   .dpc__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 12px; }
   .dpc__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 40px); font-weight: 800; line-height: 1.15; margin: 0 0 10px; color: var(--dp-forest); }
   .dpc__text { font-size: 15px; line-height: 1.6; color: var(--dp-muted); margin: 0; }
   .dpc__table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--dp-line); }
-  .dpc__table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 480px; background: #fff; }
+  .dpc__table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; table-layout: fixed; }
+  @media (max-width: 749px) { .dpc__table th, .dpc__table td { padding: 12px 6px; font-size: 12px; } .dpc__table tbody th { padding-left: 12px; width: 44%; } .dpc__table thead th { font-size: 11px; padding: 12px 6px; } .dpc__us-img { width: 40px; height: 40px; } }
   .dpc__table th, .dpc__table td { padding: 14px 12px; text-align: center; font-size: 14px; border-bottom: 1px solid var(--dp-line); }
   .dpc__table tbody tr:last-child th, .dpc__table tbody tr:last-child td { border-bottom: 0; }
-  .dpc__table tbody th { text-align: left; font-weight: 600; width: 46%; padding-left: 18px; }
+  .dpc__table tbody th { text-align: left; font-weight: 600; width: 46%; padding-left: 18px; overflow-wrap: anywhere; }
   .dpc__table thead th { font-weight: 800; font-size: 13px; letter-spacing: .3px; padding: 16px 12px; }
   .dpc__table thead .dpc__them { color: var(--dp-muted); }
   .dpc__table .dpc__us { background: var(--dp-forest); color: #fff; }
