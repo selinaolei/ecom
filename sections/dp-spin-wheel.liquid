@@ -80,12 +80,14 @@
     var count = Number(root.dataset.count) || 8;
     var win = Number(root.dataset.win) || 0;
     var force = root.dataset.force === 'true';
-    var KEY_EXPIRY = 'dpWheelExpiry';
-    var KEY_SEEN = 'dpWheelSeen';
+    var KEY_EXPIRY = 'dpWheelExpiry2';   // localStorage: running countdown survives page loads
+    var KEY_SEEN = 'dpWheelSeen2';       // sessionStorage: shown once per visit
     var isEditor = !!(window.Shopify && window.Shopify.designMode);
 
     function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
     function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function sstore(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+    function sread(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
     function fmt(ms) {
       var s = Math.max(0, Math.floor(ms / 1000));
       var m = Math.floor(s / 60); s = s % 60;
@@ -126,7 +128,7 @@
       overlay.hidden = true;
       overlay.style.display = 'none';
       document.body.classList.remove('dpw-open');
-      store(KEY_SEEN, '1');
+      sstore(KEY_SEEN, '1');
     }
 
     root.querySelector('[data-dp-wheel-close]').addEventListener('click', close);
@@ -157,15 +159,14 @@
       }, 5400);
     });
 
-    // Resume an existing countdown on any page.
+    // Resume a running countdown on any page.
     var existing = Number(read(KEY_EXPIRY));
-    if (existing && existing > Date.now()) {
-      showBar(existing);
-    }
+    var running = existing && existing > Date.now();
+    if (running) showBar(existing);
 
-    var seen = read(KEY_SEEN) === '1';
-    var expired = existing && existing <= Date.now();
-    if (force || (!seen && !existing) || (isEditor && force)) {
+    // Show the wheel once per visit, unless a countdown is still running.
+    var seen = sread(KEY_SEEN) === '1';
+    if (force || (!seen && !running)) {
       setTimeout(open, delay);
     }
   })();
