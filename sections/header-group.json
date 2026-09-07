@@ -19,14 +19,18 @@
         "header-logo": {
           "type": "_header-logo",
           "static": true,
-          "settings": { "hide_logo_on_home_page": false, "padding-block-start": 0, "padding-block-end": 0 },
+          "settings": {
+            "hide_logo_on_home_page": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
           "blocks": {}
         },
         "header-menu": {
           "type": "_header-menu",
           "static": true,
           "settings": {
-            "menu": "main-menu",
+            "menu": "",
             "background_color": "{{ settings.color_palette.background }}",
             "text_color": "",
             "type_font_primary_size": "0.875rem",
@@ -52,7 +56,7 @@
         "menu_position": "left",
         "menu_row": "top",
         "customer_account_menu": "customer-account-main-menu",
-        "show_search": true,
+        "show_search": false,
         "search_position": "right",
         "search_row": "top",
         "show_country": true,
@@ -91,7 +95,36 @@
         "collection_inverse_logo": false,
         "text_color_transparent_collection": ""
       }
+    },
+    "dp_wheel": {
+      "type": "dp-spin-wheel",
+      "settings": {
+        "enabled": true,
+        "force_show": false,
+        "delay": 1500,
+        "minutes": 10,
+        "segments": "50% OFF,Free treat,10% OFF,Try again,50% OFF,Mystery toy,20% OFF,Free shipping",
+        "win_index": 0,
+        "eyebrow": "Welcome to Dear Paws",
+        "heading": "Spin to win your Christmas deal",
+        "text": "One spin, one prize. No email, no code, applied instantly.",
+        "spin_label": "Spin the wheel",
+        "fine_print": "One spin per visitor.",
+        "win_eyebrow": "You won",
+        "win_heading": "50% OFF your calendar",
+        "win_text": "Your discount is already applied to the price on this page. No code needed.",
+        "timer_label": "Offer reserved for",
+        "claim_label": "Claim my 50% off",
+        "win_fine_print": "Complete your order before the timer ends to keep your prize.",
+        "bar_text": "Your 50% OFF is reserved. Offer ends in",
+        "bar_cta": "Claim now",
+        "bar_link": "/products/spiderjet-glove#dp-product-dp_main"
+      }
     }
   },
-  "order": ["custom_liquid_yinmMq", "header_section"]
+  "order": [
+    "dp_wheel",
+    "custom_liquid_yinmMq",
+    "header_section"
+  ]
 }

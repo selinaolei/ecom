@@ -1,0 +1,250 @@
+{%- comment -%}
+  Dear Paws – Spin-the-wheel welcome popup.
+  Shows once per visit, always lands on the winning segment, then starts a
+  countdown bar ("offer reserved for 10:00"). No email, no code: the price on
+  the page is already the discounted price.
+{%- endcomment -%}
+{%- if section.settings.enabled -%}
+{%- liquid
+  assign segments = section.settings.segments | split: ','
+  assign seg_count = segments.size
+  if seg_count < 2
+    assign seg_count = 2
+  endif
+  assign seg_angle = 360.0 | divided_by: seg_count
+-%}
+<div class="dpw" id="dp-wheel-{{ section.id }}" data-dp-wheel data-delay="{{ section.settings.delay }}" data-minutes="{{ section.settings.minutes }}" data-win="{{ section.settings.win_index }}" data-count="{{ seg_count }}" data-force="{{ section.settings.force_show }}">
+  <div class="dpw__overlay" data-dp-wheel-overlay hidden>
+    <div class="dpw__modal" role="dialog" aria-modal="true" aria-labelledby="dpw-title-{{ section.id }}">
+      <button type="button" class="dpw__close" data-dp-wheel-close aria-label="Close">&times;</button>
+
+      <div class="dpw__step dpw__step--spin" data-dp-wheel-step="spin">
+        <span class="dpw__eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="dpw__title" id="dpw-title-{{ section.id }}">{{ section.settings.heading }}</h2>
+        <p class="dpw__text">{{ section.settings.text }}</p>
+
+        <div class="dpw__wheel-wrap">
+          <div class="dpw__pointer" aria-hidden="true"></div>
+          <div class="dpw__wheel" data-dp-wheel-disc style="--seg: {{ seg_angle }}deg; --count: {{ seg_count }};">
+            {%- for seg in segments -%}
+              {%- assign i = forloop.index0 -%}
+              {%- assign angle = i | times: seg_angle -%}
+              <span class="dpw__label dpw__label--{{ i | modulo: 3 }}" style="transform: rotate({{ angle }}deg) translateY(-118px);">
+                <span>{{ seg | strip }}</span>
+              </span>
+            {%- endfor -%}
+            <span class="dpw__hub" aria-hidden="true"><span class="dpw__paw"></span></span>
+          </div>
+          <button type="button" class="dpw__spin" data-dp-wheel-spin>{{ section.settings.spin_label }}</button>
+        </div>
+        <p class="dpw__fine">{{ section.settings.fine_print }}</p>
+      </div>
+
+      <div class="dpw__step dpw__step--win" data-dp-wheel-step="win" hidden>
+        <span class="dpw__confetti" aria-hidden="true"></span>
+        <span class="dpw__eyebrow">{{ section.settings.win_eyebrow }}</span>
+        <h2 class="dpw__title dpw__title--big">{{ section.settings.win_heading }}</h2>
+        <p class="dpw__text">{{ section.settings.win_text }}</p>
+        <div class="dpw__timer-box">
+          <span class="dpw__timer-label">{{ section.settings.timer_label }}</span>
+          <span class="dpw__timer" data-dp-wheel-timer>{{ section.settings.minutes }}:00</span>
+        </div>
+        <button type="button" class="dpw__claim" data-dp-wheel-claim>{{ section.settings.claim_label }}</button>
+        <p class="dpw__fine">{{ section.settings.win_fine_print }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dpw__bar" data-dp-wheel-bar hidden>
+    <span class="dpw__bar-icon" aria-hidden="true">&#127873;</span>
+    <span class="dpw__bar-text">{{ section.settings.bar_text }}</span>
+    <span class="dpw__bar-timer" data-dp-wheel-bar-timer>{{ section.settings.minutes }}:00</span>
+    <a class="dpw__bar-cta" href="{{ section.settings.bar_link | default: '#' }}">{{ section.settings.bar_cta }}</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-dp-wheel]');
+    if (!root) return;
+    var overlay = root.querySelector('[data-dp-wheel-overlay]');
+    var disc = root.querySelector('[data-dp-wheel-disc]');
+    var spinBtn = root.querySelector('[data-dp-wheel-spin]');
+    var stepSpin = root.querySelector('[data-dp-wheel-step="spin"]');
+    var stepWin = root.querySelector('[data-dp-wheel-step="win"]');
+    var timerEl = root.querySelector('[data-dp-wheel-timer]');
+    var bar = root.querySelector('[data-dp-wheel-bar]');
+    var barTimer = root.querySelector('[data-dp-wheel-bar-timer]');
+    var minutes = Number(root.dataset.minutes) || 10;
+    var delay = Number(root.dataset.delay) || 1500;
+    var count = Number(root.dataset.count) || 8;
+    var win = Number(root.dataset.win) || 0;
+    var force = root.dataset.force === 'true';
+    var KEY_EXPIRY = 'dpWheelExpiry';
+    var KEY_SEEN = 'dpWheelSeen';
+    var isEditor = !!(window.Shopify && window.Shopify.designMode);
+
+    function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function fmt(ms) {
+      var s = Math.max(0, Math.floor(ms / 1000));
+      var m = Math.floor(s / 60); s = s % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    var tick = null;
+    function startCountdown(expiry) {
+      clearInterval(tick);
+      function update() {
+        var left = expiry - Date.now();
+        var t = fmt(left);
+        if (timerEl) timerEl.textContent = t;
+        if (barTimer) barTimer.textContent = t;
+        if (left <= 0) {
+          clearInterval(tick);
+          if (bar) bar.hidden = true;
+          document.body.classList.remove('dpw-has-bar');
+        }
+      }
+      update();
+      tick = setInterval(update, 500);
+    }
+
+    function showBar(expiry) {
+      if (!bar || expiry - Date.now() <= 0) return;
+      bar.hidden = false;
+      document.body.classList.add('dpw-has-bar');
+      startCountdown(expiry);
+    }
+
+    function open() {
+      overlay.hidden = false;
+      document.body.classList.add('dpw-open');
+    }
+    function close() {
+      overlay.hidden = true;
+      document.body.classList.remove('dpw-open');
+      store(KEY_SEEN, '1');
+    }
+
+    root.querySelector('[data-dp-wheel-close]').addEventListener('click', close);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+    root.querySelector('[data-dp-wheel-claim]').addEventListener('click', function () {
+      close();
+      var target = document.querySelector('[data-dp-atc]') || document.querySelector('[data-dp-product]');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    var spun = false;
+    spinBtn.addEventListener('click', function () {
+      if (spun) return;
+      spun = true;
+      spinBtn.disabled = true;
+      var seg = 360 / count;
+      // Land the winning segment under the pointer (pointer sits at the top, 0deg).
+      var target = 360 * 6 + (360 - win * seg);
+      disc.style.transition = 'transform 5.2s cubic-bezier(.12,.75,.12,1)';
+      disc.style.transform = 'rotate(' + target + 'deg)';
+      setTimeout(function () {
+        var expiry = Date.now() + minutes * 60 * 1000;
+        store(KEY_EXPIRY, String(expiry));
+        stepSpin.hidden = true;
+        stepWin.hidden = false;
+        startCountdown(expiry);
+        showBar(expiry);
+      }, 5400);
+    });
+
+    // Resume an existing countdown on any page.
+    var existing = Number(read(KEY_EXPIRY));
+    if (existing && existing > Date.now()) {
+      showBar(existing);
+    }
+
+    var seen = read(KEY_SEEN) === '1';
+    var expired = existing && existing <= Date.now();
+    if (force || (!seen && !existing) || (isEditor && force)) {
+      setTimeout(open, delay);
+    }
+  })();
+</script>
+{%- endif -%}
+
+{% stylesheet %}
+  .dpw { --dp-forest: #1F3D2B; --dp-forest-2: #2D4A2D; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; --dp-ink: #1a2e1a; --dp-muted: #6B6B5E; font-family: var(--font-body--family, Inter, sans-serif); }
+  .dpw *, .dpw *::before, .dpw *::after { box-sizing: border-box; }
+  body.dpw-open { overflow: hidden; }
+  .dpw__overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(15, 30, 20, .72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; animation: dpw-fade .3s ease; }
+  @keyframes dpw-fade { from { opacity: 0; } to { opacity: 1; } }
+  .dpw__modal { position: relative; width: 100%; max-width: 420px; max-height: calc(100vh - 32px); overflow: auto; background: #fff; border-radius: 22px; padding: 28px 22px 22px; text-align: center; color: var(--dp-ink); box-shadow: 0 30px 80px rgba(0,0,0,.4); animation: dpw-pop .45s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes dpw-pop { from { transform: scale(.85) translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .dpw__close { position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--dp-cream); color: var(--dp-forest); font-size: 22px; line-height: 1; cursor: pointer; }
+  .dpw__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--dp-gold); margin-bottom: 8px; }
+  .dpw__title { font-family: var(--font-heading--family, inherit); font-size: 26px; font-weight: 800; line-height: 1.1; color: var(--dp-forest); margin: 0 0 8px; }
+  .dpw__title--big { font-size: 34px; }
+  .dpw__text { font-size: 14px; color: var(--dp-muted); line-height: 1.5; margin: 0 0 16px; }
+  .dpw__fine { font-size: 11px; color: #9a9a8c; margin: 12px 0 0; }
+
+  .dpw__wheel-wrap { position: relative; width: 290px; height: 290px; margin: 0 auto; }
+  .dpw__pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--dp-forest); z-index: 3; filter: drop-shadow(0 3px 4px rgba(0,0,0,.3)); }
+  .dpw__pointer::after { content: ""; position: absolute; left: -6px; top: -30px; width: 12px; height: 12px; border-radius: 50%; background: var(--dp-gold); }
+  .dpw__wheel { position: relative; width: 290px; height: 290px; border-radius: 50%; border: 8px solid var(--dp-forest); box-shadow: 0 0 0 4px var(--dp-gold), 0 16px 40px rgba(0,0,0,.25); overflow: hidden; transform: rotate(0deg); background: conic-gradient(from calc(var(--seg) / -2), var(--dp-forest) 0 calc(var(--seg) * 1), var(--dp-gold) calc(var(--seg) * 1) calc(var(--seg) * 2), var(--dp-cream) calc(var(--seg) * 2) calc(var(--seg) * 3), var(--dp-forest) calc(var(--seg) * 3) calc(var(--seg) * 4), var(--dp-gold) calc(var(--seg) * 4) calc(var(--seg) * 5), var(--dp-cream) calc(var(--seg) * 5) calc(var(--seg) * 6), var(--dp-forest) calc(var(--seg) * 6) calc(var(--seg) * 7), var(--dp-gold) calc(var(--seg) * 7) calc(var(--seg) * 8)); }
+  .dpw__label { position: absolute; left: 50%; top: 50%; width: 92px; margin-left: -46px; margin-top: -10px; text-align: center; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; line-height: 1.1; transform-origin: 50% 50%; }
+  .dpw__label span { display: inline-block; transform: rotate(0); }
+  .dpw__label--0 { color: var(--dp-gold-light); }
+  .dpw__label--1 { color: var(--dp-forest); }
+  .dpw__label--2 { color: var(--dp-forest); }
+  .dpw__hub { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; background: #fff; border: 4px solid var(--dp-gold); z-index: 2; display: flex; align-items: center; justify-content: center; }
+  .dpw__paw { width: 22px; height: 22px; border-radius: 50%; background: var(--dp-forest); position: relative; }
+  .dpw__paw::before, .dpw__paw::after { content: ""; position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--dp-forest); top: -9px; left: -3px; box-shadow: 16px 0 0 var(--dp-forest); }
+  .dpw__paw::after { top: -14px; left: 5px; width: 8px; height: 8px; box-shadow: none; }
+  .dpw__spin { position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%); z-index: 4; border: 0; border-radius: 999px; padding: 14px 32px; background: linear-gradient(135deg, #E8D5A0, #C9A96E 60%, #B8924A); color: var(--dp-forest); font: inherit; font-size: 15px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 24px rgba(201,169,110,.5); animation: dpw-pulse 1.6s ease-in-out infinite; white-space: nowrap; }
+  .dpw__spin:disabled { animation: none; opacity: .7; cursor: default; }
+  @keyframes dpw-pulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.06); } }
+  .dpw__step--spin .dpw__fine { margin-top: 34px; }
+
+  .dpw__step--win { position: relative; padding-top: 8px; }
+  .dpw__confetti { position: absolute; inset: -28px -22px auto; height: 120px; pointer-events: none; background-image: radial-gradient(circle, var(--dp-gold) 3px, transparent 3.5px), radial-gradient(circle, #1F3D2B 3px, transparent 3.5px), radial-gradient(circle, #e2b7b0 3px, transparent 3.5px), radial-gradient(circle, var(--dp-gold-light) 2px, transparent 2.5px); background-size: 42px 42px, 56px 56px, 38px 38px, 30px 30px; background-position: 0 0, 12px 18px, 24px 6px, 6px 28px; opacity: .8; mask-image: linear-gradient(to bottom, #000, transparent); }
+  .dpw__timer-box { display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--dp-cream); border: 1px solid #E4DCC8; border-radius: 14px; padding: 12px; margin: 6px 0 14px; }
+  .dpw__timer-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dp-muted); }
+  .dpw__timer { font-size: 36px; font-weight: 900; color: #b0483a; letter-spacing: 1px; font-variant-numeric: tabular-nums; line-height: 1; }
+  .dpw__claim { width: 100%; border: 0; border-radius: 14px; padding: 16px; background: linear-gradient(135deg, #2F5A3D 0%, #1F3D2B 60%, #16301F 100%); color: #fff; font: inherit; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; cursor: pointer; box-shadow: 0 12px 28px rgba(31,61,43,.32), inset 0 0 0 1.5px rgba(201,169,110,.55); }
+
+  .dpw__bar { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 9px 14px; background: #b0483a; color: #fff; font-size: 13px; font-weight: 700; text-align: center; }
+  .dpw__bar-icon { font-size: 16px; }
+  .dpw__bar-timer { background: #fff; color: #b0483a; padding: 3px 10px; border-radius: 999px; font-variant-numeric: tabular-nums; font-weight: 900; }
+  .dpw__bar-cta { color: #fff; text-decoration: underline; font-weight: 700; }
+  @media (max-width: 749px) { .dpw__bar-cta { display: none; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP Spin-the-wheel popup",
+  "tag": "div",
+  "class": "dp-section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable popup", "default": true },
+    { "type": "checkbox", "id": "force_show", "label": "Always show (for testing)", "default": false, "info": "Turn on to see the popup on every load, including in the theme editor. Turn off before publishing." },
+    { "type": "range", "id": "delay", "label": "Delay before opening (ms)", "min": 0, "max": 8000, "step": 250, "default": 1500 },
+    { "type": "range", "id": "minutes", "label": "Countdown minutes", "min": 1, "max": 60, "step": 1, "default": 10 },
+    { "type": "text", "id": "segments", "label": "Wheel segments (comma separated, 8 recommended)", "default": "50% OFF,Free treat,10% OFF,Try again,50% OFF,Mystery toy,20% OFF,Free shipping" },
+    { "type": "range", "id": "win_index", "label": "Winning segment (0 = first)", "min": 0, "max": 11, "step": 1, "default": 0 },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Welcome to Dear Paws" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Spin to win your Christmas deal" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "One spin, one prize. No email, no code, applied instantly." },
+    { "type": "text", "id": "spin_label", "label": "Spin button", "default": "Spin the wheel" },
+    { "type": "text", "id": "fine_print", "label": "Fine print", "default": "One spin per visitor." },
+    { "type": "text", "id": "win_eyebrow", "label": "Win eyebrow", "default": "You won" },
+    { "type": "text", "id": "win_heading", "label": "Win heading", "default": "50% OFF your calendar" },
+    { "type": "textarea", "id": "win_text", "label": "Win text", "default": "Your discount is already applied to the price on this page. No code needed." },
+    { "type": "text", "id": "timer_label", "label": "Timer label", "default": "Offer reserved for" },
+    { "type": "text", "id": "claim_label", "label": "Claim button", "default": "Claim my 50% off" },
+    { "type": "text", "id": "win_fine_print", "label": "Win fine print", "default": "Complete your order before the timer ends to keep your prize." },
+    { "type": "text", "id": "bar_text", "label": "Sticky bar text", "default": "Your 50% OFF is reserved. Offer ends in" },
+    { "type": "text", "id": "bar_cta", "label": "Sticky bar link text", "default": "Claim now" },
+    { "type": "url", "id": "bar_link", "label": "Sticky bar link" }
+  ],
+  "enabled_on": { "groups": ["header"] },
+  "presets": [ { "name": "DP Spin-the-wheel popup" } ]
+}
+{% endschema %}

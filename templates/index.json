@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "dp_redirect": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div style=\"min-height:50vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px;font-family:inherit;\"><p style=\"font-size:16px;\">Taking you to the Paw Advent Calendar&hellip; <a href=\"/products/spiderjet-glove\" style=\"color:#1F3D2B;font-weight:700;\">Tap here if nothing happens</a></p></div>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": ["dp_redirect"]
+}

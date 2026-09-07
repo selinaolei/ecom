@@ -1,0 +1,150 @@
+{%- comment -%} Dear Paws – professional footer: brand, menus, policies, newsletter, payments {%- endcomment -%}
+<footer class="dpft" id="dp-footer-{{ section.id }}">
+  <div class="dpft__inner">
+    <div class="dpft__grid">
+
+      <div class="dpft__col dpft__col--brand">
+        {%- if settings.logo != blank -%}
+          <a class="dpft__logo" href="{{ section.settings.brand_link | default: routes.root_url }}">
+            {{ settings.logo | image_url: width: 320 | image_tag: loading: 'lazy', alt: shop.name, class: 'dpft__logo-img' }}
+          </a>
+        {%- else -%}
+          <a class="dpft__logo dpft__logo--text" href="{{ section.settings.brand_link | default: routes.root_url }}">{{ shop.name }}</a>
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}<p class="dpft__tagline">{{ section.settings.tagline }}</p>{%- endif -%}
+        <ul class="dpft__badges">
+          <li><svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{{ section.settings.badge_1 }}</li>
+          <li><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>{{ section.settings.badge_2 }}</li>
+          <li><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>{{ section.settings.badge_3 }}</li>
+        </ul>
+        <div class="dpft__social">
+          {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>{%- endif -%}
+          {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}" aria-label="TikTok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 3v10.5a3.5 3.5 0 1 1-3.5-3.5M14 3c0 3 2 5 5 5"/></svg></a>{%- endif -%}
+          {%- if section.settings.facebook != blank -%}<a href="{{ section.settings.facebook }}" aria-label="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>{%- endif -%}
+        </div>
+      </div>
+
+      {%- if section.settings.menu_1 != blank -%}
+        <div class="dpft__col">
+          <h3 class="dpft__heading">{{ section.settings.menu_1_heading | default: section.settings.menu_1.title }}</h3>
+          <ul class="dpft__links">
+            {%- for link in section.settings.menu_1.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.menu_2 != blank -%}
+        <div class="dpft__col">
+          <h3 class="dpft__heading">{{ section.settings.menu_2_heading | default: section.settings.menu_2.title }}</h3>
+          <ul class="dpft__links">
+            {%- for link in section.settings.menu_2.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="dpft__col">
+        <h3 class="dpft__heading">{{ section.settings.policies_heading }}</h3>
+        <ul class="dpft__links">
+          {%- for policy in shop.policies -%}
+            {%- if policy.body != blank -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endif -%}
+          {%- endfor -%}
+          {%- if section.settings.extra_policy_text != blank and section.settings.extra_policy_link != blank -%}
+            <li><a href="{{ section.settings.extra_policy_link }}">{{ section.settings.extra_policy_text }}</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div class="dpft__col dpft__col--news">
+        <h3 class="dpft__heading">{{ section.settings.newsletter_heading }}</h3>
+        <p class="dpft__news-text">{{ section.settings.newsletter_text }}</p>
+        {%- form 'customer', class: 'dpft__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label class="visually-hidden" for="dpft-email-{{ section.id }}">Email</label>
+          <div class="dpft__field">
+            <input id="dpft-email-{{ section.id }}" type="email" name="contact[email]" placeholder="{{ section.settings.newsletter_placeholder }}" required autocomplete="email">
+            <button type="submit" aria-label="Subscribe">{{ section.settings.newsletter_button }}</button>
+          </div>
+          {%- if form.posted_successfully? -%}<p class="dpft__form-msg">{{ section.settings.newsletter_success }}</p>{%- endif -%}
+          {%- if form.errors -%}<p class="dpft__form-msg dpft__form-msg--err">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    <div class="dpft__bottom">
+      <div class="dpft__payments" aria-label="Accepted payment methods">
+        {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'dpft__pay' }}{%- endfor -%}
+      </div>
+      <p class="dpft__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name | default: shop.name }}. {{ section.settings.copyright_text }}</p>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .dpft { --dp-forest: #1F3D2B; --dp-gold: #C9A96E; --dp-gold-light: #E8D5A0; --dp-cream: #F7F2E6; background: var(--dp-forest); color: rgba(255,255,255,.82); font-family: var(--font-body--family, Inter, sans-serif); padding: 52px 0 28px; width: 100%; max-width: 100%; overflow-x: clip; }
+  .dpft *, .dpft *::before, .dpft *::after { box-sizing: border-box; min-width: 0; }
+  .dpft__inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  .dpft__grid { display: grid; gap: 32px 24px; grid-template-columns: 1fr; }
+  @media (min-width: 750px) { .dpft__grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } .dpft__col--news { grid-column: 1 / -1; } }
+  @media (min-width: 1100px) { .dpft__grid { grid-template-columns: 1.5fr 1fr 1fr 1fr 1.6fr; } .dpft__col--news { grid-column: auto; } }
+  .dpft__logo { display: inline-block; margin-bottom: 14px; text-decoration: none; }
+  .dpft__logo-img { width: auto; height: 46px; max-width: 200px; object-fit: contain; background: #fff; border-radius: 10px; padding: 6px 10px; }
+  .dpft__logo--text { font-size: 24px; font-weight: 800; color: #fff; }
+  .dpft__tagline { font-size: 14px; line-height: 1.6; margin: 0 0 16px; max-width: 320px; }
+  .dpft__badges { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
+  .dpft__badges li { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--dp-gold-light); }
+  .dpft__badges svg { width: 16px; height: 16px; fill: none; stroke: var(--dp-gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dpft__social { display: flex; gap: 10px; }
+  .dpft__social a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); display: inline-flex; align-items: center; justify-content: center; color: #fff; transition: .15s; }
+  .dpft__social a:hover { background: var(--dp-gold); border-color: var(--dp-gold); color: var(--dp-forest); }
+  .dpft__social svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dpft__heading { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--dp-gold); margin: 0 0 14px; }
+  .dpft__links { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .dpft__links a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 14px; transition: .15s; }
+  .dpft__links a:hover { color: var(--dp-gold-light); text-decoration: underline; }
+  .dpft__news-text { font-size: 13px; line-height: 1.55; margin: 0 0 12px; }
+  .dpft__field { display: flex; border: 1.5px solid var(--dp-gold); border-radius: 999px; overflow: hidden; background: #fff; }
+  .dpft__field input { flex: 1; border: 0; padding: 12px 16px; font: inherit; font-size: 14px; color: #1a2e1a; background: transparent; outline: none; }
+  .dpft__field button { border: 0; background: var(--dp-gold); color: var(--dp-forest); font: inherit; font-size: 13px; font-weight: 800; padding: 0 18px; cursor: pointer; }
+  .dpft__field button:hover { background: var(--dp-gold-light); }
+  .dpft__form-msg { font-size: 12px; margin: 8px 0 0; color: var(--dp-gold-light); }
+  .dpft__form-msg--err { color: #f0b2a8; }
+  .dpft__bottom { margin-top: 36px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.14); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  @media (min-width: 750px) { .dpft__bottom { flex-direction: row; justify-content: space-between; text-align: left; } }
+  .dpft__payments { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .dpft__pay { width: 38px; height: 24px; border-radius: 4px; }
+  .dpft__copy { font-size: 12px; color: rgba(255,255,255,.6); margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DP Footer",
+  "tag": "div",
+  "class": "dp-section",
+  "settings": [
+    { "type": "url", "id": "brand_link", "label": "Logo link" },
+    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "24 days of tail wags. Handpicked toys and treats, wrapped in forest green and gold, delivered before the first door opens." },
+    { "type": "text", "id": "badge_1", "label": "Badge 1", "default": "Free shipping, ships from Canada" },
+    { "type": "text", "id": "badge_2", "label": "Badge 2", "default": "30-day happiness guarantee" },
+    { "type": "text", "id": "badge_3", "label": "Badge 3", "default": "Secure checkout" },
+    { "type": "url", "id": "instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "tiktok", "label": "TikTok URL" },
+    { "type": "url", "id": "facebook", "label": "Facebook URL" },
+    { "type": "link_list", "id": "menu_1", "label": "Menu 1" },
+    { "type": "text", "id": "menu_1_heading", "label": "Menu 1 heading", "default": "Shop" },
+    { "type": "link_list", "id": "menu_2", "label": "Menu 2" },
+    { "type": "text", "id": "menu_2_heading", "label": "Menu 2 heading", "default": "Help" },
+    { "type": "text", "id": "policies_heading", "label": "Policies heading", "default": "Policies" },
+    { "type": "text", "id": "extra_policy_text", "label": "Extra policy link text" },
+    { "type": "url", "id": "extra_policy_link", "label": "Extra policy link" },
+    { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Join the pack" },
+    { "type": "textarea", "id": "newsletter_text", "label": "Newsletter text", "default": "Early access to restocks, holiday deals and cute dog content. No spam." },
+    { "type": "text", "id": "newsletter_placeholder", "label": "Email placeholder", "default": "Your email" },
+    { "type": "text", "id": "newsletter_button", "label": "Newsletter button", "default": "Join" },
+    { "type": "text", "id": "newsletter_success", "label": "Success message", "default": "Welcome to the pack. Check your inbox." },
+    { "type": "text", "id": "copyright_name", "label": "Copyright name", "default": "Dear Paws" },
+    { "type": "text", "id": "copyright_text", "label": "Copyright text", "default": "All rights reserved." }
+  ],
+  "enabled_on": { "groups": ["footer"] },
+  "presets": [ { "name": "DP Footer" } ]
+}
+{% endschema %}
