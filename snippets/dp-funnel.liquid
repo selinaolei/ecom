@@ -1,0 +1,45 @@
+{%- comment -%}
+  Dear Paws funnel lock. The store is a single-product funnel:
+  - the home URL sends visitors straight to the calendar product page
+  - every link that points to the home page (logo, menu "Home", "continue shopping",
+    breadcrumbs, app links) is rewritten to the product page instead.
+  Change funnel_handle if the main product ever changes.
+{%- endcomment -%}
+{%- liquid
+  assign funnel_handle = 'spiderjet-glove'
+  assign funnel_product = all_products[funnel_handle]
+  assign funnel_url = funnel_product.url | default: '/collections/all'
+-%}
+{%- if request.page_type == 'index' and request.design_mode == false -%}
+  <meta http-equiv="refresh" content="0; url={{ funnel_url }}">
+  <script>window.location.replace({{ funnel_url | json }});</script>
+{%- endif -%}
+<script>
+  (function () {
+    var target = {{ funnel_url | json }};
+    var root = {{ routes.root_url | json }};
+    function isHome(a) {
+      try {
+        var raw = a.getAttribute('href') || '';
+        if (!raw || raw.charAt(0) === '#') return false;
+        var u = new URL(raw, window.location.origin);
+        if (u.origin !== window.location.origin) return false;
+        var p = u.pathname.replace(/\/+$/, '') || '/';
+        var r = root.replace(/\/+$/, '') || '/';
+        return p === r || p === '/';
+      } catch (e) { return false; }
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || !isHome(a)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = target;
+    }, true);
+    function rewrite() {
+      document.querySelectorAll('a[href]').forEach(function (a) { if (isHome(a)) a.setAttribute('href', target); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', rewrite); else rewrite();
+    new MutationObserver(rewrite).observe(document.documentElement, { childList: true, subtree: true });
+  })();
+</script>

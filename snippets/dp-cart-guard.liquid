@@ -71,9 +71,9 @@
     }
 
     // Re-check after any cart mutation made by the theme or an app.
-    var origFetch = window.fetch;
+    var origFetch = window.fetch.bind(window);
     window.fetch = function () {
-      var p = origFetch.apply(this, arguments);
+      var p = origFetch.apply(window, arguments);
       try {
         var url = typeof arguments[0] === 'string' ? arguments[0] : (arguments[0] && arguments[0].url) || '';
         if (!ownRequest && /\/cart\/(add|change|update|clear)/.test(url)) {
