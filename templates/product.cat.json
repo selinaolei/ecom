@@ -140,42 +140,48 @@
           "type": "photo",
           "settings": {
             "handle": "@miso.thetabby",
-            "caption": "Door 1 was a feather wand. Chaos, immediately."
+            "caption": "Door 1 was a feather wand. Chaos, immediately.",
+            "image": "shopify://shop_images/dp-cat-ugc-1.png"
           }
         },
         "p2": {
           "type": "photo",
           "settings": {
             "handle": "@two.blackcats",
-            "caption": "They take turns sitting on the box."
+            "caption": "They take turns sitting on the box.",
+            "image": "shopify://shop_images/dp-cat-ugc-2.png"
           }
         },
         "p3": {
           "type": "photo",
           "settings": {
             "handle": "@pepper.ragdoll",
-            "caption": "The jingle ball has been under the sofa since day 6."
+            "caption": "The jingle ball has been under the sofa since day 6.",
+            "image": "shopify://shop_images/dp-cat-ugc-3.png"
           }
         },
         "p4": {
           "type": "photo",
           "settings": {
             "handle": "@kitten.olive",
-            "caption": "First Christmas and she is obsessed."
+            "caption": "First Christmas and she is obsessed.",
+            "image": "shopify://shop_images/dp-cat-ugc-4.png"
           }
         },
         "p5": {
           "type": "photo",
           "settings": {
             "handle": "@sir.reginald.cat",
-            "caption": "Refuses to move until we open the next one."
+            "caption": "Refuses to move until we open the next one.",
+            "image": "shopify://shop_images/dp-cat-ugc-5.png"
           }
         },
         "p6": {
           "type": "photo",
           "settings": {
             "handle": "@mochi.and.mango",
-            "caption": "Two calendars so nobody fights. Worth it."
+            "caption": "Two calendars so nobody fights. Worth it.",
+            "image": "shopify://shop_images/dp-cat-ugc-6.png"
           }
         }
       },
@@ -279,7 +285,8 @@
             "title": "She waits by the box every morning",
             "text": "Our tabby worked out the routine by day three. She sits in front of it and yells at us until we open the next door. The toys are proper quality, not the flimsy stuff.",
             "name": "Sarah M.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-1.png"
           }
         },
         "v2": {
@@ -289,7 +296,8 @@
             "title": "Perfect gift for a cat person",
             "text": "Bought the Duo for my sister and her two cats. The box looks lovely under the tree and the feather wand was an instant hit.",
             "name": "James T.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-2.png"
           }
         },
         "v3": {
@@ -299,7 +307,8 @@
             "title": "Worth every penny",
             "text": "24 days of my cat losing his mind. The jingle ball from day 9 is still his favourite and it has been weeks.",
             "name": "Rachel P.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-3.png"
           }
         },
         "v4": {
@@ -309,7 +318,8 @@
             "title": "Great variety",
             "text": "Nice mix of wands, mice and balls. One of the feather mice lost its feathers fast, but everything else has held up well.",
             "name": "Tom S.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-4.png"
           }
         },
         "v5": {
@@ -319,7 +329,8 @@
             "title": "Shipping was fast",
             "text": "Ordered on a Monday, arrived Thursday. Box was in perfect shape and the cat approved immediately.",
             "name": "Priya K.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-5.png"
           }
         },
         "v6": {
@@ -329,7 +340,8 @@
             "title": "Our new tradition",
             "text": "Second year buying this. Opening a door with the cat is now part of our Christmas mornings and the kids love it.",
             "name": "Daniel R.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-6.png"
           }
         },
         "v7": {
@@ -339,7 +351,8 @@
             "title": "Kitten approved",
             "text": "I have a four month old kitten and everything was the right size for her. The rattle drum keeps her busy for ages.",
             "name": "Megan L.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-7.png"
           }
         },
         "v8": {
@@ -349,7 +362,8 @@
             "title": "Lovely box",
             "text": "The winter design is genuinely pretty. Honestly nicer in person than in the photos.",
             "name": "Olivia W.",
-            "verified": true
+            "verified": true,
+            "image": "shopify://shop_images/dp-cat-review-8.png"
           }
         }
       },
