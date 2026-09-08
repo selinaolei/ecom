@@ -264,10 +264,32 @@
     }
   }
 
+  const BASIC_CART = true; // plain form submit to Shopify, no scripts in the way
+
+  function submitNativeForm(items) {
+    const form = document.createElement('form');
+    form.method = 'post';
+    form.action = '/cart/add';
+    form.style.display = 'none';
+    items.forEach((it, i) => {
+      const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
+      const qty = document.createElement('input'); qty.name = `items[${i}][quantity]`; qty.value = String(it.quantity); form.appendChild(qty);
+    });
+    const ret = document.createElement('input'); ret.name = 'return_to'; ret.value = window.location.pathname + '?dpcart=1'; form.appendChild(ret);
+    document.body.appendChild(form);
+    form.submit();
+  }
+
   async function addToCart() {
     const btn = q('[data-dp-atc]');
     if (!btn || btn.disabled) return;
     const items = buildItems();
+    if (BASIC_CART) {
+      btn.classList.add('is-loading');
+      btn.disabled = true;
+      submitNativeForm(items);
+      return;
+    }
     const err = q('[data-dp-error]');
     btn.classList.add('is-loading');
     btn.disabled = true;
@@ -396,9 +418,4 @@
 
   render();
 
-  // After a full-page add (fallback 3) reopen the drawer once the page is back.
-  if (/[?&]dpcart=1/.test(window.location.search)) {
-    try { history.replaceState(null, '', window.location.pathname + window.location.hash.replace('#dp-cart', '')); } catch (e) { /* ignore */ }
-    setTimeout(async () => { await renderDrawer(); openDrawer(); }, 400);
-  }
 })();

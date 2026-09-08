@@ -1,47 +1,17 @@
 {% doc %}
-  Dear Paws cart drawer. Renders inside Horizon's <theme-drawer> shell (open/close, backdrop,
-  history) but with fully custom markup: social proof header, guarantee banner, line items with
-  pill quantity controls, a bundle upsell card, subtotal and a secure checkout button.
-  Also used for Section Rendering API responses (sections=cart-drawer-section).
+  Dear Paws cart drawer (basic version). Plain markup, no JavaScript beyond Horizon's
+  open/close shell. Quantity changes and removes are real form posts to /cart/change.
 
   @param {boolean} [render_wrapper] - When true, wraps the drawer in the section wrapper that the Section Rendering API adds automatically.
 {% enddoc %}
 
 {%- liquid
   assign render_wrapper = render_wrapper | default: true, allow_false: true
-
-  # ---- editable numbers ----
   assign dp_main_handle = 'spiderjet-glove'
-  assign dp_rating = '4.9'
-  assign dp_reviews = '2,483'
-  assign dp_orders_base = 118
-  assign dp_duo_discount = 15
-  assign dp_mystery_handle = 'mystery-box'
-
-  assign seed = 'now' | date: '%j' | plus: 0 | times: 7 | modulo: 43
-  assign dp_orders_today = dp_orders_base | plus: seed
-
-  assign main_qty = 0
-  assign main_line = 0
-  assign main_item = null
-  assign has_protection = false
-  assign has_mystery = false
-  for item in cart.items
-    if item.product.handle == dp_main_handle
-      assign main_qty = main_qty | plus: item.quantity
-      if main_line == 0
-        assign main_line = forloop.index
-        assign main_item = item
-      endif
-    endif
-    if item.product.handle == 'shipping-protection'
-      assign has_protection = true
-    endif
-    if item.product.handle == dp_mystery_handle
-      assign has_mystery = true
-    endif
-  endfor
-  assign mystery_product = all_products[dp_mystery_handle]
+  assign back_url = request.path
+  if request.path == '/' or request.path == blank
+    assign back_url = all_products[dp_main_handle].url
+  endif
 -%}
 
 {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
@@ -85,27 +55,15 @@
           {%- if cart.empty? -%}
             <div class="dpc__empty">
               <p class="dpc__empty-title">Your cart is empty</p>
-              <p class="dpc__empty-text">Your pup's 24 days of surprises are one tap away.</p>
               <a class="dpc__empty-btn" href="{{ all_products[dp_main_handle].url | default: routes.all_products_collection_url }}">Shop the Advent Calendar</a>
             </div>
           {%- else -%}
-            <p class="dpc__proof">
-              <span class="dpc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg><span data-dp-orders>{{ dp_orders_today }}</span> ordered today</span>
-              <span class="dpc__proof-dot" aria-hidden="true">&middot;</span>
-              <span class="dpc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg>{{ dp_rating }} ({{ dp_reviews }} reviews)</span>
-            </p>
-
-            <div class="dpc__banner">
-              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{% if has_protection %}Free insured shipping applied{% else %}Free shipping applied{% endif %}</p>
-              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day happiness guarantee</p>
-            </div>
-
             <div class="dpc__items">
               {%- for item in cart.items -%}
-                <div class="dpc__item" data-dp-line="{{ forloop.index }}" data-dp-key="{{ item.key }}">
+                <div class="dpc__item">
                   <div class="dpc__thumb">
                     {%- if item.image -%}
-                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
+                      {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title, width: 100, height: 100 }}
                     {%- endif -%}
                   </div>
                   <div class="dpc__item-body">
@@ -113,60 +71,27 @@
                     {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
                       <p class="dpc__item-variant">{{ item.variant.title | capitalize }}</p>
                     {%- endif -%}
-                    <div class="dpc__qty" role="group" aria-label="Quantity">
-                      <button type="button" data-dp-qty="{{ item.quantity | minus: 1 }}" data-line="{{ forloop.index }}" aria-label="Decrease quantity">&minus;</button>
-                      <span>{{ item.quantity }}</span>
-                      <button type="button" data-dp-qty="{{ item.quantity | plus: 1 }}" data-line="{{ forloop.index }}" aria-label="Increase quantity">+</button>
-                    </div>
+                    <p class="dpc__item-qty">Qty {{ item.quantity }}</p>
                   </div>
                   <div class="dpc__item-right">
                     <p class="dpc__item-price">{{ item.final_line_price | money }}</p>
-                    {%- if item.original_line_price > item.final_line_price -%}
-                      <p class="dpc__item-was">{{ item.original_line_price | money }}</p>
-                    {%- endif -%}
-                    <button type="button" class="dpc__remove" data-dp-qty="0" data-line="{{ forloop.index }}">Remove</button>
+                    <form action="{{ routes.cart_change_url }}" method="post">
+                      <input type="hidden" name="line" value="{{ forloop.index }}">
+                      <input type="hidden" name="quantity" value="0">
+                      <input type="hidden" name="return_to" value="{{ back_url }}?dpcart=1">
+                      <button type="submit" class="dpc__remove">Remove</button>
+                    </form>
                   </div>
                 </div>
               {%- endfor -%}
             </div>
 
-            {%- if main_item and main_qty == 1 -%}
-              {%- assign two_full = main_item.original_price | times: 2 -%}
-              {%- assign two_save = two_full | times: dp_duo_discount | divided_by: 100 -%}
-              {%- assign two_now = two_full | minus: two_save -%}
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if main_item.image %}{{ main_item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: main_item.product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Add a second calendar, save {{ two_save | money }}</p>
-                  <p class="dpc__upsell-text">Two for {{ two_now | money }} instead of {{ two_full | money }}.</p>
-                  <p class="dpc__upsell-note">Discount applies at checkout.</p>
-                </div>
-                <button type="button" class="dpc__upsell-btn" data-dp-qty="{{ main_item.quantity | plus: 1 }}" data-line="{{ main_line }}">Add</button>
-              </div>
-            {%- elsif main_item and has_mystery == false and mystery_product.available -%}
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if mystery_product.featured_image %}{{ mystery_product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: mystery_product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Add the Mystery Box, {{ mystery_product.price | money }}</p>
-                  <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup.</p>
-                  <p class="dpc__upsell-note">Ships in the same gift box.</p>
-                </div>
-                <button type="button" class="dpc__upsell-btn" data-dp-add="{{ mystery_product.selected_or_first_available_variant.id }}">Add</button>
-              </div>
-            {%- endif -%}
-
             <div class="dpc__footer">
-              <div class="dpc__subtotal"><span>Subtotal</span><span data-dp-subtotal>{{ cart.total_price | money }}</span></div>
-              <p class="dpc__note">Taxes calculated at checkout. Shipping is free{% if has_protection %} and insured{% endif %}.</p>
-              <form action="{{ routes.cart_url }}" method="post" class="dpc__checkout-form">
-                <button type="submit" name="checkout" class="dpc__checkout">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
-                  Secure checkout
-                </button>
+              <div class="dpc__subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+              <p class="dpc__note">Taxes calculated at checkout. Shipping is free.</p>
+              <form action="{{ routes.cart_url }}" method="post">
+                <button type="submit" name="checkout" class="dpc__checkout">Secure checkout</button>
               </form>
-              <div class="dpc__payments" aria-label="Accepted payment methods">
-                {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'dpc__pay' }}{%- endfor -%}
-              </div>
             </div>
           {%- endif -%}
         </div>
@@ -174,79 +99,18 @@
     </dialog>
   </theme-drawer>
 
-  <script type="module">
+  <script>
+    // After a form round-trip (?dpcart=1) open the drawer so the shopper sees the result.
     (function () {
-      if (window.__dpCartBound) return;
-      window.__dpCartBound = true;
-      var SECTION = 'cart-drawer-section';
-      var busy = false;
-
-      function swap(html) {
-        if (!html) return;
-        var doc = new DOMParser().parseFromString(html, 'text/html');
-        var fresh = doc.querySelector('[data-dp-cart]');
-        var current = document.querySelector('[data-dp-cart]');
-        if (fresh && current) {
-          current.innerHTML = fresh.innerHTML;
-          current.className = fresh.className;
-        }
-      }
-
-      async function fetchSection() {
-        var r = await fetch(window.location.pathname + '?section_id=' + SECTION, { credentials: 'same-origin' });
-        return await r.text();
-      }
-
-      async function announce(cartJson, action) {
-        try {
-          var ev = await import('@shopify/events');
-          var d = ev.CartLinesUpdateEvent.createPromise();
-          document.dispatchEvent(new ev.CartLinesUpdateEvent({ action: action || 'update', context: 'cart', lines: [], promise: d.promise }));
-          d.resolve({ cart: ev.CartLinesUpdateEvent.createCartFromAjaxResponse(cartJson), detail: { items: cartJson.items, source: 'dp-cart', didError: false } });
-        } catch (e) { /* header bubble simply updates on next load */ }
-      }
-
-      window.dpCartRender = async function (html) {
-        try { swap(html || (await fetchSection())); } catch (e) { /* ignore */ }
-      };
-
-      async function mutate(url, body, action) {
-        if (busy) return;
-        busy = true;
-        var wrap = document.querySelector('[data-dp-cart]');
-        if (wrap) wrap.classList.add('is-busy');
-        try {
-          var r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) });
-          var data = null;
-          try { data = await r.json(); } catch (e) { data = null; }
-          if (!r.ok) throw new Error((data && (data.description || data.message)) || 'Cart error');
-          var cartJson = await (await fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' })).json();
-          await window.dpCartRender();
-          announce(cartJson, action);
-          if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
-        } catch (e) {
-          await window.dpCartRender();
-        } finally {
-          busy = false;
-          var w = document.querySelector('[data-dp-cart]');
-          if (w) w.classList.remove('is-busy');
-        }
-      }
-
-      document.addEventListener('click', function (e) {
-        var qtyBtn = e.target.closest('[data-dp-qty]');
-        if (qtyBtn && qtyBtn.closest('[data-dp-cart]')) {
-          e.preventDefault();
-          var q = Number(qtyBtn.dataset.dpQty);
-          mutate('/cart/change.js', { line: Number(qtyBtn.dataset.line), quantity: q }, q === 0 ? 'remove' : 'update');
-          return;
-        }
-        var addBtn = e.target.closest('[data-dp-add]');
-        if (addBtn && addBtn.closest('[data-dp-cart]')) {
-          e.preventDefault();
-          mutate('/cart/add.js', { items: [{ id: Number(addBtn.dataset.dpAdd), quantity: 1 }] }, 'add');
-        }
-      });
+      if (!/[?&]dpcart=1/.test(window.location.search)) return;
+      try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries++;
+        var d = document.getElementById('cart-drawer');
+        if (d && typeof d.open === 'function') { d.open(); clearInterval(timer); }
+        else if (tries > 40) clearInterval(timer);
+      }, 150);
     })();
   </script>
 
@@ -262,59 +126,28 @@
   }
   #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(15, 30, 20, .55); }
   .dpc__dialog { --theme-drawer-padding: 0; }
-
-  .dpc { text-align: left; --g: #1F3D2B; --g2: #2D4A2D; --gold: #C9A96E; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
-    display: flex; flex-direction: column; height: 100%; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); position: relative; }
+  .dpc { text-align: left; --g: #1F3D2B; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
+    display: flex; flex-direction: column; height: 100%; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); }
   .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; min-width: 0; }
-  .dpc.is-busy::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.45); z-index: 5; }
-  .dpc__head { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 6px; }
-  .dpc__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: 30px; font-weight: 900; color: var(--g); letter-spacing: -0.5px; line-height: 1; display: flex; align-items: baseline; gap: 8px; }
-  .dpc__count { font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+  .dpc__head { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 10px; }
+  .dpc__title { margin: 0; font-size: 28px; font-weight: 900; color: var(--g); line-height: 1; display: flex; align-items: baseline; gap: 8px; }
+  .dpc__count { font-size: 15px; font-weight: 700; color: var(--muted); }
   .dpc__close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--g); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
   .dpc__close svg { width: 18px; height: 18px; }
-  .dpc__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 12px; padding: 0 22px; font-size: 14px; font-weight: 600; color: var(--g2); }
-  .dpc__proof-item { display: inline-flex; align-items: center; gap: 5px; }
-  .dpc__proof-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
-  .dpc__proof-item:first-child svg { stroke: #c8473b; }
-  .dpc__proof-item:last-child svg { stroke: #d9a520; }
-  .dpc__proof-dot { color: #b9b5a8; }
-  .dpc__banner { margin: 0 22px 12px; padding: 14px 16px; border-radius: 14px; background: #E6F0E8; display: grid; gap: 10px; }
-  .dpc__banner p { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--g); }
-  .dpc__banner svg { width: 20px; height: 20px; fill: none; stroke: var(--g); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 20px; }
-
   .dpc__items { flex: 1; overflow-y: auto; padding: 0 22px; }
-  .dpc__item { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
-  .dpc__thumb { width: 74px; height: 74px; border-radius: 12px; background: var(--cream); overflow: hidden; }
+  .dpc__item { display: grid; grid-template-columns: 70px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .dpc__thumb { width: 70px; height: 70px; border-radius: 12px; background: var(--cream); overflow: hidden; }
   .dpc__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__item-title { margin: 0 0 2px; font-size: 16px; font-weight: 700; line-height: 1.25; }
-  .dpc__item-variant { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
-  .dpc__qty { display: inline-flex; align-items: center; border: 1.5px solid #dcd6c7; border-radius: 999px; overflow: hidden; margin-top: 6px; }
-  .dpc__qty button { width: 34px; height: 32px; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 800; color: var(--ink); cursor: pointer; }
-  .dpc__qty span { min-width: 22px; text-align: center; font-size: 15px; font-weight: 800; }
-  .dpc__item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 4px; }
-  .dpc__item-price { margin: 0; font-size: 18px; font-weight: 800; }
-  .dpc__item-was { margin: -4px 0 0; font-size: 12px; color: #9a9a8c; text-decoration: line-through; }
-  .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
-
-  .dpc__upsell { margin: 16px 22px 4px; padding: 16px; border-radius: 16px; border: 1.5px solid #E9BFD0; background: linear-gradient(135deg, #FBE4EC 0%, #F7F2E6 100%); display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; }
-  .dpc__upsell-img { width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: #fff; }
-  .dpc__upsell-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__upsell-title { margin: 0 0 4px; font-size: 15px; font-weight: 800; color: var(--g); line-height: 1.25; }
-  .dpc__upsell-text { margin: 0 0 4px; font-size: 13px; color: #4a4a3e; }
-  .dpc__upsell-note { margin: 0; font-size: 12px; color: var(--muted); }
-  .dpc__upsell-btn { border: 0; border-radius: 999px; background: var(--g2); color: #fff; font: inherit; font-size: 15px; font-weight: 800; padding: 12px 20px; cursor: pointer; }
-
-  .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.05); }
-  .dpc__subtotal { display: flex; justify-content: space-between; align-items: baseline; font-size: 20px; font-weight: 800; color: var(--g); }
+  .dpc__item-title { margin: 0 0 2px; font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .dpc__item-variant, .dpc__item-qty { margin: 0 0 4px; font-size: 13px; color: var(--muted); }
+  .dpc__item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .dpc__item-price { margin: 0; font-size: 16px; font-weight: 800; }
+  .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 13px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
+  .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; }
+  .dpc__subtotal { display: flex; justify-content: space-between; font-size: 19px; font-weight: 800; color: var(--g); }
   .dpc__note { margin: 6px 0 12px; font-size: 13px; color: var(--muted); }
-  .dpc__checkout-form { margin: 0; }
-  .dpc__checkout { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #2F5A3D 0%, #1F3D2B 70%); color: #fff; font: inherit; font-size: 18px; font-weight: 800; padding: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(31,61,43,.3); }
-  .dpc__checkout svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .dpc__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-  .dpc__pay { width: 42px; height: 26px; border-radius: 5px; }
-
-  .dpc__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 22px; gap: 8px; }
+  .dpc__checkout { width: 100%; border: 0; border-radius: 999px; background: var(--g); color: #fff; font: inherit; font-size: 17px; font-weight: 800; padding: 17px; cursor: pointer; }
+  .dpc__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 22px; gap: 12px; }
   .dpc__empty-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--g); }
-  .dpc__empty-text { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
   .dpc__empty-btn { display: inline-block; background: var(--g); color: #fff; font-weight: 800; padding: 14px 24px; border-radius: 999px; text-decoration: none; }
 {% endstylesheet %}
