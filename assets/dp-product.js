@@ -277,6 +277,13 @@
     });
     const ret = document.createElement('input'); ret.name = 'return_to'; ret.value = window.location.pathname + '?dpcart=1'; form.appendChild(ret);
     document.body.appendChild(form);
+    if (typeof window.dpCartSubmit === 'function') {
+      // Post through the hidden frame: no page reload, drawer slides open with the result.
+      window.dpCartSubmit(form);
+      const btn = q('[data-dp-atc]');
+      setTimeout(() => { if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; } }, 1500);
+      return;
+    }
     form.submit();
   }
 
