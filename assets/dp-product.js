@@ -269,21 +269,25 @@
   function submitNativeForm(items) {
     const form = document.createElement('form');
     form.method = 'post';
-    form.action = '/cart/add';
+    form.action = '/cart/add.js';
     form.style.display = 'none';
     items.forEach((it, i) => {
       const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
       const qty = document.createElement('input'); qty.name = `items[${i}][quantity]`; qty.value = String(it.quantity); form.appendChild(qty);
     });
-    const ret = document.createElement('input'); ret.name = 'return_to'; ret.value = window.location.pathname + '?dpcart=1'; form.appendChild(ret);
     document.body.appendChild(form);
+
     if (typeof window.dpCartSubmit === 'function') {
-      // Post through the hidden frame: no page reload, drawer slides open with the result.
+      // Posts into the hidden frame: the page never navigates and the drawer opens with the result.
       window.dpCartSubmit(form);
-      const btn = q('[data-dp-atc]');
-      setTimeout(() => { if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; } }, 1500);
       return;
     }
+    // No bridge on the page: fall back to a plain post that reloads the product page.
+    form.action = '/cart/add';
+    const ret = document.createElement('input');
+    ret.name = 'return_to';
+    ret.value = window.location.pathname;
+    form.appendChild(ret);
     form.submit();
   }
 

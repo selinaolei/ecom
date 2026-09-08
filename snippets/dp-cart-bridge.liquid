@@ -1,0 +1,148 @@
+{%- comment -%}
+  Dear Paws cart bridge. Rendered once from layout/theme.liquid, outside every section that
+  gets re-rendered, so it is always present.
+
+  Every cart change is a real HTML form POST to Shopify's cart JSON endpoints, targeted at a
+  hidden iframe. Nothing on the page can intercept a form post, and the top window never
+  navigates. After the post the same iframe is pointed at the cart drawer section URL, and the
+  returned markup is swapped into the open drawer.
+{%- endcomment -%}
+<iframe name="dp-cart-frame" id="dp-cart-frame" title="Cart update" tabindex="-1" aria-hidden="true"
+  style="position:absolute;left:-9999px;top:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none;"></iframe>
+
+<script>
+  (function () {
+    if (window.dpCartSubmit) return;
+
+    var FRAME = 'dp-cart-frame';
+    var SECTION = 'cart-drawer-section';
+    var state = null; // 'mutating' | 'rendering'
+    var timer = null;
+
+    function frame() { return document.getElementById(FRAME); }
+    function wrap() { return document.querySelector('[data-dp-cart]'); }
+
+    function sectionUrl() {
+      var u = new URL(window.location.href);
+      u.searchParams.set('section_id', SECTION);
+      u.searchParams.set('dpts', String(Date.now()));
+      return u.pathname + u.search;
+    }
+
+    function openDrawer() {
+      var d = document.getElementById('cart-drawer');
+      if (!d) return;
+      if (typeof d.open === 'function') { if (!d.hasAttribute('open')) d.open(); return; }
+      var dlg = d.querySelector('dialog');
+      if (dlg && !dlg.open && dlg.showModal) dlg.showModal();
+    }
+
+    function busy(on) {
+      var w = wrap();
+      if (w) w.classList.toggle('is-busy', !!on);
+      document.querySelectorAll('[data-dp-atc]').forEach(function (b) {
+        b.classList.toggle('is-loading', !!on);
+        b.disabled = !!on;
+      });
+    }
+
+    function done() {
+      state = null;
+      clearTimeout(timer);
+      busy(false);
+    }
+
+    function giveUp() {
+      // Never leave the shopper stuck: fall back to a normal page load of the cart.
+      done();
+      window.location.href = '{{ routes.cart_url }}';
+    }
+
+    function syncHeader() {
+      try {
+        fetch('{{ routes.cart_url }}.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (cart) {
+            document.querySelectorAll('.cart-bubble__text, [data-cart-count]').forEach(function (el) {
+              el.textContent = String(cart.item_count);
+            });
+            return import('@shopify/events').then(function (ev) {
+              var d = ev.CartLinesUpdateEvent.createPromise();
+              document.dispatchEvent(new ev.CartLinesUpdateEvent({ action: 'update', context: 'cart', lines: [], promise: d.promise }));
+              d.resolve({ cart: ev.CartLinesUpdateEvent.createCartFromAjaxResponse(cart), detail: { items: cart.items, source: 'dp-cart', didError: false } });
+            });
+          })
+          .catch(function () {});
+      } catch (e) {}
+    }
+
+    function onLoad() {
+      var f = frame();
+      if (!f || !state) return;
+
+      if (state === 'mutating') {
+        // The cart was changed. Point the same frame at the drawer section markup.
+        state = 'rendering';
+        f.src = sectionUrl();
+        return;
+      }
+
+      // state === 'rendering': read the fresh drawer markup out of the frame.
+      var doc = null;
+      try { doc = f.contentDocument || (f.contentWindow && f.contentWindow.document); } catch (e) { doc = null; }
+      var fresh = doc && doc.querySelector('[data-dp-cart]');
+      var current = wrap();
+
+      if (fresh && current) {
+        current.innerHTML = fresh.innerHTML;
+        current.className = fresh.className;
+        current.setAttribute('data-count', fresh.getAttribute('data-count') || '0');
+        done();
+        openDrawer();
+        syncHeader();
+        if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
+        return;
+      }
+
+      giveUp();
+    }
+
+    /**
+     * Sends a cart form through the hidden frame.
+     * @param {HTMLFormElement} form - action must be a cart JSON endpoint (/cart/add.js, /cart/change.js).
+     */
+    window.dpCartSubmit = function (form) {
+      var f = frame();
+      if (!f) { form.submit(); return; }
+      // return_to plays no part here: the JSON endpoints answer in the frame itself.
+      var ret = form.querySelector('input[name="return_to"]');
+      if (ret) ret.parentNode.removeChild(ret);
+
+      state = 'mutating';
+      busy(true);
+      clearTimeout(timer);
+      timer = setTimeout(giveUp, 15000);
+
+      form.target = FRAME;
+      form.submit();
+    };
+
+    window.dpCartOpen = openDrawer;
+
+    function bind() {
+      var f = frame();
+      if (f) f.addEventListener('load', onLoad);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+    else bind();
+
+    // Any form marked data-dp-cart-form goes through the frame.
+    document.addEventListener('submit', function (e) {
+      var form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!form.hasAttribute('data-dp-cart-form')) return;
+      e.preventDefault();
+      window.dpCartSubmit(form);
+    }, true);
+  })();
+</script>

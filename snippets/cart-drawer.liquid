@@ -114,17 +114,15 @@
                       <p class="dpc__item-variant">{{ item.variant.title | capitalize }}</p>
                     {%- endif -%}
                     <div class="dpc__qty" role="group" aria-label="Quantity">
-                      <form action="{{ routes.cart_change_url }}" method="post" data-dp-cart-form>
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
                         <input type="hidden" name="line" value="{{ forloop.index }}">
                         <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
-                        <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
                         <button type="submit" aria-label="Decrease quantity">&minus;</button>
                       </form>
                       <span>{{ item.quantity }}</span>
-                      <form action="{{ routes.cart_change_url }}" method="post" data-dp-cart-form>
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
                         <input type="hidden" name="line" value="{{ forloop.index }}">
                         <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
-                        <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
                         <button type="submit" aria-label="Increase quantity">+</button>
                       </form>
                     </div>
@@ -134,10 +132,9 @@
                     {%- if item.original_line_price > item.final_line_price -%}
                       <p class="dpc__item-was">{{ item.original_line_price | money }}</p>
                     {%- endif -%}
-                    <form action="{{ routes.cart_change_url }}" method="post" data-dp-cart-form>
+                    <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
                       <input type="hidden" name="line" value="{{ forloop.index }}">
                       <input type="hidden" name="quantity" value="0">
-                      <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
                       <button type="submit" class="dpc__remove">Remove</button>
                     </form>
                   </div>
@@ -156,10 +153,9 @@
                   <p class="dpc__upsell-text">Two for {{ two_now | money }} instead of {{ two_full | money }}.</p>
                   <p class="dpc__upsell-note">Discount applies at checkout.</p>
                 </div>
-                <form action="{{ routes.cart_change_url }}" method="post" data-dp-cart-form>
+                <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
                   <input type="hidden" name="line" value="{{ main_line }}">
                   <input type="hidden" name="quantity" value="{{ main_item.quantity | plus: 1 }}">
-                  <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
                   <button type="submit" class="dpc__upsell-btn">Add</button>
                 </form>
               </div>
@@ -171,10 +167,9 @@
                   <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup.</p>
                   <p class="dpc__upsell-note">Ships in the same gift box.</p>
                 </div>
-                <form action="{{ routes.cart_add_url }}" method="post" data-dp-cart-form>
+                <form action="{{ routes.cart_add_url }}.js" method="post" data-dp-cart-form>
                   <input type="hidden" name="id" value="{{ mystery_product.selected_or_first_available_variant.id }}">
                   <input type="hidden" name="quantity" value="1">
-                  <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
                   <button type="submit" class="dpc__upsell-btn">Add</button>
                 </form>
               </div>
@@ -198,110 +193,6 @@
       </cart-drawer-component>
     </dialog>
   </theme-drawer>
-
-  {%- comment -%} Hidden frame that receives every cart form post. Not part of the swapped region. {%- endcomment -%}
-  <iframe name="dp-cart-frame" id="dp-cart-frame" title="Cart update" tabindex="-1" aria-hidden="true" style="position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none;"></iframe>
-
-  <script>
-    (function () {
-      if (window.__dpCartBound) return;
-      window.__dpCartBound = true;
-      var FRAME = 'dp-cart-frame';
-      var SECTION = 'cart-drawer-section';
-
-      function sectionUrl() {
-        var p = window.location.pathname;
-        return p + (p.indexOf('?') === -1 ? '?' : '&') + 'section_id=' + SECTION + '&dpts=' + Date.now();
-      }
-      function frame() { return document.getElementById(FRAME); }
-      function wrap() { return document.querySelector('[data-dp-cart]'); }
-
-      function openDrawer() {
-        var d = document.getElementById('cart-drawer');
-        if (!d) return;
-        if (typeof d.open === 'function') { if (!d.hasAttribute('open')) d.open(); return; }
-        var dlg = d.querySelector('dialog');
-        if (dlg && !dlg.open && dlg.showModal) dlg.showModal();
-      }
-
-      function swapFrom(doc) {
-        var fresh = doc && doc.querySelector('[data-dp-cart]');
-        var current = wrap();
-        if (!fresh || !current) return false;
-        current.innerHTML = fresh.innerHTML;
-        current.className = fresh.className;
-        current.setAttribute('data-count', fresh.getAttribute('data-count') || '0');
-        return true;
-      }
-
-      function updateHeaderCount() {
-        var count = (wrap() && wrap().getAttribute('data-count')) || '0';
-        document.querySelectorAll('.cart-bubble__text, [data-cart-count], .header-actions__cart-count').forEach(function (el) { el.textContent = count; });
-        try {
-          fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store' })
-            .then(function (r) { return r.json(); })
-            .then(function (cart) {
-              return import('@shopify/events').then(function (ev) {
-                var d = ev.CartLinesUpdateEvent.createPromise();
-                document.dispatchEvent(new ev.CartLinesUpdateEvent({ action: 'update', context: 'cart', lines: [], promise: d.promise }));
-                d.resolve({ cart: ev.CartLinesUpdateEvent.createCartFromAjaxResponse(cart), detail: { items: cart.items, source: 'dp-cart', didError: false } });
-              });
-            })
-            .catch(function () {});
-        } catch (e) {}
-      }
-
-      var pending = false;
-      function onFrameLoad() {
-        if (!pending) return;
-        pending = false;
-        var f = frame();
-        var doc = null;
-        try { doc = f.contentDocument || (f.contentWindow && f.contentWindow.document); } catch (e) { doc = null; }
-        var ok = swapFrom(doc);
-        var w = wrap();
-        if (w) w.classList.remove('is-busy');
-        if (!ok) {
-          // Could not read the response (blocked page, error). Reload to reflect the real cart.
-          window.location.reload();
-          return;
-        }
-        openDrawer();
-        updateHeaderCount();
-        if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
-      }
-
-      /** Submits any cart form through the hidden frame and refreshes the drawer. */
-      window.dpCartSubmit = function (form) {
-        var f = frame();
-        if (!f) { form.submit(); return; }
-        var ret = form.querySelector('input[name="return_to"]');
-        if (!ret) { ret = document.createElement('input'); ret.type = 'hidden'; ret.name = 'return_to'; form.appendChild(ret); }
-        ret.value = sectionUrl();
-        form.target = FRAME;
-        pending = true;
-        var w = wrap();
-        if (w) w.classList.add('is-busy');
-        // Safety net: if the frame never reports back, reload.
-        setTimeout(function () { if (pending) { pending = false; window.location.reload(); } }, 12000);
-        form.submit();
-      };
-
-      document.addEventListener('DOMContentLoaded', function () {
-        var f = frame();
-        if (f) f.addEventListener('load', onFrameLoad);
-      });
-      if (document.readyState !== 'loading') { var f0 = frame(); if (f0) f0.addEventListener('load', onFrameLoad); }
-
-      document.addEventListener('submit', function (e) {
-        var form = e.target;
-        if (!(form instanceof HTMLFormElement)) return;
-        if (!form.hasAttribute('data-dp-cart-form')) return;
-        e.preventDefault();
-        window.dpCartSubmit(form);
-      }, true);
-    })();
-  </script>
 
   {% if render_wrapper %}
     </div>
