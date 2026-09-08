@@ -3,12 +3,16 @@
   - the home URL sends visitors straight to the calendar product page
   - every link that points to the home page (logo, menu "Home", "continue shopping",
     breadcrumbs, app links) is rewritten to the product page instead.
-  Change funnel_handle if the main product ever changes.
+  On a product page the home links keep the shopper on that product, so a cat visitor
+  never gets bounced to the dog calendar. Everywhere else they go to the default product.
 {%- endcomment -%}
 {%- liquid
   assign funnel_handle = 'spiderjet-glove'
   assign funnel_product = all_products[funnel_handle]
   assign funnel_url = funnel_product.url | default: '/collections/all'
+  if request.page_type == 'product' and product.url != blank
+    assign funnel_url = product.url
+  endif
 -%}
 {%- if request.page_type == 'index' and request.design_mode == false -%}
   <meta http-equiv="refresh" content="0; url={{ funnel_url }}">

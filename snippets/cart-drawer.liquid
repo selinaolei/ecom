@@ -11,6 +11,7 @@
 
   # ---- editable numbers ----
   assign dp_main_handle = 'spiderjet-glove'
+  assign dp_main_handles = 'spiderjet-glove,cat-advent-calendar' | split: ','
   assign dp_rating = '4.9'
   assign dp_reviews = '2,483'
   assign dp_orders_base = 118
@@ -26,7 +27,7 @@
   assign has_protection = false
   assign has_mystery = false
   for item in cart.items
-    if item.product.handle == dp_main_handle
+    if dp_main_handles contains item.product.handle
       assign main_qty = main_qty | plus: item.quantity
       if main_line == 0
         assign main_line = forloop.index

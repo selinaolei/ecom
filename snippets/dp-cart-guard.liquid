@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <script type="module">
   (function () {
-    var MAIN_HANDLE = 'spiderjet-glove';
+    var MAIN_HANDLES = ['spiderjet-glove', 'cat-advent-calendar'];
     var ADDON_HANDLES = ['shipping-protection', '30-day-warranty', 'mystery-box'];
     var busy = false;
     var ownRequest = false;
@@ -14,7 +14,7 @@
       if (document.getElementById('dp-cart-guard-notice')) return;
       var n = document.createElement('div');
       n.id = 'dp-cart-guard-notice';
-      n.textContent = 'Shipping protection, warranty and mystery box can only be added together with the Paw Advent Calendar.';
+      n.textContent = 'Shipping protection, warranty and mystery box can only be added together with an advent calendar.';
       n.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;background:#1F3D2B;color:#fff;font:600 13px/1.4 Inter,sans-serif;padding:12px 16px;border-radius:12px;max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,.25)';
       document.body.appendChild(n);
       setTimeout(function () { n.remove(); }, 6000);
@@ -46,7 +46,7 @@
         ownRequest = true;
         var cart = await (await fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' })).json();
         var items = cart.items || [];
-        var hasMain = items.some(function (i) { return i.handle === MAIN_HANDLE; });
+        var hasMain = items.some(function (i) { return MAIN_HANDLES.indexOf(i.handle) !== -1; });
         var strays = items.filter(function (i) { return ADDON_HANDLES.indexOf(i.handle) !== -1; });
         if (hasMain || strays.length === 0) return;
         var updates = {};

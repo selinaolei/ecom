@@ -1,0 +1,454 @@
+{
+  "sections": {
+    "dp_main": {
+      "type": "dp-product-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "gift",
+            "text": "24 daily surprise toys, teasers and treats"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "paw",
+            "text": "Safe for kittens and adult cats"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
+        },
+        "t1": {
+          "type": "tier",
+          "settings": {
+            "title": "Single",
+            "subtitle": "Standard price",
+            "tag": "",
+            "quantity": 1,
+            "discount": 0
+          }
+        },
+        "t2": {
+          "type": "tier",
+          "settings": {
+            "title": "Duo",
+            "subtitle": "You save 15%",
+            "tag": "Most popular",
+            "quantity": 2,
+            "discount": 15
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "shipping-protection",
+            "title": "Shipping protection",
+            "text": "",
+            "icon": "dp-addon-shipping.png",
+            "default_on": true
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "30-day-warranty",
+            "title": "30-day warranty",
+            "text": "",
+            "icon": "dp-addon-warranty.png",
+            "default_on": true
+          }
+        },
+        "a3": {
+          "type": "addon",
+          "settings": {
+            "product": "mystery-box",
+            "title": "Mystery box",
+            "text": "",
+            "icon": "dp-addon-mystery.png",
+            "default_on": false
+          }
+        },
+        "tr1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping"
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "heart",
+            "text": "Loved by 1,900+ cats"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "t1",
+        "t2",
+        "a1",
+        "a2",
+        "a3",
+        "tr1",
+        "tr2",
+        "tr3",
+        "tr4"
+      ],
+      "settings": {
+        "eyebrow": "Limited Christmas Edition",
+        "badge_text": "24 days of joy",
+        "rating_text": "Rated 4.8 based on 1,914 reviews",
+        "reviews_anchor": "#shopify-section-dp_reviews",
+        "bundle_heading": "Bundle & Save",
+        "default_tier": 0,
+        "unit_label": "Calendar",
+        "button_text": "Add to cart",
+        "button_subtext": "Order today, ships within 24 hours",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "What is inside the calendar?",
+        "sticky_bar": true
+      }
+    },
+    "dp_ugc": {
+      "type": "dp-ugc-grid",
+      "blocks": {
+        "p1": {
+          "type": "photo",
+          "settings": {
+            "handle": "@miso.thetabby",
+            "caption": "Door 1 was a feather wand. Chaos, immediately."
+          }
+        },
+        "p2": {
+          "type": "photo",
+          "settings": {
+            "handle": "@two.blackcats",
+            "caption": "They take turns sitting on the box."
+          }
+        },
+        "p3": {
+          "type": "photo",
+          "settings": {
+            "handle": "@pepper.ragdoll",
+            "caption": "The jingle ball has been under the sofa since day 6."
+          }
+        },
+        "p4": {
+          "type": "photo",
+          "settings": {
+            "handle": "@kitten.olive",
+            "caption": "First Christmas and she is obsessed."
+          }
+        },
+        "p5": {
+          "type": "photo",
+          "settings": {
+            "handle": "@sir.reginald.cat",
+            "caption": "Refuses to move until we open the next one."
+          }
+        },
+        "p6": {
+          "type": "photo",
+          "settings": {
+            "handle": "@mochi.and.mango",
+            "caption": "Two calendars so nobody fights. Worth it."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
+      ],
+      "settings": {
+        "eyebrow": "Real cats. Real mornings.",
+        "heading": "People keep posting about Dear Paws",
+        "text": "Tag @dearpaws and show us door number one. We repost our favourites every week.",
+        "columns": "3",
+        "button_text": "",
+        "button_link": ""
+      }
+    },
+    "dp_compare": {
+      "type": "dp-comparison",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "feature": "24 different toys and teasers",
+            "them_check": false
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "feature": "New surprise every single day",
+            "them_check": false
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "feature": "Safe for kittens and adult cats",
+            "them_check": true
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "feature": "Gift-ready festive box",
+            "them_check": false
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "feature": "Bells and feathers that trigger real play",
+            "them_check": false
+          }
+        },
+        "r6": {
+          "type": "row",
+          "settings": {
+            "feature": "Price per item",
+            "them_text": "$6 to $12 each",
+            "us_text": "Under $3 each"
+          }
+        },
+        "r7": {
+          "type": "row",
+          "settings": {
+            "feature": "Free shipping and 30-day guarantee",
+            "them_check": false
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6",
+        "r7"
+      ],
+      "settings": {
+        "eyebrow": "Why Dear Paws",
+        "heading": "Regular cat toys vs Dear Paws",
+        "text": "One box replaces a month of impulse pet store buys and keeps your cat hunting every single morning.",
+        "them_label": "Store-bought toys",
+        "us_label": "Dear Paws",
+        "button_text": "Get the calendar",
+        "button_link": "#dp-product-dp_main"
+      }
+    },
+    "dp_reviews": {
+      "type": "dp-reviews",
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "She waits by the box every morning",
+            "text": "Our tabby worked out the routine by day three. She sits in front of it and yells at us until we open the next door. The toys are proper quality, not the flimsy stuff.",
+            "name": "Sarah M.",
+            "verified": true
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Perfect gift for a cat person",
+            "text": "Bought the Duo for my sister and her two cats. The box looks lovely under the tree and the feather wand was an instant hit.",
+            "name": "James T.",
+            "verified": true
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Worth every penny",
+            "text": "24 days of my cat losing his mind. The jingle ball from day 9 is still his favourite and it has been weeks.",
+            "name": "Rachel P.",
+            "verified": true
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "title": "Great variety",
+            "text": "Nice mix of wands, mice and balls. One of the feather mice lost its feathers fast, but everything else has held up well.",
+            "name": "Tom S.",
+            "verified": true
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Shipping was fast",
+            "text": "Ordered on a Monday, arrived Thursday. Box was in perfect shape and the cat approved immediately.",
+            "name": "Priya K.",
+            "verified": true
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Our new tradition",
+            "text": "Second year buying this. Opening a door with the cat is now part of our Christmas mornings and the kids love it.",
+            "name": "Daniel R.",
+            "verified": true
+          }
+        },
+        "v7": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Kitten approved",
+            "text": "I have a four month old kitten and everything was the right size for her. The rattle drum keeps her busy for ages.",
+            "name": "Megan L.",
+            "verified": true
+          }
+        },
+        "v8": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Lovely box",
+            "text": "The winter design is genuinely pretty. Honestly nicer in person than in the photos.",
+            "name": "Olivia W.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8"
+      ],
+      "settings": {
+        "heading": "What people say about Dear Paws",
+        "rating": "4.8",
+        "rating_text": "Based on 1,914 reviews",
+        "bar_5": 85,
+        "bar_4": 11,
+        "bar_3": 2,
+        "bar_2": 1,
+        "bar_1": 1
+      }
+    },
+    "dp_faq": {
+      "type": "dp-faq",
+      "blocks": {
+        "q1": {
+          "type": "faq",
+          "settings": {
+            "question": "What is inside the Cat Advent Calendar?",
+            "answer": "<p>24 numbered doors, each hiding a different surprise: a Santa teaser wand, crinkle fish, feather and plush mice, jingle balls, rattles, collars, spring coils and more. No two days are the same.</p>"
+          }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": {
+            "question": "Is it suitable for kittens?",
+            "answer": "<p>Yes. Everything is sized for kittens and adult cats alike. As with any new toy, supervise your cat at first and remove any piece that becomes damaged.</p>"
+          }
+        },
+        "q3": {
+          "type": "faq",
+          "settings": {
+            "question": "When should I order to receive it before December 1st?",
+            "answer": "<p>Orders placed before November 20th typically arrive in time for the first door. We ship from Canada with tracking on every order.</p>"
+          }
+        },
+        "q4": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it come ready to gift?",
+            "answer": "<p>It does. The calendar arrives in its festive gift box with no prices shown, so it can go straight under the tree.</p>"
+          }
+        },
+        "q5": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I buy one for a cat and one for a dog?",
+            "answer": "<p>Yes. We make a Paw Advent Calendar for dogs as well. Add each one to your cart separately and they ship together.</p>"
+          }
+        },
+        "q6": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>If you or your cat are not happy within 30 days, contact us and we will make it right with a replacement or a full refund.</p>"
+          }
+        },
+        "q7": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions",
+        "text": "Everything you need to know before your cat opens door number one.",
+        "open_first": true
+      }
+    }
+  },
+  "order": [
+    "dp_main",
+    "dp_ugc",
+    "dp_compare",
+    "dp_reviews",
+    "dp_faq"
+  ]
+}
