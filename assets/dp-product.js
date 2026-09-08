@@ -274,14 +274,55 @@
     if (err) err.hidden = true;
 
     try {
-      await fetchJson('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ items }),
-      });
-      const cart = await fetchJson('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
-      if (!cart.item_count) throw new Error('The cart is still empty after adding. Please try again.');
+      const getCart = () => fetchJson('/cart.js?t=' + Date.now(), { headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store' });
+      const countOf = (cart, ids) => (cart.items || []).filter((li) => ids.includes(Number(li.variant_id))).reduce((s, li) => s + li.quantity, 0);
+      const ids = items.map((it) => it.id);
+      const before = countOf(await getCart(), ids);
+
+      // 1) JSON add
+      let cart = null;
+      try {
+        await fetchJson('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ items }),
+        });
+        cart = await getCart();
+      } catch (e) {
+        cart = null;
+      }
+
+      // 2) Form-encoded add (the format every app expects)
+      if (!cart || countOf(cart, ids) <= before) {
+        const fd = new FormData();
+        items.forEach((it, i) => {
+          fd.append(`items[${i}][id]`, String(it.id));
+          fd.append(`items[${i}][quantity]`, String(it.quantity));
+        });
+        try {
+          await fetchJson('/cart/add.js', { method: 'POST', body: fd, credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+          cart = await getCart();
+        } catch (e) {
+          cart = null;
+        }
+      }
+
+      // 3) Real form submit: handled entirely by Shopify, cannot be intercepted by scripts
+      if (!cart || countOf(cart, ids) <= before) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/cart/add';
+        form.style.display = 'none';
+        items.forEach((it, i) => {
+          const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
+          const qty = document.createElement('input'); qty.name = `items[${i}][quantity]`; qty.value = String(it.quantity); form.appendChild(qty);
+        });
+        const ret = document.createElement('input'); ret.name = 'return_to'; ret.value = window.location.pathname + '?dpcart=1#dp-cart'; form.appendChild(ret);
+        document.body.appendChild(form);
+        form.submit();
+        return;
+      }
 
       await renderDrawer();
       openDrawer();
@@ -354,4 +395,10 @@
   }
 
   render();
+
+  // After a full-page add (fallback 3) reopen the drawer once the page is back.
+  if (/[?&]dpcart=1/.test(window.location.search)) {
+    try { history.replaceState(null, '', window.location.pathname + window.location.hash.replace('#dp-cart', '')); } catch (e) { /* ignore */ }
+    setTimeout(async () => { await renderDrawer(); openDrawer(); }, 400);
+  }
 })();
