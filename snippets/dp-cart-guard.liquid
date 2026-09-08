@@ -45,7 +45,6 @@
       try {
         ownRequest = true;
         var cart = await (await fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' })).json();
-        ownRequest = false;
         var items = cart.items || [];
         var hasMain = items.some(function (i) { return i.handle === MAIN_HANDLE; });
         var strays = items.filter(function (i) { return ADDON_HANDLES.indexOf(i.handle) !== -1; });
@@ -70,20 +69,9 @@
       }
     }
 
-    // Re-check after any cart mutation made by the theme or an app.
-    var origFetch = window.fetch.bind(window);
-    window.fetch = function () {
-      var p = origFetch.apply(window, arguments);
-      try {
-        var url = typeof arguments[0] === 'string' ? arguments[0] : (arguments[0] && arguments[0].url) || '';
-        if (!ownRequest && /\/cart\/(add|change|update|clear)/.test(url)) {
-          p.then(function () { setTimeout(check, 350); }).catch(function () {});
-        }
-      } catch (e) {}
-      return p;
-    };
-
+    window.dpCartGuardCheck = check;
     check();
+    document.addEventListener('theme-drawer:open', function () { setTimeout(check, 100); });
     window.addEventListener('pageshow', function (e) { if (e.persisted) check(); });
   })();
 </script>

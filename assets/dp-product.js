@@ -221,78 +221,78 @@
     return items;
   }
 
-  async function addToCart() {
-    const btn = q('[data-dp-atc]');
-    if (!btn || btn.disabled) return;
-    const items = buildItems();
-    btn.classList.add('is-loading');
-    btn.disabled = true;
-    const err = q('[data-dp-error]');
-    if (err) err.hidden = true;
-
-    const sectionIds = Array.from(document.querySelectorAll('cart-items-component'))
-      .map((el) => el.dataset.sectionId)
-      .filter(Boolean);
-
-    let events = null;
-    try {
-      events = await import('@shopify/events');
-    } catch (e) {
-      events = null;
+  async function fetchJson(url, options) {
+    const res = await fetch(url, options);
+    const text = await res.text();
+    let data = null;
+    try { data = JSON.parse(text); } catch (e) { data = null; }
+    if (!res.ok) {
+      const msg = (data && (data.description || data.message)) || ('Request failed (' + res.status + ')');
+      throw new Error(msg);
     }
+    if (!data) throw new Error('Unexpected response from the cart.');
+    return data;
+  }
 
-    let deferred = null;
-    if (events && events.CartLinesUpdateEvent) {
-      deferred = events.CartLinesUpdateEvent.createPromise();
-      root.dispatchEvent(
+  async function renderDrawer() {
+    if (typeof window.dpCartRender === 'function') {
+      await window.dpCartRender();
+      return;
+    }
+    await refreshDrawer();
+  }
+
+  async function announce(cart, items) {
+    // Best effort: tell Horizon (header cart count) that lines were added.
+    try {
+      const events = await import('@shopify/events');
+      const d = events.CartLinesUpdateEvent.createPromise();
+      document.dispatchEvent(
         new events.CartLinesUpdateEvent({
           action: 'add',
           context: 'product',
           lines: items.map((it) => ({ merchandiseId: String(it.id), quantity: it.quantity })),
-          promise: deferred.promise,
+          promise: d.promise,
         })
       );
+      d.resolve({
+        cart: events.CartLinesUpdateEvent.createCartFromAjaxResponse(cart),
+        detail: { items: cart.items, source: 'dp-product', sourceId: root.id, itemCount: cart.item_count, productId: cfg.productId, didError: false },
+      });
+    } catch (e) {
+      /* ignore */
     }
+  }
+
+  async function addToCart() {
+    const btn = q('[data-dp-atc]');
+    if (!btn || btn.disabled) return;
+    const items = buildItems();
+    const err = q('[data-dp-error]');
+    btn.classList.add('is-loading');
+    btn.disabled = true;
+    if (err) err.hidden = true;
 
     try {
-      const res = await fetch((window.Theme && Theme.routes && Theme.routes.cart_add_url) || '/cart/add', {
+      await fetchJson('/cart/add.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ items, sections: sectionIds.join(',') }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ items }),
       });
-      const data = await res.json();
-      if (data.status) throw new Error(data.description || data.message || 'Could not add to cart');
+      const cart = await fetchJson('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+      if (!cart.item_count) throw new Error('The cart is still empty after adding. Please try again.');
 
-      const cartRes = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
-      const cart = await cartRes.json();
+      await renderDrawer();
+      openDrawer();
+      announce(cart, items);
+      if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
 
-      if (deferred && events) {
-        deferred.resolve({
-          cart: events.CartLinesUpdateEvent.createCartFromAjaxResponse(cart),
-          detail: {
-            items: cart.items,
-            source: 'dp-product',
-            sourceId: root.id,
-            itemCount: items.reduce((s, i) => s + i.quantity, 0),
-            productId: cfg.productId,
-            sections: data.sections,
-            didError: false,
-          },
-        });
-      }
-      if (typeof window.dpCartRender === 'function') {
-        await window.dpCartRender(data.sections && data.sections['cart-drawer-section']);
-      } else if (!(deferred && events)) {
-        await refreshDrawer(data.sections);
-      }
-      // Make sure the drawer is open even if the theme did not auto-open it.
-      setTimeout(openDrawer, 150);
       btn.classList.add('is-added');
       setTimeout(() => btn.classList.remove('is-added'), 2000);
     } catch (e) {
-      if (deferred) deferred.reject(e);
       if (err) {
-        err.textContent = e.message || 'Something went wrong. Please try again.';
+        err.textContent = (e && e.message) || 'Something went wrong. Please try again.';
         err.hidden = false;
       }
     } finally {
@@ -302,19 +302,19 @@
     }
   }
 
-  async function refreshDrawer(sections) {
+  async function refreshDrawer() {
     const wrapper = document.getElementById('shopify-section-cart-drawer-section');
     if (!wrapper) return;
     try {
-      let html = sections && sections['cart-drawer-section'];
-      if (!html) {
-        const r = await fetch(`${window.location.pathname}?sections=cart-drawer-section`, { headers: { Accept: 'application/json' } });
-        html = (await r.json())['cart-drawer-section'];
-      }
-      if (!html) return;
+      const r = await fetch(`${window.location.pathname}?section_id=cart-drawer-section`, { credentials: 'same-origin' });
+      const html = await r.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const fresh = doc.getElementById('shopify-section-cart-drawer-section') || doc.body;
-      wrapper.innerHTML = fresh.innerHTML;
+      const fresh = doc.querySelector('[data-dp-cart]');
+      const current = document.querySelector('[data-dp-cart]');
+      if (fresh && current) {
+        current.innerHTML = fresh.innerHTML;
+        current.className = fresh.className;
+      }
     } catch (e) {
       /* ignore */
     }

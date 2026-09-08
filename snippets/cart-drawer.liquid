@@ -73,7 +73,7 @@
           auto-open
         {% endif %}
       >
-        <div class="cart-drawer__inner dpc{% if cart.empty? %} cart-drawer--empty{% endif %}" data-dp-cart>
+        <div class="dpc{% if cart.empty? %} dpc--empty{% endif %}" data-dp-cart>
 
           <div class="dpc__head">
             <h2 class="dpc__title" id="cart-drawer-heading">Your cart <span class="dpc__count">({{ cart.item_count }})</span></h2>
@@ -193,8 +193,8 @@
       }
 
       async function fetchSection() {
-        var r = await fetch(window.location.pathname + '?sections=' + SECTION, { headers: { Accept: 'application/json' } });
-        return (await r.json())[SECTION];
+        var r = await fetch(window.location.pathname + '?section_id=' + SECTION, { credentials: 'same-origin' });
+        return await r.text();
       }
 
       async function announce(cartJson, action) {
@@ -216,12 +216,14 @@
         var wrap = document.querySelector('[data-dp-cart]');
         if (wrap) wrap.classList.add('is-busy');
         try {
-          var r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(Object.assign({ sections: SECTION }, body)) });
-          var data = await r.json();
-          if (data.status) throw new Error(data.description || data.message || 'Cart error');
-          swap(data.sections && data.sections[SECTION]);
-          var cartJson = await (await fetch('/cart.js', { headers: { Accept: 'application/json' } })).json();
+          var r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, credentials: 'same-origin', body: JSON.stringify(body) });
+          var data = null;
+          try { data = await r.json(); } catch (e) { data = null; }
+          if (!r.ok) throw new Error((data && (data.description || data.message)) || 'Cart error');
+          var cartJson = await (await fetch('/cart.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin' })).json();
+          await window.dpCartRender();
           announce(cartJson, action);
+          if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
         } catch (e) {
           await window.dpCartRender();
         } finally {
@@ -261,7 +263,7 @@
   #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(15, 30, 20, .55); }
   .dpc__dialog { --theme-drawer-padding: 0; }
 
-  .dpc { --g: #1F3D2B; --g2: #2D4A2D; --gold: #C9A96E; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
+  .dpc { text-align: left; --g: #1F3D2B; --g2: #2D4A2D; --gold: #C9A96E; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
     display: flex; flex-direction: column; height: 100%; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); position: relative; }
   .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; min-width: 0; }
   .dpc.is-busy::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.45); z-index: 5; }
