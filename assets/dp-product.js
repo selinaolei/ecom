@@ -221,55 +221,10 @@
     return items;
   }
 
-  async function fetchJson(url, options) {
-    const res = await fetch(url, options);
-    const text = await res.text();
-    let data = null;
-    try { data = JSON.parse(text); } catch (e) { data = null; }
-    if (!res.ok) {
-      const msg = (data && (data.description || data.message)) || ('Request failed (' + res.status + ')');
-      throw new Error(msg);
-    }
-    if (!data) throw new Error('Unexpected response from the cart.');
-    return data;
-  }
-
-  async function renderDrawer() {
-    if (typeof window.dpCartRender === 'function') {
-      await window.dpCartRender();
-      return;
-    }
-    await refreshDrawer();
-  }
-
-  async function announce(cart, items) {
-    // Best effort: tell Horizon (header cart count) that lines were added.
-    try {
-      const events = await import('@shopify/events');
-      const d = events.CartLinesUpdateEvent.createPromise();
-      document.dispatchEvent(
-        new events.CartLinesUpdateEvent({
-          action: 'add',
-          context: 'product',
-          lines: items.map((it) => ({ merchandiseId: String(it.id), quantity: it.quantity })),
-          promise: d.promise,
-        })
-      );
-      d.resolve({
-        cart: events.CartLinesUpdateEvent.createCartFromAjaxResponse(cart),
-        detail: { items: cart.items, source: 'dp-product', sourceId: root.id, itemCount: cart.item_count, productId: cfg.productId, didError: false },
-      });
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
-  const BASIC_CART = true; // plain form submit to Shopify, no scripts in the way
-
-  function submitNativeForm(items) {
+  function submitCartForm(items) {
     const form = document.createElement('form');
     form.method = 'post';
-    form.action = '/cart/add.js';
+    form.action = '/cart/add';
     form.style.display = 'none';
     items.forEach((it, i) => {
       const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
@@ -278,12 +233,11 @@
     document.body.appendChild(form);
 
     if (typeof window.dpCartSubmit === 'function') {
-      // Posts into the hidden frame: the page never navigates and the drawer opens with the result.
+      // Goes through the cart bridge: a fetch(), no page navigation.
       window.dpCartSubmit(form);
       return;
     }
-    // No bridge on the page: fall back to a plain post that reloads the product page.
-    form.action = '/cart/add';
+    // No bridge on the page: fall back to a real post that reloads the product page.
     const ret = document.createElement('input');
     ret.name = 'return_to';
     ret.value = window.location.pathname;
@@ -291,118 +245,10 @@
     form.submit();
   }
 
-  async function addToCart() {
+  function addToCart() {
     const btn = q('[data-dp-atc]');
     if (!btn || btn.disabled) return;
-    const items = buildItems();
-    if (BASIC_CART) {
-      btn.classList.add('is-loading');
-      btn.disabled = true;
-      submitNativeForm(items);
-      return;
-    }
-    const err = q('[data-dp-error]');
-    btn.classList.add('is-loading');
-    btn.disabled = true;
-    if (err) err.hidden = true;
-
-    try {
-      const getCart = () => fetchJson('/cart.js?t=' + Date.now(), { headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store' });
-      const countOf = (cart, ids) => (cart.items || []).filter((li) => ids.includes(Number(li.variant_id))).reduce((s, li) => s + li.quantity, 0);
-      const ids = items.map((it) => it.id);
-      const before = countOf(await getCart(), ids);
-
-      // 1) JSON add
-      let cart = null;
-      try {
-        await fetchJson('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({ items }),
-        });
-        cart = await getCart();
-      } catch (e) {
-        cart = null;
-      }
-
-      // 2) Form-encoded add (the format every app expects)
-      if (!cart || countOf(cart, ids) <= before) {
-        const fd = new FormData();
-        items.forEach((it, i) => {
-          fd.append(`items[${i}][id]`, String(it.id));
-          fd.append(`items[${i}][quantity]`, String(it.quantity));
-        });
-        try {
-          await fetchJson('/cart/add.js', { method: 'POST', body: fd, credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
-          cart = await getCart();
-        } catch (e) {
-          cart = null;
-        }
-      }
-
-      // 3) Real form submit: handled entirely by Shopify, cannot be intercepted by scripts
-      if (!cart || countOf(cart, ids) <= before) {
-        const form = document.createElement('form');
-        form.method = 'post';
-        form.action = '/cart/add';
-        form.style.display = 'none';
-        items.forEach((it, i) => {
-          const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
-          const qty = document.createElement('input'); qty.name = `items[${i}][quantity]`; qty.value = String(it.quantity); form.appendChild(qty);
-        });
-        const ret = document.createElement('input'); ret.name = 'return_to'; ret.value = window.location.pathname + '?dpcart=1#dp-cart'; form.appendChild(ret);
-        document.body.appendChild(form);
-        form.submit();
-        return;
-      }
-
-      await renderDrawer();
-      openDrawer();
-      announce(cart, items);
-      if (typeof window.dpCartGuardCheck === 'function') setTimeout(window.dpCartGuardCheck, 300);
-
-      btn.classList.add('is-added');
-      setTimeout(() => btn.classList.remove('is-added'), 2000);
-    } catch (e) {
-      if (err) {
-        err.textContent = (e && e.message) || 'Something went wrong. Please try again.';
-        err.hidden = false;
-      }
-    } finally {
-      btn.classList.remove('is-loading');
-      btn.disabled = false;
-      render();
-    }
-  }
-
-  async function refreshDrawer() {
-    const wrapper = document.getElementById('shopify-section-cart-drawer-section');
-    if (!wrapper) return;
-    try {
-      const r = await fetch(`${window.location.pathname}?section_id=cart-drawer-section`, { credentials: 'same-origin' });
-      const html = await r.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const fresh = doc.querySelector('[data-dp-cart]');
-      const current = document.querySelector('[data-dp-cart]');
-      if (fresh && current) {
-        current.innerHTML = fresh.innerHTML;
-        current.className = fresh.className;
-      }
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
-  function openDrawer() {
-    const drawer = document.getElementById('cart-drawer');
-    if (!drawer) return;
-    if (typeof drawer.open === 'function') {
-      if (!drawer.hasAttribute('open')) drawer.open();
-      return;
-    }
-    const dialog = drawer.querySelector('dialog');
-    if (dialog && !dialog.open && typeof dialog.showModal === 'function') dialog.showModal();
+    submitCartForm(buildItems());
   }
 
   q('[data-dp-atc]')?.addEventListener('click', (e) => {

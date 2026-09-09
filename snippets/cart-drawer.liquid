@@ -1,7 +1,7 @@
 {% doc %}
-  Dear Paws cart drawer. Every cart change (add, quantity, remove, upsell) is a real HTML form
-  post to Shopify, submitted into a hidden iframe so the page never reloads. The response is
-  the freshly rendered drawer section, which is swapped into the open drawer.
+  Dear Paws cart drawer. Every cart change (add, quantity, remove) is a fetch() to Shopify's
+  cart endpoints — no iframe, no page reload. The response is the freshly rendered drawer
+  section, which is swapped into the open drawer.
 
   @param {boolean} [render_wrapper] - When true, wraps the drawer in the section wrapper that the Section Rendering API adds automatically.
 {% enddoc %}
@@ -15,33 +15,16 @@
   assign dp_rating = '4.9'
   assign dp_reviews = '2,483'
   assign dp_orders_base = 118
-  assign dp_duo_discount = 15
-  assign dp_mystery_handle = 'mystery-box'
 
   assign seed = 'now' | date: '%j' | plus: 0 | times: 7 | modulo: 43
   assign dp_orders_today = dp_orders_base | plus: seed
 
-  assign main_qty = 0
-  assign main_line = 0
-  assign main_item = null
   assign has_protection = false
-  assign has_mystery = false
   for item in cart.items
-    if dp_main_handles contains item.product.handle
-      assign main_qty = main_qty | plus: item.quantity
-      if main_line == 0
-        assign main_line = forloop.index
-        assign main_item = item
-      endif
-    endif
     if item.product.handle == 'shipping-protection'
       assign has_protection = true
     endif
-    if item.product.handle == dp_mystery_handle
-      assign has_mystery = true
-    endif
   endfor
-  assign mystery_product = all_products[dp_mystery_handle]
   assign main_product = all_products[dp_main_handle]
 
   # Only lines that actually carry a compare-at discount count toward the percentage,
@@ -208,45 +191,6 @@
               {%- endfor -%}
             </div>
 
-            {%- if main_item and main_qty == 1 -%}
-              {%- assign two_full = main_item.original_price | times: 2 -%}
-              {%- assign two_save = two_full | times: dp_duo_discount | divided_by: 100 -%}
-              {%- assign two_now = two_full | minus: two_save -%}
-              <p class="dpc__addon-heading">Add to your order</p>
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if main_item.image %}{{ main_item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: main_item.product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Second calendar</p>
-                  <p class="dpc__upsell-text">Save {{ two_save | money }} &mdash; two for {{ two_now | money }} instead of {{ two_full | money }}</p>
-                </div>
-                <div class="dpc__upsell-right">
-                  <span class="dpc__upsell-price">{{ main_item.original_price | money }}</span>
-                  <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                    <input type="hidden" name="line" value="{{ main_line }}">
-                    <input type="hidden" name="quantity" value="{{ main_item.quantity | plus: 1 }}">
-                    <button type="submit" class="dpc__upsell-btn">Add</button>
-                  </form>
-                </div>
-              </div>
-            {%- elsif main_item and has_mystery == false and mystery_product.available -%}
-              <p class="dpc__addon-heading">Add to your order</p>
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if mystery_product.featured_image %}{{ mystery_product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: mystery_product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Mystery Box</p>
-                  <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup</p>
-                </div>
-                <div class="dpc__upsell-right">
-                  <span class="dpc__upsell-price">{{ mystery_product.price | money }}</span>
-                  <form action="{{ routes.cart_add_url }}.js" method="post" data-dp-cart-form>
-                    <input type="hidden" name="id" value="{{ mystery_product.selected_or_first_available_variant.id }}">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="dpc__upsell-btn">Add</button>
-                  </form>
-                </div>
-              </div>
-            {%- endif -%}
-
             <div class="dpc__footer">
               {%- if dpc_total_save > 0 -%}
                 <div class="dpc__savings-total"><span>You save</span><span>{{ dpc_total_save | money }}{% if dpc_save_pct > 0 %} ({{ dpc_save_pct }}% off){% endif %}</span></div>
@@ -322,16 +266,6 @@
   .dpc__item-price { margin: 0; font-size: 18px; font-weight: 800; }
   .dpc__item-was { margin: -4px 0 0; font-size: 12px; color: #9a9a8c; text-decoration: line-through; }
   .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
-
-  .dpc__addon-heading { margin: 18px 22px 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
-  .dpc__upsell { margin: 0 22px 4px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: #fff; display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; }
-  .dpc__upsell-img { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: var(--cream); flex-shrink: 0; }
-  .dpc__upsell-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__upsell-title { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.25; }
-  .dpc__upsell-text { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
-  .dpc__upsell-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-  .dpc__upsell-price { font-size: 14px; font-weight: 700; color: var(--ink); }
-  .dpc__upsell-btn { border: 0; border-radius: 999px; background: var(--g2); color: #fff; font: inherit; font-size: 14px; font-weight: 800; padding: 8px 20px; cursor: pointer; }
 
   .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.05); }
   .dpc__savings-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 800; color: #b0483a; margin-bottom: 4px; }
