@@ -39,16 +39,14 @@
     }
 
     function syncHeader(cart) {
+      // Deliberately does NOT dispatch the theme's CartLinesUpdateEvent. Horizon's own
+      // cart-drawer.js listens for that event and reconciles the drawer's DOM against its own
+      // idea of the cart's line items — which doesn't know about this custom two-pass markup —
+      // and was silently clearing/truncating the item list moments after renderDrawer() had
+      // just rendered it correctly. A plain text update is all the header badge needs.
       document.querySelectorAll('.cart-bubble__text, [data-cart-count]').forEach(function (el) {
         el.textContent = String(cart.item_count);
       });
-      try {
-        import('@shopify/events').then(function (ev) {
-          var d = ev.CartLinesUpdateEvent.createPromise();
-          document.dispatchEvent(new ev.CartLinesUpdateEvent({ action: 'update', context: 'cart', lines: [], promise: d.promise }));
-          d.resolve({ cart: ev.CartLinesUpdateEvent.createCartFromAjaxResponse(cart), detail: { items: cart.items, source: 'dp-cart', didError: false } });
-        }).catch(function () {});
-      } catch (e) {}
     }
 
     async function renderDrawer() {
