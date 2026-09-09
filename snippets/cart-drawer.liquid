@@ -43,6 +43,12 @@
   endfor
   assign mystery_product = all_products[dp_mystery_handle]
   assign main_product = all_products[dp_main_handle]
+
+  assign dpc_total_save = 0
+  for item in cart.items
+    assign dpc_line_save = item.original_line_price | minus: item.final_line_price
+    assign dpc_total_save = dpc_total_save | plus: dpc_line_save
+  endfor
 -%}
 
 {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
@@ -147,36 +153,45 @@
               {%- assign two_full = main_item.original_price | times: 2 -%}
               {%- assign two_save = two_full | times: dp_duo_discount | divided_by: 100 -%}
               {%- assign two_now = two_full | minus: two_save -%}
+              <p class="dpc__addon-heading">Add to your order</p>
               <div class="dpc__upsell">
                 <div class="dpc__upsell-img">{% if main_item.image %}{{ main_item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: main_item.product.title }}{% endif %}</div>
                 <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Add a second calendar, save {{ two_save | money }}</p>
-                  <p class="dpc__upsell-text">Two for {{ two_now | money }} instead of {{ two_full | money }}.</p>
-                  <p class="dpc__upsell-note">Discount applies at checkout.</p>
+                  <p class="dpc__upsell-title">Second calendar</p>
+                  <p class="dpc__upsell-text">Save {{ two_save | money }} &mdash; two for {{ two_now | money }} instead of {{ two_full | money }}</p>
                 </div>
-                <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                  <input type="hidden" name="line" value="{{ main_line }}">
-                  <input type="hidden" name="quantity" value="{{ main_item.quantity | plus: 1 }}">
-                  <button type="submit" class="dpc__upsell-btn">Add</button>
-                </form>
+                <div class="dpc__upsell-right">
+                  <span class="dpc__upsell-price">{{ main_item.original_price | money }}</span>
+                  <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
+                    <input type="hidden" name="line" value="{{ main_line }}">
+                    <input type="hidden" name="quantity" value="{{ main_item.quantity | plus: 1 }}">
+                    <button type="submit" class="dpc__upsell-btn">Add</button>
+                  </form>
+                </div>
               </div>
             {%- elsif main_item and has_mystery == false and mystery_product.available -%}
+              <p class="dpc__addon-heading">Add to your order</p>
               <div class="dpc__upsell">
                 <div class="dpc__upsell-img">{% if mystery_product.featured_image %}{{ mystery_product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: mystery_product.title }}{% endif %}</div>
                 <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Add the Mystery Box, {{ mystery_product.price | money }}</p>
-                  <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup.</p>
-                  <p class="dpc__upsell-note">Ships in the same gift box.</p>
+                  <p class="dpc__upsell-title">Mystery Box</p>
+                  <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup</p>
                 </div>
-                <form action="{{ routes.cart_add_url }}.js" method="post" data-dp-cart-form>
-                  <input type="hidden" name="id" value="{{ mystery_product.selected_or_first_available_variant.id }}">
-                  <input type="hidden" name="quantity" value="1">
-                  <button type="submit" class="dpc__upsell-btn">Add</button>
-                </form>
+                <div class="dpc__upsell-right">
+                  <span class="dpc__upsell-price">{{ mystery_product.price | money }}</span>
+                  <form action="{{ routes.cart_add_url }}.js" method="post" data-dp-cart-form>
+                    <input type="hidden" name="id" value="{{ mystery_product.selected_or_first_available_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="dpc__upsell-btn">Add</button>
+                  </form>
+                </div>
               </div>
             {%- endif -%}
 
             <div class="dpc__footer">
+              {%- if dpc_total_save > 0 -%}
+                <div class="dpc__savings-total"><span>You save</span><span>{{ dpc_total_save | money }}</span></div>
+              {%- endif -%}
               <div class="dpc__subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
               <p class="dpc__note">Taxes calculated at checkout. Shipping is free{% if has_protection %} and insured{% endif %}.</p>
               <form action="{{ routes.cart_url }}" method="post" class="dpc__checkout-form">
@@ -185,6 +200,7 @@
                   Secure checkout
                 </button>
               </form>
+              <p class="dpc__encrypted"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>256-bit encrypted checkout</p>
               <div class="dpc__payments" aria-label="Accepted payment methods">
                 {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'dpc__pay' }}{%- endfor -%}
               </div>
@@ -242,19 +258,24 @@
   .dpc__item-was { margin: -4px 0 0; font-size: 12px; color: #9a9a8c; text-decoration: line-through; }
   .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
 
-  .dpc__upsell { margin: 16px 22px 4px; padding: 16px; border-radius: 16px; border: 1.5px solid #E9BFD0; background: linear-gradient(135deg, #FBE4EC 0%, #F7F2E6 100%); display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; }
-  .dpc__upsell-img { width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: #fff; }
+  .dpc__addon-heading { margin: 18px 22px 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+  .dpc__upsell { margin: 0 22px 4px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: #fff; display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; }
+  .dpc__upsell-img { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: var(--cream); flex-shrink: 0; }
   .dpc__upsell-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__upsell-title { margin: 0 0 4px; font-size: 15px; font-weight: 800; color: var(--g); line-height: 1.25; }
-  .dpc__upsell-text { margin: 0 0 4px; font-size: 13px; color: #4a4a3e; }
-  .dpc__upsell-note { margin: 0; font-size: 12px; color: var(--muted); }
-  .dpc__upsell-btn { border: 0; border-radius: 999px; background: var(--g2); color: #fff; font: inherit; font-size: 15px; font-weight: 800; padding: 12px 20px; cursor: pointer; }
+  .dpc__upsell-title { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .dpc__upsell-text { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .dpc__upsell-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .dpc__upsell-price { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .dpc__upsell-btn { border: 0; border-radius: 999px; background: var(--g2); color: #fff; font: inherit; font-size: 14px; font-weight: 800; padding: 8px 20px; cursor: pointer; }
 
   .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.05); }
+  .dpc__savings-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 800; color: #b0483a; margin-bottom: 4px; }
   .dpc__subtotal { display: flex; justify-content: space-between; align-items: baseline; font-size: 20px; font-weight: 800; color: var(--g); }
   .dpc__note { margin: 6px 0 12px; font-size: 13px; color: var(--muted); }
   .dpc__checkout { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #2F5A3D 0%, #1F3D2B 70%); color: #fff; font: inherit; font-size: 18px; font-weight: 800; padding: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(31,61,43,.3); }
   .dpc__checkout svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dpc__encrypted { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .dpc__encrypted svg { width: 14px; height: 14px; fill: none; stroke: var(--g); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .dpc__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
   .dpc__pay { width: 42px; height: 26px; border-radius: 5px; }
 
