@@ -1,18 +1,53 @@
-{%- comment -%} Dear Paws – FAQ accordion (details/summary, no JS) {%- endcomment -%}
+{%- comment -%}
+  Dear Paws – FAQ accordion (details/summary, no JS).
+  Species-aware: cat-tagged products render hardcoded cat Q&A so this section is correct
+  regardless of which JSON template Shopify resolves for the product.
+{%- endcomment -%}
+{%- liquid
+  assign is_cat = false
+  if product.tags contains 'cat'
+    assign is_cat = true
+  endif
+
+  assign dpf_eyebrow = section.settings.eyebrow
+  assign dpf_heading = section.settings.heading
+  assign dpf_text = section.settings.text
+  if is_cat
+    assign dpf_text = 'Everything you need to know before your cat opens door number one.'
+  endif
+-%}
 <section class="dpf" id="dp-faq-{{ section.id }}">
   <div class="dpf__inner">
     <div class="dpf__head">
-      {%- if section.settings.eyebrow != blank -%}<span class="dpf__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
-      {%- if section.settings.heading != blank -%}<h2 class="dpf__heading">{{ section.settings.heading }}</h2>{%- endif -%}
-      {%- if section.settings.text != blank -%}<p class="dpf__text">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if dpf_eyebrow != blank -%}<span class="dpf__eyebrow">{{ dpf_eyebrow }}</span>{%- endif -%}
+      {%- if dpf_heading != blank -%}<h2 class="dpf__heading">{{ dpf_heading }}</h2>{%- endif -%}
+      {%- if dpf_text != blank -%}<p class="dpf__text">{{ dpf_text }}</p>{%- endif -%}
     </div>
     <div class="dpf__list">
-      {%- for block in section.blocks -%}
-        <details class="dpf__item" {% if forloop.first and section.settings.open_first %}open{% endif %} {{ block.shopify_attributes }}>
-          <summary class="dpf__q"><span>{{ block.settings.question }}</span><span class="dpf__icon" aria-hidden="true"></span></summary>
-          <div class="dpf__a">{{ block.settings.answer }}</div>
-        </details>
-      {%- endfor -%}
+      {%- if is_cat -%}
+        {%- for i in (1..7) -%}
+          {%- case i -%}
+            {%- when 1 -%}{%- assign dpf_q = 'What is inside the Cat Advent Calendar?' -%}{%- assign dpf_a = '<p>24 numbered doors, each hiding a different surprise: a Santa teaser wand, crinkle fish, feather and plush mice, jingle balls, rattles, collars, spring coils and more. No two days are the same.</p>' -%}
+            {%- when 2 -%}{%- assign dpf_q = 'Is it suitable for kittens?' -%}{%- assign dpf_a = '<p>Yes. Everything is sized for kittens and adult cats alike. As with any new toy, supervise your cat at first and remove any piece that becomes damaged.</p>' -%}
+            {%- when 3 -%}{%- assign dpf_q = 'When should I order to receive it before December 1st?' -%}{%- assign dpf_a = '<p>Orders placed before November 20th typically arrive in time for the first door. We ship from Canada with tracking on every order.</p>' -%}
+            {%- when 4 -%}{%- assign dpf_q = 'Does it come ready to gift?' -%}{%- assign dpf_a = '<p>It does. The calendar arrives in its festive gift box with no prices shown, so it can go straight under the tree.</p>' -%}
+            {%- when 5 -%}{%- assign dpf_q = 'Can I buy one for a cat and one for a dog?' -%}{%- assign dpf_a = '<p>Yes. We make a Paw Advent Calendar for dogs as well. Add each one to your cart separately and they ship together.</p>' -%}
+            {%- when 6 -%}{%- assign dpf_q = 'What is your return policy?' -%}{%- assign dpf_a = '<p>If you or your cat are not happy within 30 days, contact us and we will make it right with a replacement or a full refund.</p>' -%}
+            {%- when 7 -%}{%- assign dpf_q = 'Do you offer free shipping?' -%}{%- assign dpf_a = '<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>' -%}
+          {%- endcase -%}
+          <details class="dpf__item" {% if forloop.first and section.settings.open_first %}open{% endif %}>
+            <summary class="dpf__q"><span>{{ dpf_q }}</span><span class="dpf__icon" aria-hidden="true"></span></summary>
+            <div class="dpf__a">{{ dpf_a }}</div>
+          </details>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          <details class="dpf__item" {% if forloop.first and section.settings.open_first %}open{% endif %} {{ block.shopify_attributes }}>
+            <summary class="dpf__q"><span>{{ block.settings.question }}</span><span class="dpf__icon" aria-hidden="true"></span></summary>
+            <div class="dpf__a">{{ block.settings.answer }}</div>
+          </details>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
   </div>
 </section>

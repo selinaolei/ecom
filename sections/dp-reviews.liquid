@@ -1,17 +1,46 @@
-{%- comment -%} Dear Paws – Reviews: rating summary + photo review masonry {%- endcomment -%}
+{%- comment -%}
+  Dear Paws – Reviews: rating summary + photo review masonry.
+  Species-aware: cat-tagged products render hardcoded cat reviews/photos so this section
+  is correct regardless of which JSON template Shopify resolves for the product.
+{%- endcomment -%}
+{%- liquid
+  assign is_cat = false
+  if product.tags contains 'cat'
+    assign is_cat = true
+  endif
+
+  assign dpr_rating = section.settings.rating
+  assign dpr_rating_text = section.settings.rating_text
+  assign dpr_heading = section.settings.heading
+  assign dpr_b5 = section.settings.bar_5
+  assign dpr_b4 = section.settings.bar_4
+  assign dpr_b3 = section.settings.bar_3
+  assign dpr_b2 = section.settings.bar_2
+  assign dpr_b1 = section.settings.bar_1
+  if is_cat
+    assign dpr_rating = '4.8'
+    assign dpr_rating_text = 'Based on 1,914 reviews'
+    assign dpr_heading = 'What people say about Dear Paws'
+    assign dpr_b5 = 85
+    assign dpr_b4 = 11
+    assign dpr_b3 = 2
+    assign dpr_b2 = 1
+    assign dpr_b1 = 1
+  endif
+-%}
 <section class="dpr" id="dp-reviews-{{ section.id }}">
   <div class="dpr__inner">
     <div class="dpr__head">
-      {%- if section.settings.heading != blank -%}<h2 class="dpr__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if dpr_heading != blank -%}<h2 class="dpr__heading">{{ dpr_heading }}</h2>{%- endif -%}
       <div class="dpr__summary">
         <div class="dpr__score">
-          <span class="dpr__score-num">{{ section.settings.rating }}</span>
+          <span class="dpr__score-num">{{ dpr_rating }}</span>
           <span class="dpr__stars" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}</span>
-          <span class="dpr__score-text">{{ section.settings.rating_text }}</span>
+          <span class="dpr__score-text">{{ dpr_rating_text }}</span>
         </div>
         <ul class="dpr__bars">
           {%- assign labels = '5,4,3,2,1' | split: ',' -%}
-          {%- assign values = section.settings.bar_5 | append: ',' | append: section.settings.bar_4 | append: ',' | append: section.settings.bar_3 | append: ',' | append: section.settings.bar_2 | append: ',' | append: section.settings.bar_1 | split: ',' -%}
+          {%- assign values = dpr_b5 | append: ',' | append: dpr_b4 | append: ',' | append: dpr_b3 | append: ',' | append: dpr_b2 | append: ',' | append: dpr_b1 | split: ',' -%}
           {%- for label in labels -%}
             {%- assign v = values[forloop.index0] | plus: 0 -%}
             <li><span class="dpr__bar-label">{{ label }} <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg></span><span class="dpr__bar"><span style="width: {{ v }}%"></span></span><span class="dpr__bar-pct">{{ v }}%</span></li>
@@ -21,27 +50,57 @@
     </div>
 
     <div class="dpr__grid">
-      {%- for block in section.blocks -%}
-        <article class="dpr__card" {{ block.shopify_attributes }}>
-          {%- if block.settings.image != blank -%}
-            <div class="dpr__media">{{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', alt: block.settings.name }}</div>
-          {%- endif -%}
-          <div class="dpr__body">
-            <span class="dpr__stars dpr__stars--sm" aria-label="{{ block.settings.stars }} out of 5 stars">
-              {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" class="{% if i > block.settings.stars %}is-off{% endif %}"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}
-            </span>
-            {%- if block.settings.title != blank -%}<h3 class="dpr__title">{{ block.settings.title }}</h3>{%- endif -%}
-            <p class="dpr__text">{{ block.settings.text }}</p>
-            <div class="dpr__meta">
-              <span class="dpr__avatar" aria-hidden="true">{{ block.settings.name | slice: 0 }}</span>
-              <span class="dpr__name">{{ block.settings.name }}</span>
-              {%- if block.settings.verified -%}
+      {%- if is_cat -%}
+        {%- for i in (1..8) -%}
+          {%- case i -%}
+            {%- when 1 -%}{%- assign dpr_img = 'dp-cat-review-1.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'She waits by the box every morning' -%}{%- assign dpr_text = 'Our tabby worked out the routine by day three. She sits in front of it and yells at us until we open the next door. The toys are proper quality, not the flimsy stuff.' -%}{%- assign dpr_name = 'Sarah M.' -%}
+            {%- when 2 -%}{%- assign dpr_img = 'dp-cat-review-2.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Perfect gift for a cat person' -%}{%- assign dpr_text = 'Bought the Duo for my sister and her two cats. The box looks lovely under the tree and the feather wand was an instant hit.' -%}{%- assign dpr_name = 'James T.' -%}
+            {%- when 3 -%}{%- assign dpr_img = 'dp-cat-review-3.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Worth every penny' -%}{%- assign dpr_text = '24 days of my cat losing his mind. The jingle ball from day 9 is still his favourite and it has been weeks.' -%}{%- assign dpr_name = 'Rachel P.' -%}
+            {%- when 4 -%}{%- assign dpr_img = 'dp-cat-review-4.png' -%}{%- assign dpr_stars = 4 -%}{%- assign dpr_title = 'Great variety' -%}{%- assign dpr_text = 'Nice mix of wands, mice and balls. One of the feather mice lost its feathers fast, but everything else has held up well.' -%}{%- assign dpr_name = 'Tom S.' -%}
+            {%- when 5 -%}{%- assign dpr_img = 'dp-cat-review-5.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Shipping was fast' -%}{%- assign dpr_text = 'Ordered on a Monday, arrived Thursday. Box was in perfect shape and the cat approved immediately.' -%}{%- assign dpr_name = 'Priya K.' -%}
+            {%- when 6 -%}{%- assign dpr_img = 'dp-cat-review-6.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Our new tradition' -%}{%- assign dpr_text = 'Second year buying this. Opening a door with the cat is now part of our Christmas mornings and the kids love it.' -%}{%- assign dpr_name = 'Daniel R.' -%}
+            {%- when 7 -%}{%- assign dpr_img = 'dp-cat-review-7.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Kitten approved' -%}{%- assign dpr_text = 'I have a four month old kitten and everything was the right size for her. The rattle drum keeps her busy for ages.' -%}{%- assign dpr_name = 'Megan L.' -%}
+            {%- when 8 -%}{%- assign dpr_img = 'dp-cat-review-8.png' -%}{%- assign dpr_stars = 5 -%}{%- assign dpr_title = 'Lovely box' -%}{%- assign dpr_text = 'The winter design is genuinely pretty. Honestly nicer in person than in the photos.' -%}{%- assign dpr_name = 'Olivia W.' -%}
+          {%- endcase -%}
+          <article class="dpr__card">
+            <div class="dpr__media"><img src="{{ dpr_img | file_img_url: '700x' }}" loading="lazy" sizes="(min-width: 990px) 25vw, 50vw" alt="{{ dpr_name }}" width="700" height="700"></div>
+            <div class="dpr__body">
+              <span class="dpr__stars dpr__stars--sm" aria-label="{{ dpr_stars }} out of 5 stars">
+                {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" class="{% if i > dpr_stars %}is-off{% endif %}"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}
+              </span>
+              <h3 class="dpr__title">{{ dpr_title }}</h3>
+              <p class="dpr__text">{{ dpr_text }}</p>
+              <div class="dpr__meta">
+                <span class="dpr__avatar" aria-hidden="true">{{ dpr_name | slice: 0 }}</span>
+                <span class="dpr__name">{{ dpr_name }}</span>
                 <span class="dpr__verified"><svg viewBox="0 0 20 20"><path d="M10 1l2.4 2 3-.3.9 2.9 2.6 1.6-1.2 2.8 1.2 2.8-2.6 1.6-.9 2.9-3-.3-2.4 2-2.4-2-3 .3-.9-2.9L1.1 12.8l1.2-2.8L1.1 7.2l2.6-1.6.9-2.9 3 .3z"/><path d="M6.5 10.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified buyer</span>
-              {%- endif -%}
+              </div>
             </div>
-          </div>
-        </article>
-      {%- endfor -%}
+          </article>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          <article class="dpr__card" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="dpr__media">{{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 50vw', alt: block.settings.name }}</div>
+            {%- endif -%}
+            <div class="dpr__body">
+              <span class="dpr__stars dpr__stars--sm" aria-label="{{ block.settings.stars }} out of 5 stars">
+                {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" class="{% if i > block.settings.stars %}is-off{% endif %}"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}
+              </span>
+              {%- if block.settings.title != blank -%}<h3 class="dpr__title">{{ block.settings.title }}</h3>{%- endif -%}
+              <p class="dpr__text">{{ block.settings.text }}</p>
+              <div class="dpr__meta">
+                <span class="dpr__avatar" aria-hidden="true">{{ block.settings.name | slice: 0 }}</span>
+                <span class="dpr__name">{{ block.settings.name }}</span>
+                {%- if block.settings.verified -%}
+                  <span class="dpr__verified"><svg viewBox="0 0 20 20"><path d="M10 1l2.4 2 3-.3.9 2.9 2.6 1.6-1.2 2.8 1.2 2.8-2.6 1.6-.9 2.9-3-.3-2.4 2-2.4-2-3 .3-.9-2.9L1.1 12.8l1.2-2.8L1.1 7.2l2.6-1.6.9-2.9 3 .3z"/><path d="M6.5 10.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified buyer</span>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
   </div>
 </section>

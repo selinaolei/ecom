@@ -1,17 +1,36 @@
-{%- comment -%} Dear Paws – "Regular toys vs Dear Paws" comparison table {%- endcomment -%}
+{%- comment -%}
+  Dear Paws – "Regular toys vs Dear Paws" comparison table.
+  Species-aware: cat-tagged products render hardcoded cat rows/copy so this section is
+  correct regardless of which JSON template Shopify resolves for the product.
+{%- endcomment -%}
+{%- liquid
+  assign is_cat = false
+  if product.tags contains 'cat'
+    assign is_cat = true
+  endif
+
+  assign dpc_eyebrow = section.settings.eyebrow
+  assign dpc_heading = section.settings.heading
+  assign dpc_text = section.settings.text
+  assign dpc_them_label = section.settings.them_label
+  if is_cat
+    assign dpc_heading = 'Regular cat toys vs Dear Paws'
+    assign dpc_text = 'One box replaces a month of impulse pet store buys and keeps your cat hunting every single morning.'
+  endif
+-%}
 <section class="dpc" id="dp-comparison-{{ section.id }}">
   <div class="dpc__inner">
     <div class="dpc__head">
-      {%- if section.settings.eyebrow != blank -%}<span class="dpc__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
-      {%- if section.settings.heading != blank -%}<h2 class="dpc__heading">{{ section.settings.heading }}</h2>{%- endif -%}
-      {%- if section.settings.text != blank -%}<p class="dpc__text">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if dpc_eyebrow != blank -%}<span class="dpc__eyebrow">{{ dpc_eyebrow }}</span>{%- endif -%}
+      {%- if dpc_heading != blank -%}<h2 class="dpc__heading">{{ dpc_heading }}</h2>{%- endif -%}
+      {%- if dpc_text != blank -%}<p class="dpc__text">{{ dpc_text }}</p>{%- endif -%}
     </div>
     <div class="dpc__table-wrap">
       <table class="dpc__table">
         <thead>
           <tr>
             <th scope="col" class="dpc__feature-head"><span class="visually-hidden">Feature</span></th>
-            <th scope="col" class="dpc__them">{{ section.settings.them_label }}</th>
+            <th scope="col" class="dpc__them">{{ dpc_them_label }}</th>
             <th scope="col" class="dpc__us">
               {%- if section.settings.us_image != blank -%}
                 {{ section.settings.us_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: section.settings.us_label, class: 'dpc__us-img' }}
@@ -21,27 +40,60 @@
           </tr>
         </thead>
         <tbody>
-          {%- for block in section.blocks -%}
-            <tr {{ block.shopify_attributes }}>
-              <th scope="row">{{ block.settings.feature }}</th>
-              <td class="dpc__them">
-                {%- if block.settings.them_text != blank -%}
-                  <span class="dpc__cell-text">{{ block.settings.them_text }}</span>
-                {%- elsif block.settings.them_check -%}
-                  <span class="dpc__mark dpc__mark--ok dpc__mark--muted" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                {%- else -%}
-                  <span class="dpc__mark dpc__mark--no" aria-label="No"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
-                {%- endif -%}
-              </td>
-              <td class="dpc__us">
-                {%- if block.settings.us_text != blank -%}
-                  <span class="dpc__cell-text dpc__cell-text--us">{{ block.settings.us_text }}</span>
-                {%- else -%}
-                  <span class="dpc__mark dpc__mark--ok" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                {%- endif -%}
-              </td>
-            </tr>
-          {%- endfor -%}
+          {%- if is_cat -%}
+            {%- for i in (1..7) -%}
+              {%- case i -%}
+                {%- when 1 -%}{%- assign dpc_feat = '24 different toys and teasers' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+                {%- when 2 -%}{%- assign dpc_feat = 'New surprise every single day' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+                {%- when 3 -%}{%- assign dpc_feat = 'Safe for kittens and adult cats' -%}{%- assign dpc_check = true -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+                {%- when 4 -%}{%- assign dpc_feat = 'Gift-ready festive box' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+                {%- when 5 -%}{%- assign dpc_feat = 'Bells and feathers that trigger real play' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+                {%- when 6 -%}{%- assign dpc_feat = 'Price per item' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '$6 to $12 each' -%}{%- assign dpc_us_text = 'Under $3 each' -%}
+                {%- when 7 -%}{%- assign dpc_feat = 'Free shipping and 30-day guarantee' -%}{%- assign dpc_check = false -%}{%- assign dpc_them_text = '' -%}{%- assign dpc_us_text = '' -%}
+              {%- endcase -%}
+              <tr>
+                <th scope="row">{{ dpc_feat }}</th>
+                <td class="dpc__them">
+                  {%- if dpc_them_text != blank -%}
+                    <span class="dpc__cell-text">{{ dpc_them_text }}</span>
+                  {%- elsif dpc_check -%}
+                    <span class="dpc__mark dpc__mark--ok dpc__mark--muted" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  {%- else -%}
+                    <span class="dpc__mark dpc__mark--no" aria-label="No"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+                  {%- endif -%}
+                </td>
+                <td class="dpc__us">
+                  {%- if dpc_us_text != blank -%}
+                    <span class="dpc__cell-text dpc__cell-text--us">{{ dpc_us_text }}</span>
+                  {%- else -%}
+                    <span class="dpc__mark dpc__mark--ok" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  {%- endif -%}
+                </td>
+              </tr>
+            {%- endfor -%}
+          {%- else -%}
+            {%- for block in section.blocks -%}
+              <tr {{ block.shopify_attributes }}>
+                <th scope="row">{{ block.settings.feature }}</th>
+                <td class="dpc__them">
+                  {%- if block.settings.them_text != blank -%}
+                    <span class="dpc__cell-text">{{ block.settings.them_text }}</span>
+                  {%- elsif block.settings.them_check -%}
+                    <span class="dpc__mark dpc__mark--ok dpc__mark--muted" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  {%- else -%}
+                    <span class="dpc__mark dpc__mark--no" aria-label="No"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+                  {%- endif -%}
+                </td>
+                <td class="dpc__us">
+                  {%- if block.settings.us_text != blank -%}
+                    <span class="dpc__cell-text dpc__cell-text--us">{{ block.settings.us_text }}</span>
+                  {%- else -%}
+                    <span class="dpc__mark dpc__mark--ok" aria-label="Yes"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  {%- endif -%}
+                </td>
+              </tr>
+            {%- endfor -%}
+          {%- endif -%}
         </tbody>
       </table>
     </div>

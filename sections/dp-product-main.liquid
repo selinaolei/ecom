@@ -15,6 +15,13 @@
   assign tiers = section.blocks | where: 'type', 'tier'
   assign addons = section.blocks | where: 'type', 'addon'
   assign trusts = section.blocks | where: 'type', 'trust'
+
+  # Species-aware: swap "dog(s)" wording for cat-tagged products so trust/feature
+  # copy is correct regardless of which JSON template Shopify resolves.
+  assign is_cat = false
+  if product.tags contains 'cat'
+    assign is_cat = true
+  endif
 -%}
 
 <section class="dpm" id="dp-product-{{ section.id }}" data-dp-product>
@@ -80,7 +87,7 @@
             <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
           {%- endfor -%}
         </span>
-        <span class="dpm__rating-text">{{ section.settings.rating_text }}</span>
+        <span class="dpm__rating-text">{%- if is_cat -%}Rated 4.8 based on 1,914 reviews{%- else -%}{{ section.settings.rating_text }}{%- endif -%}</span>
         <span class="dpm__rating-arrow" aria-hidden="true">&rsaquo;</span>
       </a>
 
@@ -109,7 +116,7 @@
                   {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
                 {%- endcase -%}
               </span>
-              <span>{{ block.settings.text }}</span>
+              <span>{%- if is_cat -%}{{ block.settings.text | replace: 'dogs', 'cats' | replace: 'dog', 'cat' }}{%- else -%}{{ block.settings.text }}{%- endif -%}</span>
             </li>
           {%- endfor -%}
         </ul>
@@ -227,7 +234,7 @@
                   {%- else -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
                 {%- endcase -%}
               </span>
-              <span>{{ block.settings.text }}</span>
+              <span>{%- if is_cat -%}{{ block.settings.text | replace: 'dogs', 'cats' | replace: 'dog', 'cat' }}{%- else -%}{{ block.settings.text }}{%- endif -%}</span>
             </li>
           {%- endfor -%}
         </ul>

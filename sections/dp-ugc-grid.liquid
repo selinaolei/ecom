@@ -1,30 +1,71 @@
-{%- comment -%} Dear Paws – "People keep posting about" UGC photo grid (forest green band) {%- endcomment -%}
+{%- comment -%}
+  Dear Paws – "People keep posting about" UGC photo grid (forest green band).
+  Species-aware: when the current product is tagged "cat", the grid renders hardcoded
+  cat photos/captions instead of the section's (dog-oriented) blocks. This makes the
+  content correct for the Cat Advent Calendar regardless of which JSON template Shopify
+  resolves for the product, since it keys off the live product object at render time.
+{%- endcomment -%}
+{%- liquid
+  assign is_cat = false
+  if product.tags contains 'cat'
+    assign is_cat = true
+  endif
+-%}
 <section class="dpu" id="dp-ugc-{{ section.id }}">
   <div class="dpu__inner">
     <div class="dpu__head">
-      {%- if section.settings.eyebrow != blank -%}<span class="dpu__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
-      {%- if section.settings.heading != blank -%}<h2 class="dpu__heading">{{ section.settings.heading }}</h2>{%- endif -%}
-      {%- if section.settings.text != blank -%}<p class="dpu__text">{{ section.settings.text }}</p>{%- endif -%}
+      {%- if is_cat -%}
+        <span class="dpu__eyebrow">Real cats. Real mornings.</span>
+        <h2 class="dpu__heading">People keep posting about Dear Paws</h2>
+        <p class="dpu__text">Tag @dearpaws and show us door number one. We repost our favourites every week.</p>
+      {%- else -%}
+        {%- if section.settings.eyebrow != blank -%}<span class="dpu__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="dpu__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<p class="dpu__text">{{ section.settings.text }}</p>{%- endif -%}
+      {%- endif -%}
     </div>
     <div class="dpu__grid dpu__grid--{{ section.settings.columns }}">
-      {%- for block in section.blocks -%}
-        <figure class="dpu__card" {{ block.shopify_attributes }}>
-          <div class="dpu__media">
-            {%- if block.settings.image != blank -%}
-              {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 50vw', alt: block.settings.handle }}
-            {%- else -%}
-              {{ 'lifestyle-1' | placeholder_svg_tag: 'dpu__placeholder' }}
-            {%- endif -%}
-            <span class="dpu__heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span>
-          </div>
-          {%- if block.settings.handle != blank or block.settings.caption != blank -%}
+      {%- if is_cat -%}
+        {%- for i in (1..6) -%}
+          {%- case i -%}
+            {%- when 1 -%}{%- assign dpu_img = 'dp-cat-ugc-1.png' -%}{%- assign dpu_handle = '@miso.thetabby' -%}{%- assign dpu_caption = 'Door 1 was a feather wand. Chaos, immediately.' -%}
+            {%- when 2 -%}{%- assign dpu_img = 'dp-cat-ugc-2.png' -%}{%- assign dpu_handle = '@two.blackcats' -%}{%- assign dpu_caption = 'They take turns sitting on the box.' -%}
+            {%- when 3 -%}{%- assign dpu_img = 'dp-cat-ugc-3.png' -%}{%- assign dpu_handle = '@pepper.ragdoll' -%}{%- assign dpu_caption = 'The jingle ball has been under the sofa since day 6.' -%}
+            {%- when 4 -%}{%- assign dpu_img = 'dp-cat-ugc-4.png' -%}{%- assign dpu_handle = '@kitten.olive' -%}{%- assign dpu_caption = 'First Christmas and she is obsessed.' -%}
+            {%- when 5 -%}{%- assign dpu_img = 'dp-cat-ugc-5.png' -%}{%- assign dpu_handle = '@sir.reginald.cat' -%}{%- assign dpu_caption = 'Refuses to move until we open the next one.' -%}
+            {%- when 6 -%}{%- assign dpu_img = 'dp-cat-ugc-6.png' -%}{%- assign dpu_handle = '@mochi.and.mango' -%}{%- assign dpu_caption = 'Two calendars so nobody fights. Worth it.' -%}
+          {%- endcase -%}
+          <figure class="dpu__card">
+            <div class="dpu__media">
+              <img src="{{ dpu_img | file_img_url: '800x' }}" loading="lazy" sizes="(min-width: 990px) 33vw, 50vw" alt="{{ dpu_handle }}" width="800" height="800">
+              <span class="dpu__heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span>
+            </div>
             <figcaption>
-              {%- if block.settings.handle != blank -%}<strong>{{ block.settings.handle }}</strong>{%- endif -%}
-              {%- if block.settings.caption != blank -%}<span>{{ block.settings.caption }}</span>{%- endif -%}
+              <strong>{{ dpu_handle }}</strong>
+              <span>{{ dpu_caption }}</span>
             </figcaption>
-          {%- endif -%}
-        </figure>
-      {%- endfor -%}
+          </figure>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          <figure class="dpu__card" {{ block.shopify_attributes }}>
+            <div class="dpu__media">
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 50vw', alt: block.settings.handle }}
+              {%- else -%}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'dpu__placeholder' }}
+              {%- endif -%}
+              <span class="dpu__heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span>
+            </div>
+            {%- if block.settings.handle != blank or block.settings.caption != blank -%}
+              <figcaption>
+                {%- if block.settings.handle != blank -%}<strong>{{ block.settings.handle }}</strong>{%- endif -%}
+                {%- if block.settings.caption != blank -%}<span>{{ block.settings.caption }}</span>{%- endif -%}
+              </figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
     {%- if section.settings.button_text != blank -%}
       <div class="dpu__cta">
