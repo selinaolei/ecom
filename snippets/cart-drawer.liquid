@@ -228,8 +228,11 @@
   /* Shrink the drawer to fit its content instead of always forcing full viewport height —
      a short cart (one or two items) otherwise leaves a large blank gap above the footer.
      max-height still caps it at the viewport (100vh, with a 100dvh upgrade) so a long cart's
-     item list scrolls internally instead of pushing the footer off-screen. */
-  #cart-drawer .theme-drawer__dialog { height: auto; max-height: 100vh; }
+     item list scrolls internally instead of pushing the footer off-screen. The native <dialog>
+     element centers itself vertically by default (margin: auto) once it's shorter than the
+     viewport — margin: 0 pins it to the top instead, so the shrunk box sits flush against the
+     top of the screen rather than floating in the middle with gaps on both sides. */
+  #cart-drawer .theme-drawer__dialog { height: auto; max-height: 100vh; margin: 0; }
   @supports (height: 100dvh) {
     #cart-drawer .theme-drawer__dialog { max-height: 100dvh; }
   }
