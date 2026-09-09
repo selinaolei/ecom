@@ -44,11 +44,21 @@
   assign mystery_product = all_products[dp_mystery_handle]
   assign main_product = all_products[dp_main_handle]
 
+  # Only lines that actually carry a compare-at discount count toward the percentage,
+  # so a full-price add-on (warranty, shipping protection) never dilutes the number.
   assign dpc_total_save = 0
+  assign dpc_total_compare = 0
   for item in cart.items
-    assign dpc_line_save = item.original_line_price | minus: item.final_line_price
-    assign dpc_total_save = dpc_total_save | plus: dpc_line_save
+    if item.original_line_price > item.final_line_price
+      assign dpc_line_save = item.original_line_price | minus: item.final_line_price
+      assign dpc_total_save = dpc_total_save | plus: dpc_line_save
+      assign dpc_total_compare = dpc_total_compare | plus: item.original_line_price
+    endif
   endfor
+  assign dpc_save_pct = 0
+  if dpc_total_compare > 0
+    assign dpc_save_pct = dpc_total_save | times: 100 | divided_by: dpc_total_compare
+  endif
 -%}
 
 {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
@@ -190,7 +200,7 @@
 
             <div class="dpc__footer">
               {%- if dpc_total_save > 0 -%}
-                <div class="dpc__savings-total"><span>You save</span><span>{{ dpc_total_save | money }}</span></div>
+                <div class="dpc__savings-total"><span>You save</span><span>{{ dpc_total_save | money }}{% if dpc_save_pct > 0 %} ({{ dpc_save_pct }}% off){% endif %}</span></div>
               {%- endif -%}
               <div class="dpc__subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
               <p class="dpc__note">Taxes calculated at checkout. Shipping is free{% if has_protection %} and insured{% endif %}.</p>
