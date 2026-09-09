@@ -228,11 +228,16 @@
   /* Shrink the drawer to fit its content instead of always forcing full viewport height —
      a short cart (one or two items) otherwise leaves a large blank gap above the footer.
      max-height still caps it at the viewport (100vh, with a 100dvh upgrade) so a long cart's
-     item list scrolls internally instead of pushing the footer off-screen. The native <dialog>
-     element centers itself vertically by default (margin: auto) once it's shorter than the
-     viewport — margin: 0 pins it to the top instead, so the shrunk box sits flush against the
-     top of the screen rather than floating in the middle with gaps on both sides. */
-  #cart-drawer .theme-drawer__dialog { height: auto; max-height: 100vh; margin: 0; }
+     item list scrolls internally instead of pushing the footer off-screen.
+
+     A <dialog> opened via showModal() gets `inset-block: 0` (top:0 AND bottom:0) from the
+     browser's own default stylesheet. With top, bottom, height and margin ALL specified at
+     once, the box is over-constrained, and different engines resolve that differently — some
+     (older WebKit, in-app browsers like Facebook's) keep the box centered instead of pinning
+     it to the top, which is what was still showing a gap above the header. Setting bottom:
+     auto removes the ambiguity outright: only top is fixed, height is content-driven, and
+     there is nothing left for any engine to "resolve" inconsistently. */
+  #cart-drawer .theme-drawer__dialog { height: auto; max-height: 100vh; margin: 0; top: 0; bottom: auto; }
   @supports (height: 100dvh) {
     #cart-drawer .theme-drawer__dialog { max-height: 100dvh; }
   }
