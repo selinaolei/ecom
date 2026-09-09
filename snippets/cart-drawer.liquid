@@ -118,7 +118,56 @@
             </div>
 
             <div class="dpc__items">
+              {%- comment -%}
+                Two passes over the same cart.items array (not a merged list) so each form's
+                "line" value stays the true 1-based position Shopify expects for
+                /cart/change.js, regardless of visual order. Pass 1 renders the calendar(s)
+                first; pass 2 renders every other line (add-ons) after, so the display order
+                is always calendar-then-add-ons even if the cart's real history is different
+                (e.g. an add-on was added before the calendar in an earlier session).
+              {%- endcomment -%}
               {%- for item in cart.items -%}
+                {%- unless dp_main_handles contains item.product.handle -%}{%- continue -%}{%- endunless -%}
+                <div class="dpc__item">
+                  <div class="dpc__thumb">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
+                    {%- endif -%}
+                  </div>
+                  <div class="dpc__item-body">
+                    <p class="dpc__item-title">{{ item.product.title }}</p>
+                    {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
+                      <p class="dpc__item-variant">{{ item.variant.title | capitalize }}</p>
+                    {%- endif -%}
+                    <div class="dpc__qty" role="group" aria-label="Quantity">
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
+                        <button type="submit" aria-label="Decrease quantity">&minus;</button>
+                      </form>
+                      <span>{{ item.quantity }}</span>
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
+                        <button type="submit" aria-label="Increase quantity">+</button>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="dpc__item-right">
+                    <p class="dpc__item-price">{{ item.final_line_price | money }}</p>
+                    {%- if item.original_line_price > item.final_line_price -%}
+                      <p class="dpc__item-was">{{ item.original_line_price | money }}</p>
+                    {%- endif -%}
+                    <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
+                      <input type="hidden" name="line" value="{{ forloop.index }}">
+                      <input type="hidden" name="quantity" value="0">
+                      <button type="submit" class="dpc__remove">Remove</button>
+                    </form>
+                  </div>
+                </div>
+              {%- endfor -%}
+              {%- for item in cart.items -%}
+                {%- if dp_main_handles contains item.product.handle -%}{%- continue -%}{%- endif -%}
                 <div class="dpc__item">
                   <div class="dpc__thumb">
                     {%- if item.image -%}
@@ -232,6 +281,12 @@
     #cart-drawer .theme-drawer__dialog { --theme-drawer-width: min(88vw, 430px); border-radius: 22px 0 0 22px; box-shadow: -12px 0 40px rgba(0,0,0,.25); }
   }
   #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(15, 30, 20, .55); }
+  /* Fallback for embedded browsers (e.g. Instagram's in-app WebView) that don't size 100dvh
+     reliably; without a concrete height the flex-grown items list below can collapse to 0. */
+  #cart-drawer .theme-drawer__dialog { height: 100vh; }
+  @supports (height: 100dvh) {
+    #cart-drawer .theme-drawer__dialog { height: 100dvh; }
+  }
   .dpc__dialog { --theme-drawer-padding: 0; }
 
   .dpc { text-align: left; --g: #1F3D2B; --g2: #2D4A2D; --gold: #C9A96E; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
@@ -239,10 +294,10 @@
   .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; min-width: 0; }
   .dpc form { margin: 0; }
   .dpc.is-busy::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.5); z-index: 5; }
-  .dpc__head { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 6px; }
-  .dpc__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: 30px; font-weight: 900; color: var(--g); letter-spacing: -0.5px; line-height: 1; display: flex; align-items: baseline; gap: 8px; }
+  .dpc__head { position: relative; padding: 22px 68px 6px 22px; }
+  .dpc__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: 28px; font-weight: 900; color: var(--g); letter-spacing: -0.5px; line-height: 1.1; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
   .dpc__count { font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
-  .dpc__close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--g); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .dpc__close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--g); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
   .dpc__close svg { width: 18px; height: 18px; }
   .dpc__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 12px; padding: 0 22px; font-size: 14px; font-weight: 600; color: var(--g2); }
   .dpc__proof-item { display: inline-flex; align-items: center; gap: 5px; }
@@ -254,7 +309,7 @@
   .dpc__banner p { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--g); }
   .dpc__banner svg { width: 20px; height: 20px; fill: none; stroke: var(--g); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 20px; }
 
-  .dpc__items { flex: 1; overflow-y: auto; padding: 0 22px; }
+  .dpc__items { flex: 1 1 auto; min-height: 90px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 22px; }
   .dpc__item { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
   .dpc__thumb { width: 74px; height: 74px; border-radius: 12px; background: var(--cream); overflow: hidden; }
   .dpc__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
