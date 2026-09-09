@@ -267,27 +267,21 @@
   const BASIC_CART = true; // plain form submit to Shopify, no scripts in the way
 
   function submitNativeForm(items) {
+    // A real HTML form post to /cart/add, reloading the page. Nothing on the page
+    // (apps, other scripts) can intercept this — it goes straight to Shopify.
     const form = document.createElement('form');
     form.method = 'post';
-    form.action = '/cart/add.js';
+    form.action = '/cart/add';
     form.style.display = 'none';
     items.forEach((it, i) => {
       const id = document.createElement('input'); id.name = `items[${i}][id]`; id.value = String(it.id); form.appendChild(id);
       const qty = document.createElement('input'); qty.name = `items[${i}][quantity]`; qty.value = String(it.quantity); form.appendChild(qty);
     });
-    document.body.appendChild(form);
-
-    if (typeof window.dpCartSubmit === 'function') {
-      // Posts into the hidden frame: the page never navigates and the drawer opens with the result.
-      window.dpCartSubmit(form);
-      return;
-    }
-    // No bridge on the page: fall back to a plain post that reloads the product page.
-    form.action = '/cart/add';
     const ret = document.createElement('input');
     ret.name = 'return_to';
-    ret.value = window.location.pathname;
+    ret.value = window.location.pathname + '?dpcart=1';
     form.appendChild(ret);
+    document.body.appendChild(form);
     form.submit();
   }
 

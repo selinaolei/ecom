@@ -1,63 +1,17 @@
 {% doc %}
-  Dear Paws cart drawer. Every cart change (add, quantity, remove, upsell) is a real HTML form
-  post to Shopify, submitted into a hidden iframe so the page never reloads. The response is
-  the freshly rendered drawer section, which is swapped into the open drawer.
+  Dear Paws cart drawer (basic version). Plain markup, no JavaScript beyond Horizon's
+  open/close shell. Every cart change is a real HTML form post to Shopify's cart endpoints
+  (a full page reload with return_to), so nothing on the page can intercept or break it.
 
   @param {boolean} [render_wrapper] - When true, wraps the drawer in the section wrapper that the Section Rendering API adds automatically.
 {% enddoc %}
 
 {%- liquid
   assign render_wrapper = render_wrapper | default: true, allow_false: true
-
-  # ---- editable numbers ----
   assign dp_main_handle = 'spiderjet-glove'
-  assign dp_main_handles = 'spiderjet-glove,cat-advent-calendar' | split: ','
-  assign dp_rating = '4.9'
-  assign dp_reviews = '2,483'
-  assign dp_orders_base = 118
-  assign dp_duo_discount = 15
-  assign dp_mystery_handle = 'mystery-box'
-
-  assign seed = 'now' | date: '%j' | plus: 0 | times: 7 | modulo: 43
-  assign dp_orders_today = dp_orders_base | plus: seed
-
-  assign main_qty = 0
-  assign main_line = 0
-  assign main_item = null
-  assign has_protection = false
-  assign has_mystery = false
-  for item in cart.items
-    if dp_main_handles contains item.product.handle
-      assign main_qty = main_qty | plus: item.quantity
-      if main_line == 0
-        assign main_line = forloop.index
-        assign main_item = item
-      endif
-    endif
-    if item.product.handle == 'shipping-protection'
-      assign has_protection = true
-    endif
-    if item.product.handle == dp_mystery_handle
-      assign has_mystery = true
-    endif
-  endfor
-  assign mystery_product = all_products[dp_mystery_handle]
-  assign main_product = all_products[dp_main_handle]
-
-  # Only lines that actually carry a compare-at discount count toward the percentage,
-  # so a full-price add-on (warranty, shipping protection) never dilutes the number.
-  assign dpc_total_save = 0
-  assign dpc_total_compare = 0
-  for item in cart.items
-    if item.original_line_price > item.final_line_price
-      assign dpc_line_save = item.original_line_price | minus: item.final_line_price
-      assign dpc_total_save = dpc_total_save | plus: dpc_line_save
-      assign dpc_total_compare = dpc_total_compare | plus: item.original_line_price
-    endif
-  endfor
-  assign dpc_save_pct = 0
-  if dpc_total_compare > 0
-    assign dpc_save_pct = dpc_total_save | times: 100 | divided_by: dpc_total_compare
+  assign back_url = request.path
+  if request.path == '/' or request.path == blank
+    assign back_url = all_products[dp_main_handle].url
   endif
 -%}
 
@@ -90,7 +44,7 @@
           auto-open
         {% endif %}
       >
-        <div class="dpc{% if cart.empty? %} dpc--empty{% endif %}" data-dp-cart data-count="{{ cart.item_count }}">
+        <div class="dpc{% if cart.empty? %} dpc--empty{% endif %}" data-dp-cart>
 
           <div class="dpc__head">
             <h2 class="dpc__title" id="cart-drawer-heading">Your cart <span class="dpc__count">({{ cart.item_count }})</span></h2>
@@ -102,36 +56,15 @@
           {%- if cart.empty? -%}
             <div class="dpc__empty">
               <p class="dpc__empty-title">Your cart is empty</p>
-              <p class="dpc__empty-text">Your pup's 24 days of surprises are one tap away.</p>
-              <a class="dpc__empty-btn" href="{{ main_product.url | default: routes.all_products_collection_url }}">Shop the Advent Calendar</a>
+              <a class="dpc__empty-btn" href="{{ all_products[dp_main_handle].url | default: routes.all_products_collection_url }}">Shop the Advent Calendar</a>
             </div>
           {%- else -%}
-            <p class="dpc__proof">
-              <span class="dpc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg>{{ dp_orders_today }} ordered today</span>
-              <span class="dpc__proof-dot" aria-hidden="true">&middot;</span>
-              <span class="dpc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg>{{ dp_rating }} ({{ dp_reviews }} reviews)</span>
-            </p>
-
-            <div class="dpc__banner">
-              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{% if has_protection %}Free insured shipping applied{% else %}Free shipping applied{% endif %}</p>
-              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day happiness guarantee</p>
-            </div>
-
             <div class="dpc__items">
-              {%- comment -%}
-                Two passes over the same cart.items array (not a merged list) so each form's
-                "line" value stays the true 1-based position Shopify expects for
-                /cart/change.js, regardless of visual order. Pass 1 renders the calendar(s)
-                first; pass 2 renders every other line (add-ons) after, so the display order
-                is always calendar-then-add-ons even if the cart's real history is different
-                (e.g. an add-on was added before the calendar in an earlier session).
-              {%- endcomment -%}
               {%- for item in cart.items -%}
-                {%- unless dp_main_handles contains item.product.handle -%}{%- continue -%}{%- endunless -%}
                 <div class="dpc__item">
                   <div class="dpc__thumb">
                     {%- if item.image -%}
-                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
+                      {{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title, width: 100, height: 100 }}
                     {%- endif -%}
                   </div>
                   <div class="dpc__item-body">
@@ -139,136 +72,48 @@
                     {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
                       <p class="dpc__item-variant">{{ item.variant.title | capitalize }}</p>
                     {%- endif -%}
-                    <div class="dpc__qty" role="group" aria-label="Quantity">
-                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                        <input type="hidden" name="line" value="{{ forloop.index }}">
-                        <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
-                        <button type="submit" aria-label="Decrease quantity">&minus;</button>
-                      </form>
-                      <span>{{ item.quantity }}</span>
-                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                        <input type="hidden" name="line" value="{{ forloop.index }}">
-                        <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
-                        <button type="submit" aria-label="Increase quantity">+</button>
-                      </form>
-                    </div>
+                    <p class="dpc__item-qty">Qty {{ item.quantity }}</p>
                   </div>
                   <div class="dpc__item-right">
                     <p class="dpc__item-price">{{ item.final_line_price | money }}</p>
-                    {%- if item.original_line_price > item.final_line_price -%}
-                      <p class="dpc__item-was">{{ item.original_line_price | money }}</p>
-                    {%- endif -%}
-                    <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
+                    <form action="{{ routes.cart_change_url }}" method="post">
                       <input type="hidden" name="line" value="{{ forloop.index }}">
                       <input type="hidden" name="quantity" value="0">
-                      <button type="submit" class="dpc__remove">Remove</button>
-                    </form>
-                  </div>
-                </div>
-              {%- endfor -%}
-              {%- for item in cart.items -%}
-                {%- if dp_main_handles contains item.product.handle -%}{%- continue -%}{%- endif -%}
-                <div class="dpc__item">
-                  <div class="dpc__thumb">
-                    {%- if item.image -%}
-                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
-                    {%- endif -%}
-                  </div>
-                  <div class="dpc__item-body">
-                    <p class="dpc__item-title">{{ item.product.title }}</p>
-                    {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
-                      <p class="dpc__item-variant">{{ item.variant.title | capitalize }}</p>
-                    {%- endif -%}
-                    <div class="dpc__qty" role="group" aria-label="Quantity">
-                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                        <input type="hidden" name="line" value="{{ forloop.index }}">
-                        <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
-                        <button type="submit" aria-label="Decrease quantity">&minus;</button>
-                      </form>
-                      <span>{{ item.quantity }}</span>
-                      <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                        <input type="hidden" name="line" value="{{ forloop.index }}">
-                        <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
-                        <button type="submit" aria-label="Increase quantity">+</button>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="dpc__item-right">
-                    <p class="dpc__item-price">{{ item.final_line_price | money }}</p>
-                    {%- if item.original_line_price > item.final_line_price -%}
-                      <p class="dpc__item-was">{{ item.original_line_price | money }}</p>
-                    {%- endif -%}
-                    <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                      <input type="hidden" name="line" value="{{ forloop.index }}">
-                      <input type="hidden" name="quantity" value="0">
+                      <input type="hidden" name="return_to" value="{{ back_url }}?dpcart=1">
                       <button type="submit" class="dpc__remove">Remove</button>
                     </form>
                   </div>
                 </div>
               {%- endfor -%}
             </div>
-
-            {%- if main_item and main_qty == 1 -%}
-              {%- assign two_full = main_item.original_price | times: 2 -%}
-              {%- assign two_save = two_full | times: dp_duo_discount | divided_by: 100 -%}
-              {%- assign two_now = two_full | minus: two_save -%}
-              <p class="dpc__addon-heading">Add to your order</p>
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if main_item.image %}{{ main_item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: main_item.product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Second calendar</p>
-                  <p class="dpc__upsell-text">Save {{ two_save | money }} &mdash; two for {{ two_now | money }} instead of {{ two_full | money }}</p>
-                </div>
-                <div class="dpc__upsell-right">
-                  <span class="dpc__upsell-price">{{ main_item.original_price | money }}</span>
-                  <form action="{{ routes.cart_change_url }}.js" method="post" data-dp-cart-form>
-                    <input type="hidden" name="line" value="{{ main_line }}">
-                    <input type="hidden" name="quantity" value="{{ main_item.quantity | plus: 1 }}">
-                    <button type="submit" class="dpc__upsell-btn">Add</button>
-                  </form>
-                </div>
-              </div>
-            {%- elsif main_item and has_mystery == false and mystery_product.available -%}
-              <p class="dpc__addon-heading">Add to your order</p>
-              <div class="dpc__upsell">
-                <div class="dpc__upsell-img">{% if mystery_product.featured_image %}{{ mystery_product.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: mystery_product.title }}{% endif %}</div>
-                <div class="dpc__upsell-body">
-                  <p class="dpc__upsell-title">Mystery Box</p>
-                  <p class="dpc__upsell-text">3 bonus surprise toys handpicked for your pup</p>
-                </div>
-                <div class="dpc__upsell-right">
-                  <span class="dpc__upsell-price">{{ mystery_product.price | money }}</span>
-                  <form action="{{ routes.cart_add_url }}.js" method="post" data-dp-cart-form>
-                    <input type="hidden" name="id" value="{{ mystery_product.selected_or_first_available_variant.id }}">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="dpc__upsell-btn">Add</button>
-                  </form>
-                </div>
-              </div>
-            {%- endif -%}
 
             <div class="dpc__footer">
-              {%- if dpc_total_save > 0 -%}
-                <div class="dpc__savings-total"><span>You save</span><span>{{ dpc_total_save | money }}{% if dpc_save_pct > 0 %} ({{ dpc_save_pct }}% off){% endif %}</span></div>
-              {%- endif -%}
               <div class="dpc__subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-              <p class="dpc__note">Taxes calculated at checkout. Shipping is free{% if has_protection %} and insured{% endif %}.</p>
-              <form action="{{ routes.cart_url }}" method="post" class="dpc__checkout-form">
-                <button type="submit" name="checkout" class="dpc__checkout">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
-                  Secure checkout
-                </button>
+              <p class="dpc__note">Taxes calculated at checkout. Shipping is free.</p>
+              <form action="{{ routes.cart_url }}" method="post">
+                <button type="submit" name="checkout" class="dpc__checkout">Secure checkout</button>
               </form>
-              <p class="dpc__encrypted"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>256-bit encrypted checkout</p>
-              <div class="dpc__payments" aria-label="Accepted payment methods">
-                {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'dpc__pay' }}{%- endfor -%}
-              </div>
             </div>
           {%- endif -%}
         </div>
       </cart-drawer-component>
     </dialog>
   </theme-drawer>
+
+  <script>
+    // After a form round-trip (?dpcart=1) open the drawer so the shopper sees the result.
+    (function () {
+      if (!/[?&]dpcart=1/.test(window.location.search)) return;
+      try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries++;
+        var d = document.getElementById('cart-drawer');
+        if (d && typeof d.open === 'function') { d.open(); clearInterval(timer); }
+        else if (tries > 40) clearInterval(timer);
+      }, 150);
+    })();
+  </script>
 
   {% if render_wrapper %}
     </div>
@@ -281,71 +126,29 @@
     #cart-drawer .theme-drawer__dialog { --theme-drawer-width: min(88vw, 430px); border-radius: 22px 0 0 22px; box-shadow: -12px 0 40px rgba(0,0,0,.25); }
   }
   #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(15, 30, 20, .55); }
-  /* Fallback for embedded browsers (e.g. Instagram's in-app WebView) that don't size 100dvh
-     reliably; without a concrete height the flex-grown items list below can collapse to 0. */
-  #cart-drawer .theme-drawer__dialog { height: 100vh; }
-  @supports (height: 100dvh) {
-    #cart-drawer .theme-drawer__dialog { height: 100dvh; }
-  }
   .dpc__dialog { --theme-drawer-padding: 0; }
-
-  .dpc { text-align: left; --g: #1F3D2B; --g2: #2D4A2D; --gold: #C9A96E; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
-    display: flex; flex-direction: column; height: 100%; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); position: relative; }
+  .dpc { text-align: left; --g: #1F3D2B; --cream: #F7F2E6; --ink: #1a2e1a; --muted: #6B6B5E; --line: #ECE7DA;
+    display: flex; flex-direction: column; height: 100%; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); }
   .dpc *, .dpc *::before, .dpc *::after { box-sizing: border-box; min-width: 0; }
-  .dpc form { margin: 0; }
-  .dpc.is-busy::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.5); z-index: 5; }
-  .dpc__head { position: relative; padding: 22px 68px 6px 22px; }
-  .dpc__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: 28px; font-weight: 900; color: var(--g); letter-spacing: -0.5px; line-height: 1.1; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
-  .dpc__count { font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
-  .dpc__close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--g); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
+  .dpc__head { display: flex; align-items: center; justify-content: space-between; padding: 22px 22px 10px; }
+  .dpc__title { margin: 0; font-size: 28px; font-weight: 900; color: var(--g); line-height: 1; display: flex; align-items: baseline; gap: 8px; }
+  .dpc__count { font-size: 15px; font-weight: 700; color: var(--muted); }
+  .dpc__close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--g); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
   .dpc__close svg { width: 18px; height: 18px; }
-  .dpc__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 12px; padding: 0 22px; font-size: 14px; font-weight: 600; color: var(--g2); }
-  .dpc__proof-item { display: inline-flex; align-items: center; gap: 5px; }
-  .dpc__proof-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
-  .dpc__proof-item:first-child svg { stroke: #c8473b; }
-  .dpc__proof-item:last-child svg { stroke: #d9a520; }
-  .dpc__proof-dot { color: #b9b5a8; }
-  .dpc__banner { margin: 0 22px 12px; padding: 14px 16px; border-radius: 14px; background: #E6F0E8; display: grid; gap: 10px; }
-  .dpc__banner p { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--g); }
-  .dpc__banner svg { width: 20px; height: 20px; fill: none; stroke: var(--g); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 20px; }
-
-  .dpc__items { flex: 1 1 auto; min-height: 90px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 22px; }
-  .dpc__item { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
-  .dpc__thumb { width: 74px; height: 74px; border-radius: 12px; background: var(--cream); overflow: hidden; }
+  .dpc__items { flex: 1; overflow-y: auto; padding: 0 22px; }
+  .dpc__item { display: grid; grid-template-columns: 70px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .dpc__thumb { width: 70px; height: 70px; border-radius: 12px; background: var(--cream); overflow: hidden; }
   .dpc__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__item-title { margin: 0 0 2px; font-size: 16px; font-weight: 700; line-height: 1.25; }
-  .dpc__item-variant { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
-  .dpc__qty { display: inline-flex; align-items: center; border: 1.5px solid #dcd6c7; border-radius: 999px; overflow: hidden; margin-top: 6px; }
-  .dpc__qty button { width: 34px; height: 32px; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 800; color: var(--ink); cursor: pointer; }
-  .dpc__qty span { min-width: 22px; text-align: center; font-size: 15px; font-weight: 800; }
-  .dpc__item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 4px; }
-  .dpc__item-price { margin: 0; font-size: 18px; font-weight: 800; }
-  .dpc__item-was { margin: -4px 0 0; font-size: 12px; color: #9a9a8c; text-decoration: line-through; }
-  .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
-
-  .dpc__addon-heading { margin: 18px 22px 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
-  .dpc__upsell { margin: 0 22px 4px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: #fff; display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; }
-  .dpc__upsell-img { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: var(--cream); flex-shrink: 0; }
-  .dpc__upsell-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dpc__upsell-title { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.25; }
-  .dpc__upsell-text { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
-  .dpc__upsell-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-  .dpc__upsell-price { font-size: 14px; font-weight: 700; color: var(--ink); }
-  .dpc__upsell-btn { border: 0; border-radius: 999px; background: var(--g2); color: #fff; font: inherit; font-size: 14px; font-weight: 800; padding: 8px 20px; cursor: pointer; }
-
-  .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.05); }
-  .dpc__savings-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 800; color: #b0483a; margin-bottom: 4px; }
-  .dpc__subtotal { display: flex; justify-content: space-between; align-items: baseline; font-size: 20px; font-weight: 800; color: var(--g); }
+  .dpc__item-title { margin: 0 0 2px; font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .dpc__item-variant, .dpc__item-qty { margin: 0 0 4px; font-size: 13px; color: var(--muted); }
+  .dpc__item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .dpc__item-price { margin: 0; font-size: 16px; font-weight: 800; }
+  .dpc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 13px; color: #8a8a7c; text-decoration: underline; cursor: pointer; }
+  .dpc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; }
+  .dpc__subtotal { display: flex; justify-content: space-between; font-size: 19px; font-weight: 800; color: var(--g); }
   .dpc__note { margin: 6px 0 12px; font-size: 13px; color: var(--muted); }
-  .dpc__checkout { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #2F5A3D 0%, #1F3D2B 70%); color: #fff; font: inherit; font-size: 18px; font-weight: 800; padding: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(31,61,43,.3); }
-  .dpc__checkout svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .dpc__encrypted { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--muted); }
-  .dpc__encrypted svg { width: 14px; height: 14px; fill: none; stroke: var(--g); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .dpc__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
-  .dpc__pay { width: 42px; height: 26px; border-radius: 5px; }
-
-  .dpc__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 22px; gap: 8px; }
+  .dpc__checkout { width: 100%; border: 0; border-radius: 999px; background: var(--g); color: #fff; font: inherit; font-size: 17px; font-weight: 800; padding: 17px; cursor: pointer; }
+  .dpc__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 22px; gap: 12px; }
   .dpc__empty-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--g); }
-  .dpc__empty-text { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
   .dpc__empty-btn { display: inline-block; background: var(--g); color: #fff; font-weight: 800; padding: 14px 24px; border-radius: 999px; text-decoration: none; }
 {% endstylesheet %}
