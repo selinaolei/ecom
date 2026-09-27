@@ -1,0 +1,242 @@
+{
+  "sections": {
+    "hg_main": {
+      "type": "hg-product-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "heart",
+            "text": "Hands-free babywearing, all in one hoodie"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "baby",
+            "text": "Fits newborns through toddlers"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "huggaroo-shipping-protection",
+            "title": "Shipping protection",
+            "text": "",
+            "default_on": true
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "huggaroo-30-day-warranty",
+            "title": "30-day warranty",
+            "text": "",
+            "default_on": true
+          }
+        },
+        "tr1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping"
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "heart",
+            "text": "Loved by parents everywhere"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "a1",
+        "a2",
+        "tr1",
+        "tr2",
+        "tr3",
+        "tr4"
+      ],
+      "settings": {
+        "eyebrow": "Newborn to toddler",
+        "badge_text": "Bestseller",
+        "rating_text": "Rated 4.9 based on 812 reviews",
+        "reviews_anchor": "#shopify-section-hg_reviews",
+        "size_guide_text": "See the size chart in centimeters in the description below.",
+        "addons_heading": "Protect your order",
+        "button_text": "Add to cart",
+        "button_subtext": "Order today, ships within 24 hours",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "Details, materials & sizing",
+        "sticky_bar": true
+      }
+    },
+    "hg_reviews": {
+      "type": "hg-reviews",
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Lives in this hoodie",
+            "text": "I wear this around the house constantly. My hands are finally free and the baby naps so much better against me. So soft too.",
+            "name": "Amanda R.",
+            "verified": true
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Perfect for winter walks",
+            "text": "Keeps us both warm and I don't need a separate carrier. Getting my baby in and out is easy with the center zip.",
+            "name": "Priya S.",
+            "verified": true
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "title": "Great fit",
+            "text": "Runs true to size for me. Ordered a size up since I like it extra roomy for layering underneath.",
+            "name": "Jess M.",
+            "verified": true
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Bought two colors",
+            "text": "Got the cream and the mocha brown. Both are just as soft as I hoped and my newborn fits perfectly.",
+            "name": "Taylor K.",
+            "verified": true
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Shipping was fast",
+            "text": "Ordered on a Monday, arrived before the weekend. Fits exactly like the size chart said it would.",
+            "name": "Nicole B.",
+            "verified": true
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "So cozy",
+            "text": "This has become my go-to for cold mornings with the baby. Washes well too.",
+            "name": "Sarah D.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6"
+      ],
+      "settings": {
+        "heading": "What parents say about Huggaroo",
+        "rating": "4.9",
+        "rating_text": "Based on 812 reviews",
+        "bar_5": 88,
+        "bar_4": 9,
+        "bar_3": 2,
+        "bar_2": 1,
+        "bar_1": 0
+      }
+    },
+    "hg_faq": {
+      "type": "hg-faq",
+      "blocks": {
+        "q1": {
+          "type": "faq",
+          "settings": {
+            "question": "What size should I order?",
+            "answer": "<p>See the size chart in centimeters in the product description above (Length, Bust, Shoulder, Sleeve Length). This is an oversized fit — size down for a snugger fit or up for extra room to layer underneath.</p>"
+          }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": {
+            "question": "What is it made of?",
+            "answer": "<p>100% polyester fleece, with corduroy trim on the cuffs and pouch opening.</p>"
+          }
+        },
+        "q3": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it come in other colors?",
+            "answer": "<p>Yes — Oatmeal Cream, Blush Pink, Mocha Brown, and Charcoal Grey.</p>"
+          }
+        },
+        "q4": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>"
+          }
+        },
+        "q5": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>If you're not happy within 30 days, contact us for a replacement or full refund.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions",
+        "text": "Everything you need to know before you order.",
+        "open_first": true
+      }
+    }
+  },
+  "order": [
+    "hg_main",
+    "hg_reviews",
+    "hg_faq"
+  ]
+}

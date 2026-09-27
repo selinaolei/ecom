@@ -1,0 +1,277 @@
+{% doc %}
+  Huggaroo cart drawer. Every cart change (add, quantity, remove) is a fetch() to Shopify's
+  cart endpoints — no iframe, no page reload. The response is the freshly rendered drawer
+  section, which is swapped into the open drawer.
+
+  @param {boolean} [render_wrapper] - When true, wraps the drawer in the section wrapper that the Section Rendering API adds automatically.
+{% enddoc %}
+
+{%- liquid
+  assign render_wrapper = render_wrapper | default: true, allow_false: true
+
+  assign hg_main_handle = 'huggaroo-cozy-kangaroo-carrier-hoodie'
+  assign hg_main_handles = 'huggaroo-cozy-kangaroo-carrier-hoodie' | split: ','
+  assign hg_rating = '4.9'
+  assign hg_reviews = '812'
+  assign hg_orders_base = 62
+
+  assign seed = 'now' | date: '%j' | plus: 0 | times: 7 | modulo: 43
+  assign hg_orders_today = hg_orders_base | plus: seed
+
+  assign has_protection = false
+  for item in cart.items
+    if item.product.handle == 'huggaroo-shipping-protection'
+      assign has_protection = true
+    endif
+  endfor
+  assign main_product = all_products[hg_main_handle]
+
+  assign hgc_total_save = 0
+  assign hgc_total_compare = 0
+  for item in cart.items
+    if item.original_line_price > item.final_line_price
+      assign hgc_line_save = item.original_line_price | minus: item.final_line_price
+      assign hgc_total_save = hgc_total_save | plus: hgc_line_save
+      assign hgc_total_compare = hgc_total_compare | plus: item.original_line_price
+    endif
+  endfor
+  assign hgc_save_pct = 0
+  if hgc_total_compare > 0
+    assign hgc_save_pct = hgc_total_save | times: 100 | divided_by: hgc_total_compare
+  endif
+-%}
+
+{%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
+  {% if render_wrapper %}
+    <div
+      id="shopify-section-cart-drawer-section"
+      class="shopify-section"
+    >
+  {% endif %}
+
+  <script
+    type="module"
+    src="{{ 'cart-drawer.js' | asset_url }}"
+    fetchpriority="low"
+  ></script>
+
+  <theme-drawer
+    id="cart-drawer"
+    data-skip-node-update
+  >
+    <dialog
+      ref="panel"
+      class="theme-drawer__dialog color-custom-drawer hgc__dialog"
+      aria-labelledby="cart-drawer-heading"
+      cart-summary-sticky="true"
+    >
+      <cart-drawer-component
+        {% if settings.auto_open_cart_drawer and template.name != 'cart' %}
+          auto-open
+        {% endif %}
+      >
+        <div class="hgc{% if cart.empty? %} hgc--empty{% endif %}" data-hg-cart data-count="{{ cart.item_count }}">
+
+          <div class="hgc__head">
+            <h2 class="hgc__title" id="cart-drawer-heading">Your cart <span class="hgc__count">({{ cart.item_count }})</span></h2>
+            <button on:click="#cart-drawer/close" class="hgc__close" type="button" aria-label="{{ 'actions.close' | t }}">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+
+          {%- if cart.empty? -%}
+            <div class="hgc__empty">
+              <p class="hgc__empty-title">Your cart is empty</p>
+              <p class="hgc__empty-text">Your Huggaroo hoodie is one tap away.</p>
+              <a class="hgc__empty-btn" href="{{ main_product.url | default: routes.all_products_collection_url }}">Shop the Carrier Hoodie</a>
+            </div>
+          {%- else -%}
+            <p class="hgc__proof">
+              <span class="hgc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg>{{ hg_orders_today }} ordered today</span>
+              <span class="hgc__proof-dot" aria-hidden="true">&middot;</span>
+              <span class="hgc__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg>{{ hg_rating }} ({{ hg_reviews }} reviews)</span>
+            </p>
+
+            <div class="hgc__banner">
+              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{% if has_protection %}Free insured shipping applied{% else %}Free shipping applied{% endif %}</p>
+              <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day happiness guarantee</p>
+            </div>
+
+            <div class="hgc__items">
+              {%- comment -%}
+                Two passes over the same cart.items array so each form's "line" value stays
+                the true 1-based position Shopify expects for /cart/change.js, regardless of
+                visual order. Pass 1 renders the hoodie first; pass 2 renders add-ons after.
+              {%- endcomment -%}
+              {%- for item in cart.items -%}
+                {%- unless hg_main_handles contains item.product.handle -%}{%- continue -%}{%- endunless -%}
+                <div class="hgc__item">
+                  <div class="hgc__thumb">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
+                    {%- endif -%}
+                  </div>
+                  <div class="hgc__item-body">
+                    <p class="hgc__item-title">{{ item.product.title }}</p>
+                    {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
+                      <p class="hgc__item-variant">{{ item.variant.title | capitalize }}</p>
+                    {%- endif -%}
+                    <div class="hgc__qty" role="group" aria-label="Quantity">
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
+                        <button type="submit" aria-label="Decrease quantity">&minus;</button>
+                      </form>
+                      <span>{{ item.quantity }}</span>
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
+                        <button type="submit" aria-label="Increase quantity">+</button>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="hgc__item-right">
+                    <p class="hgc__item-price">{{ item.final_line_price | money }}</p>
+                    {%- if item.original_line_price > item.final_line_price -%}
+                      <p class="hgc__item-was">{{ item.original_line_price | money }}</p>
+                    {%- endif -%}
+                    <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                      <input type="hidden" name="line" value="{{ forloop.index }}">
+                      <input type="hidden" name="quantity" value="0">
+                      <button type="submit" class="hgc__remove">Remove</button>
+                    </form>
+                  </div>
+                </div>
+              {%- endfor -%}
+              {%- for item in cart.items -%}
+                {%- if hg_main_handles contains item.product.handle -%}{%- continue -%}{%- endif -%}
+                <div class="hgc__item">
+                  <div class="hgc__thumb">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title, width: 120, height: 120 }}
+                    {%- endif -%}
+                  </div>
+                  <div class="hgc__item-body">
+                    <p class="hgc__item-title">{{ item.product.title }}</p>
+                    {%- if item.variant.title != 'Default Title' and item.variant.title != blank -%}
+                      <p class="hgc__item-variant">{{ item.variant.title | capitalize }}</p>
+                    {%- endif -%}
+                    <div class="hgc__qty" role="group" aria-label="Quantity">
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | minus: 1 }}">
+                        <button type="submit" aria-label="Decrease quantity">&minus;</button>
+                      </form>
+                      <span>{{ item.quantity }}</span>
+                      <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                        <input type="hidden" name="line" value="{{ forloop.index }}">
+                        <input type="hidden" name="quantity" value="{{ item.quantity | plus: 1 }}">
+                        <button type="submit" aria-label="Increase quantity">+</button>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="hgc__item-right">
+                    <p class="hgc__item-price">{{ item.final_line_price | money }}</p>
+                    {%- if item.original_line_price > item.final_line_price -%}
+                      <p class="hgc__item-was">{{ item.original_line_price | money }}</p>
+                    {%- endif -%}
+                    <form action="{{ routes.cart_change_url }}.js" method="post" data-hg-cart-form>
+                      <input type="hidden" name="line" value="{{ forloop.index }}">
+                      <input type="hidden" name="quantity" value="0">
+                      <button type="submit" class="hgc__remove">Remove</button>
+                    </form>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+
+            <div class="hgc__footer">
+              {%- if hgc_total_save > 0 -%}
+                <div class="hgc__savings-total"><span>You save</span><span>{{ hgc_total_save | money }}{% if hgc_save_pct > 0 %} ({{ hgc_save_pct }}% off){% endif %}</span></div>
+              {%- endif -%}
+              <div class="hgc__subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+              <p class="hgc__note">Taxes calculated at checkout. Shipping is free{% if has_protection %} and insured{% endif %}.</p>
+              <form action="{{ routes.cart_url }}" method="post" class="hgc__checkout-form">
+                <button type="submit" name="checkout" class="hgc__checkout">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+                  Secure checkout
+                </button>
+              </form>
+              <p class="hgc__encrypted"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>256-bit encrypted checkout</p>
+              <div class="hgc__payments" aria-label="Accepted payment methods">
+                {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag: class: 'hgc__pay' }}{%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </cart-drawer-component>
+    </dialog>
+  </theme-drawer>
+
+  {% if render_wrapper %}
+    </div>
+  {% endif %}
+{%- endif -%}
+
+{% stylesheet %}
+  cart-drawer-component { display: contents; }
+  @media screen and (max-width: 989px) {
+    #cart-drawer .theme-drawer__dialog { --theme-drawer-width: min(88vw, 430px); border-radius: 22px 0 0 22px; box-shadow: -12px 0 40px rgba(0,0,0,.25); }
+  }
+  #cart-drawer .theme-drawer__dialog::backdrop { background: rgba(58, 46, 38, .55); }
+  #cart-drawer .theme-drawer__dialog { height: auto; max-height: 100vh; margin: 0; top: 0; bottom: auto; }
+  @supports (height: 100dvh) {
+    #cart-drawer .theme-drawer__dialog { max-height: 100dvh; }
+  }
+  .hgc__dialog { --theme-drawer-padding: 0; }
+
+  .hgc { text-align: left; --b: #6B4A3A; --b2: #4A3428; --tan: #C9A98A; --cream: #F7EFE3; --ink: #3A2E26; --muted: #8A7A6C; --line: #ECE0CE;
+    display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; background: #fff; color: var(--ink); font-family: var(--font-body--family, Inter, sans-serif); position: relative; }
+  .hgc *, .hgc *::before, .hgc *::after { box-sizing: border-box; min-width: 0; }
+  .hgc form { margin: 0; }
+  .hgc.is-busy::after { content: ""; position: absolute; inset: 0; background: rgba(255,255,255,.5); z-index: 5; }
+  .hgc__head { position: relative; padding: 22px 68px 6px 22px; }
+  .hgc__title { margin: 0; font-family: var(--font-heading--family, inherit); font-size: 28px; font-weight: 900; color: var(--b); letter-spacing: -0.5px; line-height: 1.1; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  .hgc__count { font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+  .hgc__close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); color: var(--b); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; }
+  .hgc__close svg { width: 18px; height: 18px; }
+  .hgc__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 12px; padding: 0 22px; font-size: 14px; font-weight: 600; color: var(--b2); }
+  .hgc__proof-item { display: inline-flex; align-items: center; gap: 5px; }
+  .hgc__proof-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+  .hgc__proof-item:first-child svg { stroke: #c8473b; }
+  .hgc__proof-item:last-child svg { stroke: var(--tan); }
+  .hgc__proof-dot { color: #cbbba8; }
+  .hgc__banner { margin: 0 22px 12px; padding: 14px 16px; border-radius: 14px; background: var(--cream); display: grid; gap: 10px; }
+  .hgc__banner p { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--b); }
+  .hgc__banner svg { width: 20px; height: 20px; fill: none; stroke: var(--b); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 20px; }
+
+  .hgc__items { flex: 1 1 auto; min-height: 90px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 22px; }
+  .hgc__item { display: grid; grid-template-columns: 74px 1fr auto; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .hgc__thumb { width: 74px; height: 74px; border-radius: 12px; background: var(--cream); overflow: hidden; }
+  .hgc__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hgc__item-title { margin: 0 0 2px; font-size: 16px; font-weight: 700; line-height: 1.25; }
+  .hgc__item-variant { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+  .hgc__qty { display: inline-flex; align-items: center; border: 1.5px solid #e0d3bd; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+  .hgc__qty button { width: 34px; height: 32px; border: 0; background: none; font: inherit; font-size: 18px; font-weight: 800; color: var(--ink); cursor: pointer; }
+  .hgc__qty span { min-width: 22px; text-align: center; font-size: 15px; font-weight: 800; }
+  .hgc__item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 4px; }
+  .hgc__item-price { margin: 0; font-size: 18px; font-weight: 800; }
+  .hgc__item-was { margin: -4px 0 0; font-size: 12px; color: #a89a8c; text-decoration: line-through; }
+  .hgc__remove { border: 0; background: none; padding: 0; font: inherit; font-size: 14px; color: #a09284; text-decoration: underline; cursor: pointer; }
+
+  .hgc__footer { padding: 14px 22px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fff; box-shadow: 0 -10px 30px rgba(0,0,0,.05); }
+  .hgc__savings-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 800; color: #b0483a; margin-bottom: 4px; }
+  .hgc__subtotal { display: flex; justify-content: space-between; align-items: baseline; font-size: 20px; font-weight: 800; color: var(--b); }
+  .hgc__note { margin: 6px 0 12px; font-size: 13px; color: var(--muted); }
+  .hgc__checkout { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #7A5744 0%, #6B4A3A 70%); color: #fff; font: inherit; font-size: 18px; font-weight: 800; padding: 18px; cursor: pointer; box-shadow: 0 12px 28px rgba(107,74,58,.3); }
+  .hgc__checkout svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .hgc__encrypted { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .hgc__encrypted svg { width: 14px; height: 14px; fill: none; stroke: var(--b); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .hgc__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+  .hgc__pay { width: 42px; height: 26px; border-radius: 5px; }
+
+  .hgc__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 22px; gap: 8px; }
+  .hgc__empty-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--b); }
+  .hgc__empty-text { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
+  .hgc__empty-btn { display: inline-block; background: var(--b); color: #fff; font-weight: 800; padding: 14px 24px; border-radius: 999px; text-decoration: none; }
+{% endstylesheet %}

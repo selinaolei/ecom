@@ -1,0 +1,486 @@
+{%- comment -%}
+  Huggaroo – Product hero
+  Adapted from Dear Paws' dp-costume-main.liquid pattern (gallery, price, feature rows,
+  add-on checkboxes, sticky add-to-cart bar) but re-themed to Huggaroo's cream/brown palette,
+  with a Color swatch + Size button picker.
+{%- endcomment -%}
+{%- liquid
+  assign product = section.settings.product | default: product
+  assign current_variant = product.selected_or_first_available_variant
+  assign media_list = product.media
+  assign features = section.blocks | where: 'type', 'feature'
+  assign addons = section.blocks | where: 'type', 'addon'
+  assign trusts = section.blocks | where: 'type', 'trust'
+
+  assign color_option = product.options_with_values | where: 'name', 'Color' | first
+  assign size_option = product.options_with_values | where: 'name', 'Size' | first
+-%}
+
+<section class="hgm" id="hg-product-{{ section.id }}" data-hg-product>
+  <div class="hgm__inner">
+
+    {%- comment -%} ===== GALLERY ===== {%- endcomment -%}
+    <div class="hgm__gallery">
+      <div class="hgm__main">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="hgm__badge">{{ section.settings.badge_text }}</span>
+        {%- endif -%}
+        {%- if media_list.size > 0 -%}
+          {%- assign first = media_list.first -%}
+          <img
+            data-hg-main-image
+            src="{{ first | image_url: width: 1000 }}"
+            srcset="{{ first | image_url: width: 600 }} 600w, {{ first | image_url: width: 1000 }} 1000w, {{ first | image_url: width: 1400 }} 1400w"
+            sizes="(min-width: 990px) 560px, 100vw"
+            width="1000" height="1000"
+            alt="{{ first.alt | default: product.title | escape }}"
+            fetchpriority="high"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'hgm__placeholder' }}
+        {%- endif -%}
+        {%- if media_list.size > 1 -%}
+          <button type="button" class="hgm__arrow hgm__arrow--prev" data-hg-prev aria-label="Previous image">&#8249;</button>
+          <button type="button" class="hgm__arrow hgm__arrow--next" data-hg-next aria-label="Next image">&#8250;</button>
+        {%- endif -%}
+      </div>
+      {%- if media_list.size > 1 -%}
+        <div class="hgm__thumbs" role="list">
+          {%- for media in media_list -%}
+            <button
+              type="button"
+              role="listitem"
+              class="hgm__thumb{% if forloop.first %} is-active{% endif %}"
+              data-hg-thumb
+              data-src="{{ media | image_url: width: 1000 }}"
+              data-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 1000 }} 1000w, {{ media | image_url: width: 1400 }} 1400w"
+              data-alt="{{ media.alt | default: product.title | escape }}"
+              aria-label="Show image {{ forloop.index }}"
+            >
+              <img src="{{ media | image_url: width: 160 }}" width="80" height="80" loading="lazy" alt="">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ===== DETAILS ===== {%- endcomment -%}
+    <div class="hgm__details">
+
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="hgm__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+      <h1 class="hgm__title">{{ section.settings.title_override | default: product.title }}</h1>
+
+      <a class="hgm__rating" href="{{ section.settings.reviews_anchor | default: '#shopify-section-hg_reviews' }}" aria-label="Read customer reviews">
+        <span class="hgm__stars" aria-hidden="true">
+          {%- for i in (1..5) -%}
+            <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+          {%- endfor -%}
+        </span>
+        <span class="hgm__rating-text">{{ section.settings.rating_text }}</span>
+        <span class="hgm__rating-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+
+      <div class="hgm__price">
+        <span class="hgm__price-now" data-hg-price-now>{{ current_variant.price | money }}</span>
+        <s class="hgm__price-was" data-hg-price-was {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
+        <span class="hgm__pill" data-hg-price-pill {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}></span>
+      </div>
+
+      {%- if features.size > 0 -%}
+        <ul class="hgm__features">
+          {%- for block in features -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="hgm__feature-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'heart' -%}<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                  {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                  {%- when 'baby' -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
+                  {%- when 'sparkle' -%}<svg viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>
+                  {%- when 'leaf' -%}<svg viewBox="0 0 24 24"><path d="M4 20C6 10 12 4 20 4c0 8-6 14-16 16z"/><path d="M4 20l8-8"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} ===== VARIANT PICKER: Color + Size ===== {%- endcomment -%}
+      <div class="hgm__variants">
+        {%- if color_option -%}
+          <div class="hgm__opt-group">
+            <p class="hgm__opt-label">Color: <span data-hg-color-label>{{ current_variant.option1 }}</span></p>
+            <div class="hgm__swatches" role="radiogroup" aria-label="Color">
+              {%- for value in color_option.values -%}
+                <button
+                  type="button"
+                  class="hgm__swatch{% if value == current_variant.option1 %} is-active{% endif %}"
+                  data-hg-color="{{ value | escape }}"
+                  style="--swatch-color: {% if value == 'Oatmeal Cream' %}#E8DCC3{% elsif value == 'Blush Pink' %}#E3B8AE{% elsif value == 'Mocha Brown' %}#6B4A3A{% elsif value == 'Charcoal Grey' %}#4A4640{% else %}#ccc{% endif %};"
+                  role="radio"
+                  aria-checked="{% if value == current_variant.option1 %}true{% else %}false{% endif %}"
+                  aria-label="{{ value }}"
+                ></button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if size_option -%}
+          <div class="hgm__opt-group">
+            <p class="hgm__opt-label">Size: <span data-hg-size-label>{{ current_variant.option2 }}</span></p>
+            <div class="hgm__sizes" role="radiogroup" aria-label="Size">
+              {%- for value in size_option.values -%}
+                <button
+                  type="button"
+                  class="hgm__size-btn{% if value == current_variant.option2 %} is-active{% endif %}"
+                  data-hg-size="{{ value | escape }}"
+                  role="radio"
+                  aria-checked="{% if value == current_variant.option2 %}true{% else %}false{% endif %}"
+                >{{ value }}</button>
+              {%- endfor -%}
+            </div>
+            {%- if section.settings.size_guide_text != blank -%}
+              <p class="hgm__size-guide">{{ section.settings.size_guide_text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ===== ADD-ONS ===== {%- endcomment -%}
+      {%- if addons.size > 0 -%}
+        <div class="hgm__bundle">
+          <p class="hgm__label hgm__label--center"><span>{{ section.settings.addons_heading }}</span></p>
+          <div class="hgm__addons">
+            {%- for ab in addons -%}
+              {%- assign aidx = forloop.index0 -%}
+              {%- assign ap = ab.settings.product -%}
+              {%- assign av = ap.selected_or_first_available_variant -%}
+              <label class="hgm__addon{% if ab.settings.default_on %} is-on{% endif %}" data-hg-addon="{{ aidx }}">
+                <input type="checkbox" class="hgm__check-input" data-hg-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                <span class="hgm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="hgm__addon-img">
+                  {%- if ab.settings.image != blank -%}
+                    {{ ab.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
+                  {%- elsif ap.featured_media -%}
+                    {{ ap.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
+                  {%- endif -%}
+                </span>
+                <span class="hgm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                <span class="hgm__addon-price">{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+              </label>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ===== ADD TO CART ===== {%- endcomment -%}
+      <div class="hgm__buy">
+        <button type="button" class="hgm__atc" data-hg-atc {% unless current_variant.available %}disabled{% endunless %}>
+          <span class="hgm__atc-label" data-hg-btn-label>{{ section.settings.button_text }}</span>
+          <span class="hgm__atc-spinner" aria-hidden="true"></span>
+        </button>
+        {%- if section.settings.button_subtext != blank -%}
+          <p class="hgm__atc-sub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{{ section.settings.button_subtext }}</p>
+        {%- endif -%}
+        <p class="hgm__error" data-hg-error hidden role="alert"></p>
+        <ul class="hgm__guarantees" aria-label="Guarantees">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day guarantee</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure checkout</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Free shipping</li>
+        </ul>
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="hgm__payments" aria-label="Accepted payment methods">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'hgm__payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if trusts.size > 0 -%}
+        <ul class="hgm__trust">
+          {%- for block in trusts -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="hgm__trust-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                  {%- when 'lock' -%}<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  {%- when 'heart' -%}<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>
+                  {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <details class="hgm__desc">
+          <summary>{{ section.settings.description_label }}</summary>
+          <div class="hgm__desc-body rte">{{ product.description }}</div>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.sticky_bar -%}
+    <div class="hgm__sticky" data-hg-sticky>
+      <div class="hgm__sticky-inner">
+        {%- if product.featured_media -%}<img src="{{ product.featured_media | image_url: width: 100 }}" width="48" height="48" alt="" loading="lazy" data-hg-sticky-img>{%- endif -%}
+        <div class="hgm__sticky-meta">
+          <strong>{{ product.title }}</strong>
+          <span><s data-hg-sticky-was hidden></s> <b data-hg-sticky-total></b></span>
+        </div>
+        <button type="button" class="hgm__sticky-btn" data-hg-sticky-atc>{{ section.settings.button_text }}</button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <script type="application/json" data-hg-config>
+    {
+      "productId": {{ product.id | json }},
+      "selectedVariantId": {{ current_variant.id | json }},
+      "moneyFormat": {{ shop.money_format | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {%- assign img_index = -1 -%}
+          {%- if variant.featured_media -%}
+            {%- for media in media_list -%}
+              {%- if media.id == variant.featured_media.id -%}{%- assign img_index = forloop.index0 -%}{%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "option1": {{ variant.option1 | json }}, "option2": {{ variant.option2 | json }}, "price": {{ variant.price | json }}, "compareAtPrice": {{ variant.compare_at_price | default: 0 | json }}, "available": {{ variant.available | json }}, "imageIndex": {{ img_index }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "addons": [
+        {%- for block in addons -%}
+          {%- assign ap = block.settings.product -%}
+          {%- assign av = ap.selected_or_first_available_variant -%}
+          { "variantId": {{ av.id | default: null | json }}, "price": {{ av.price | default: 0 | json }}, "defaultOn": {{ block.settings.default_on | json }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "text": {
+        "addToCart": {{ section.settings.button_text | json }},
+        "soldOut": "Sold out",
+        "save": "Save",
+        "savePct": "SAVE {pct}%"
+      }
+    }
+  </script>
+</section>
+
+<script type="module" src="{{ 'hg-product.js' | asset_url }}"></script>
+
+{% stylesheet %}
+  .hgm { --hg-cream: #F7EFE3; --hg-cream-2: #EFE3D0; --hg-brown: #6B4A3A; --hg-brown-2: #4A3428; --hg-tan: #C9A98A; --hg-ink: #3A2E26; --hg-muted: #8A7A6C; --hg-line: #E6D9C4; --hg-radius: 14px;
+    background: #fff; color: var(--hg-ink); font-family: var(--font-body--family, Inter, sans-serif); padding: 12px 0 40px; width: 100%; max-width: 100%; overflow-x: clip; }
+  .hgm *, .hgm *::before, .hgm *::after { box-sizing: border-box; min-width: 0; }
+  html { scroll-behavior: smooth; }
+  body { overflow-x: clip; }
+  .hg-section, .shopify-section:has(> .hg-section) { max-width: 100%; overflow-x: clip; }
+  [id^="shopify-section-hg_"] { scroll-margin-top: 90px; }
+  .hgm__inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: grid; gap: 22px; }
+  @media (min-width: 990px) {
+    .hgm { padding: 32px 0 64px; }
+    .hgm__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: start; padding: 0 32px; }
+    .hgm__gallery { position: sticky; top: 90px; }
+  }
+
+  .hgm__main { position: relative; aspect-ratio: 1 / 1; border-radius: var(--hg-radius); overflow: hidden; background: var(--hg-cream); }
+  .hgm__main img, .hgm__placeholder { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hgm__badge { position: absolute; top: 14px; left: 14px; z-index: 2; background: var(--hg-brown); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
+  .hgm__arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--hg-brown); font-size: 26px; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+  .hgm__arrow--prev { left: 12px; } .hgm__arrow--next { right: 12px; }
+  .hgm__thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .hgm__thumbs::-webkit-scrollbar { display: none; }
+  .hgm__thumb { flex: 0 0 auto; width: 68px; height: 68px; padding: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; background: var(--hg-cream); cursor: pointer; opacity: .75; transition: .2s; }
+  .hgm__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hgm__thumb.is-active { border-color: var(--hg-brown); opacity: 1; }
+
+  .hgm__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hg-tan); margin-bottom: 8px; }
+  .hgm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--hg-brown); }
+  .hgm__rating { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; text-decoration: none; color: inherit; border-bottom: 1px dashed var(--hg-tan); padding-bottom: 2px; }
+  .hgm__rating:hover .hgm__rating-text { color: var(--hg-brown); text-decoration: underline; }
+  .hgm__rating-arrow { color: var(--hg-tan); font-size: 20px; line-height: 1; }
+  .hgm__stars { display: inline-flex; gap: 2px; }
+  .hgm__stars svg { width: 16px; height: 16px; fill: var(--hg-tan); }
+  .hgm__rating-text { font-size: 13px; font-weight: 600; color: var(--hg-ink); }
+  .hgm__price { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .hgm__price-now { font-size: 30px; font-weight: 800; color: var(--hg-brown); letter-spacing: -0.5px; }
+  .hgm__price-was { font-size: 18px; color: #a89a8c; }
+  .hgm__pill { background: var(--hg-tan); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 5px 10px; border-radius: 999px; }
+  @media (max-width: 749px) { .hgm__title { font-size: 26px; } .hgm__price-now { font-size: 26px; } .hgm__price-was { font-size: 16px; } }
+
+  .hgm__features { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 10px; }
+  .hgm__features li { display: flex; gap: 12px; align-items: center; font-size: 14px; font-weight: 600; line-height: 1.4; }
+  .hgm__feature-icon { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; background: var(--hg-cream); border: 1px solid var(--hg-line); display: inline-flex; align-items: center; justify-content: center; }
+  .hgm__feature-icon svg { width: 17px; height: 17px; fill: none; stroke: var(--hg-brown); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hgm__label { font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--hg-ink); margin: 0 0 12px; }
+  .hgm__label--center { text-align: center; position: relative; }
+  .hgm__label--center::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--hg-line); }
+  .hgm__label--center span { position: relative; background: #fff; padding: 0 12px; }
+
+  .hgm__variants { margin-bottom: 18px; display: grid; gap: 16px; }
+  .hgm__opt-label { font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+  .hgm__opt-label span { font-weight: 800; color: var(--hg-brown); }
+  .hgm__swatches { display: flex; gap: 10px; }
+  .hgm__swatch { width: 38px; height: 38px; border-radius: 50%; border: 2px solid transparent; padding: 3px; cursor: pointer; background: #fff; box-shadow: 0 0 0 1.5px var(--hg-line); position: relative; }
+  .hgm__swatch::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: var(--swatch-color); }
+  .hgm__swatch.is-active { box-shadow: 0 0 0 2px var(--hg-brown); }
+  .hgm__sizes { display: flex; gap: 8px; flex-wrap: wrap; }
+  .hgm__size-btn { min-width: 56px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--hg-line); background: #fff; font: inherit; font-size: 13px; font-weight: 700; color: var(--hg-ink); cursor: pointer; transition: .15s; }
+  .hgm__size-btn:hover { border-color: var(--hg-tan); }
+  .hgm__size-btn.is-active { border-color: var(--hg-brown); background: var(--hg-brown); color: #fff; }
+  .hgm__size-guide { margin: 8px 0 0; font-size: 12px; color: var(--hg-muted); }
+
+  .hgm__bundle { margin-bottom: 18px; }
+  .hgm__addons { display: grid; gap: 6px; }
+  .hgm__addon { display: grid; grid-template-columns: 22px 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border: 1px solid var(--hg-line); border-radius: 10px; background: #fff; cursor: pointer; transition: .15s; }
+  .hgm__addon.is-on { border-color: var(--hg-brown); background: var(--hg-cream); }
+  .hgm__check-input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .hgm__checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #d8c8b3; background: #fff; display: inline-flex; align-items: center; justify-content: center; color: #fff; transition: .15s; }
+  .hgm__checkbox svg { width: 14px; height: 14px; opacity: 0; transform: scale(.6); transition: .15s; }
+  .hgm__check-input:checked + .hgm__checkbox { background: var(--hg-brown); border-color: var(--hg-brown); }
+  .hgm__check-input:checked + .hgm__checkbox svg { opacity: 1; transform: scale(1); }
+  .hgm__check-input:focus-visible + .hgm__checkbox { outline: 2px solid var(--hg-tan); outline-offset: 2px; }
+  .hgm__check-input:disabled + .hgm__checkbox { opacity: .4; }
+  .hgm__addon-img { width: 30px; height: 30px; border-radius: 7px; overflow: hidden; background: var(--hg-cream); }
+  .hgm__addon-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hgm__addon-title { font-size: 13px; font-weight: 600; line-height: 1.2; }
+  .hgm__addon-price { font-size: 13px; font-weight: 700; color: var(--hg-brown); }
+  .hgm__addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
+
+  .hgm__buy { margin-top: 4px; }
+  .hgm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 18px 20px; border: 0; border-radius: var(--hg-radius); background: linear-gradient(135deg, #7A5744 0%, #6B4A3A 60%, #4A3428 100%); color: #fff; font: inherit; font-size: 17px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; transition: .15s; box-shadow: 0 12px 28px rgba(107,74,58,.32), inset 0 0 0 1.5px rgba(201,169,138,.55); animation: hgm-pulse 2.4s ease-in-out infinite; }
+  .hgm__atc:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(107,74,58,.4), inset 0 0 0 1.5px var(--hg-tan); animation: none; }
+  .hgm__atc:disabled { background: #b9b0a5; box-shadow: none; cursor: not-allowed; animation: none; }
+  @keyframes hgm-pulse { 0%, 100% { box-shadow: 0 12px 28px rgba(107,74,58,.32), inset 0 0 0 1.5px rgba(201,169,138,.55), 0 0 0 0 rgba(201,169,138,.45); } 50% { box-shadow: 0 12px 28px rgba(107,74,58,.32), inset 0 0 0 1.5px rgba(201,169,138,.55), 0 0 0 8px rgba(201,169,138,0); } }
+  @media (prefers-reduced-motion: reduce) { .hgm__atc { animation: none; } }
+  .hgm__atc-spinner { display: none; position: absolute; right: 20px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: hgm-spin .7s linear infinite; }
+  .hgm__atc.is-loading .hgm__atc-spinner { display: block; }
+  .hgm__atc.is-added .hgm__atc-label::after { content: " \2713"; }
+  @keyframes hgm-spin { to { transform: rotate(360deg); } }
+  .hgm__atc-sub { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--hg-brown); }
+  .hgm__atc-sub svg { width: 16px; height: 16px; fill: none; stroke: var(--hg-brown); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .hgm__error { color: #b0483a; font-size: 13px; margin: 8px 0 0; text-align: center; }
+  .hgm__guarantees { list-style: none; margin: 12px 0 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; font-weight: 600; color: var(--hg-muted); }
+  .hgm__guarantees li { display: inline-flex; align-items: center; gap: 5px; }
+  .hgm__guarantees svg { width: 14px; height: 14px; fill: none; stroke: var(--hg-tan); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hgm__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0 4px; }
+  .hgm__payment-icon { width: 38px; height: 24px; border-radius: 4px; }
+
+  .hgm__trust { list-style: none; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--hg-line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .hgm__trust li { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+  .hgm__trust-icon { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--hg-cream); display: inline-flex; align-items: center; justify-content: center; }
+  .hgm__trust-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--hg-brown); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hgm__desc { margin-top: 18px; border-top: 1px solid var(--hg-line); border-bottom: 1px solid var(--hg-line); }
+  .hgm__desc summary { cursor: pointer; padding: 14px 0; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .hgm__desc summary::-webkit-details-marker { display: none; }
+  .hgm__desc summary::after { content: "+"; font-size: 18px; color: var(--hg-tan); }
+  .hgm__desc[open] summary::after { content: "\2013"; }
+  .hgm__desc-body { padding: 0 0 16px; font-size: 14px; line-height: 1.7; color: var(--hg-muted); }
+  .hgm__desc-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .hgm__desc-body th, .hgm__desc-body td { border: 1px solid var(--hg-line); padding: 6px 10px; text-align: left; }
+  .hgm__desc-body th { background: var(--hg-cream); }
+
+  .hgm__sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid var(--hg-line); box-shadow: 0 -8px 24px rgba(0,0,0,.08); transform: translateY(110%); transition: transform .25s; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .hgm__sticky.is-visible { transform: translateY(0); }
+  .hgm__sticky-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .hgm__sticky img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+  .hgm__sticky-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; }
+  .hgm__sticky-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hgm__sticky-meta span { color: var(--hg-brown); font-weight: 800; }
+  .hgm__sticky-meta s { color: #a89a8c; font-weight: 500; font-size: 12px; margin-right: 3px; }
+  .hgm__sticky-btn { border: 0; border-radius: 10px; background: var(--hg-brown); color: #fff; font: inherit; font-weight: 800; font-size: 14px; padding: 12px 18px; cursor: pointer; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HG Product hero",
+  "tag": "section",
+  "class": "hg-section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "Leave empty to use the current page product." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Newborn to toddler" },
+    { "type": "text", "id": "title_override", "label": "Title override" },
+    { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Bestseller" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 812 reviews" },
+    { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-hg_reviews" },
+    { "type": "text", "id": "size_guide_text", "label": "Size guide text", "default": "See the size chart in the description below for exact measurements in cm." },
+    { "type": "text", "id": "addons_heading", "label": "Add-ons heading", "default": "Protect your order" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to cart" },
+    { "type": "text", "id": "button_subtext", "label": "Text under button", "default": "Order today, ships within 24 hours" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show product description accordion", "default": true },
+    { "type": "text", "id": "description_label", "label": "Description label", "default": "Details, materials & sizing" },
+    { "type": "checkbox", "id": "sticky_bar", "label": "Sticky add-to-cart bar", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature row",
+      "limit": 4,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "heart", "label": "Heart" }, { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" },
+          { "value": "baby", "label": "Baby" }, { "value": "sparkle", "label": "Sparkle" }, { "value": "leaf", "label": "Leaf" }, { "value": "check", "label": "Check" }
+        ], "default": "heart" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Hands-free babywearing, all in one hoodie" }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Add-on product",
+      "limit": 4,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Add-on product" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "text", "label": "Description" },
+        { "type": "image_picker", "id": "image", "label": "Image (optional override)" },
+        { "type": "checkbox", "id": "default_on", "label": "Selected by default", "default": false }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust item",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "truck", "label": "Truck" }, { "value": "lock", "label": "Lock" },
+          { "value": "heart", "label": "Heart" }, { "value": "shield", "label": "Shield" }
+        ], "default": "truck" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HG Product hero",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "heart", "text": "Hands-free babywearing, all in one hoodie" } },
+        { "type": "feature", "settings": { "icon": "baby", "text": "Fits newborns through toddlers" } },
+        { "type": "feature", "settings": { "icon": "truck", "text": "Free shipping and 30-day guarantee" } },
+        { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "default_on": true } },
+        { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "default_on": true } },
+        { "type": "trust", "settings": { "icon": "truck", "text": "Free shipping" } },
+        { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "30-day guarantee" } },
+        { "type": "trust", "settings": { "icon": "heart", "text": "Loved by parents everywhere" } }
+      ]
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}
