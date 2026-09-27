@@ -1,0 +1,282 @@
+{
+  "sections": {
+    "dp_main": {
+      "type": "dp-costume-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "gift",
+            "text": "Soft, breathable fabric for all-day comfort"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "paw",
+            "text": "Fits small to large dogs, sizes S to L"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "shipping-protection",
+            "title": "Shipping protection",
+            "text": "",
+            "icon": "dp-addon-shipping.png",
+            "default_on": true
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "30-day-warranty",
+            "title": "30-day warranty",
+            "text": "",
+            "icon": "dp-addon-warranty.png",
+            "default_on": true
+          }
+        },
+        "tr1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping"
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "heart",
+            "text": "Loved by 1,000+ dogs"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "a1",
+        "a2",
+        "tr1",
+        "tr2",
+        "tr3",
+        "tr4"
+      ],
+      "settings": {
+        "eyebrow": "Limited Christmas Edition",
+        "badge_text": "Holiday best seller",
+        "rating_text": "Rated 4.9 based on 1,204 reviews",
+        "reviews_anchor": "#shopify-section-dp_reviews",
+        "size_guide_text": "S: 1.5–2.5kg · M: 2.5–5kg · L: 5–7.5kg. Between sizes? Size up for a comfy fit.",
+        "addons_heading": "Protect your order",
+        "button_text": "Add to cart",
+        "button_subtext": "Order today, ships within 24 hours",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "Details & sizing",
+        "sticky_bar": true
+      }
+    },
+    "dp_reviews": {
+      "type": "dp-reviews",
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Fits my big golden retriever!",
+            "text": "I was worried the Large would be too small since he is 55lbs, but it fit great over his back with room for his harness underneath. The star on the hood is adorable in photos.",
+            "name": "Sarah M.",
+            "verified": true
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Perfect for our holiday card",
+            "text": "Ordered the red for our two dogs and the green for the cat. Everyone matched for our Christmas photos and it was worth every penny.",
+            "name": "James T.",
+            "verified": true
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Surprisingly comfortable",
+            "text": "My spaniel usually hates wearing anything but she didn't try to take this off once. The drawstring makes it easy to get a snug, secure fit without pulling on her fur.",
+            "name": "Rachel P.",
+            "verified": true
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "title": "Cute and well made",
+            "text": "The fabric feels much nicer than I expected for the price. One of the pompoms came loose after a few wears but it was an easy fix with a needle and thread.",
+            "name": "Tom S.",
+            "verified": true
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Shipping was fast",
+            "text": "Ordered on a Monday, arrived before the weekend. The green looked even better in person than in the photos.",
+            "name": "Priya K.",
+            "verified": true
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Small dog approved",
+            "text": "I have a 6lb chihuahua and the Small was still a touch roomy, but the drawstring cinched it down perfectly. She looks like an actual walking Christmas tree.",
+            "name": "Daniel R.",
+            "verified": true
+          }
+        },
+        "v7": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Great for a costume contest",
+            "text": "Won best costume at our local dog park holiday meetup. So many people asked where I got it. Easy to hand wash and dries quickly too.",
+            "name": "Megan L.",
+            "verified": true
+          }
+        },
+        "v8": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Bought both colors",
+            "text": "Couldn't decide between red and green so I got both. The gold star and pompoms look even better in person. Highly recommend sizing up if your dog is broad chested.",
+            "name": "Olivia W.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8"
+      ],
+      "settings": {
+        "heading": "What people say about Dear Paws",
+        "rating": "4.9",
+        "rating_text": "Based on 1,204 reviews",
+        "bar_5": 90,
+        "bar_4": 7,
+        "bar_3": 2,
+        "bar_2": 1,
+        "bar_1": 0
+      }
+    },
+    "dp_faq": {
+      "type": "dp-faq",
+      "blocks": {
+        "q1": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I pick the right size?",
+            "answer": "<p>Use your dog's weight: Small fits 1.5–2.5kg, Medium fits 2.5–5kg, and Large fits 5–7.5kg. If your dog is between sizes or broad-chested, we recommend sizing up for a comfortable fit.</p>"
+          }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": {
+            "question": "Will this fit a bigger dog?",
+            "answer": "<p>The Large size comfortably fits dogs up to about 7.5kg (16.5lbs), which covers most small and many medium breeds. For larger dogs we recommend measuring chest width against our size chart before ordering, since this is a cape-style costume rather than a full harness fit.</p>"
+          }
+        },
+        "q3": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I wash it?",
+            "answer": "<p>Hand wash in cold water and lay flat to dry. This keeps the pompoms and glitter star looking their best for years of holiday photos.</p>"
+          }
+        },
+        "q4": {
+          "type": "faq",
+          "settings": {
+            "question": "When should I order to receive it before Christmas?",
+            "answer": "<p>Orders placed before December 15th typically arrive in time for the holidays. We ship from Canada with tracking on every order.</p>"
+          }
+        },
+        "q5": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it come in both colors shown?",
+            "answer": "<p>Yes. Choose Red or Green at checkout, each available in Small, Medium and Large.</p>"
+          }
+        },
+        "q6": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>If you or your dog are not happy within 30 days, contact us and we will make it right with a replacement or a full refund.</p>"
+          }
+        },
+        "q7": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions",
+        "text": "Everything you need to know before your dog's big holiday photoshoot.",
+        "open_first": true
+      }
+    }
+  },
+  "order": [
+    "dp_main",
+    "dp_reviews",
+    "dp_faq"
+  ]
+}
