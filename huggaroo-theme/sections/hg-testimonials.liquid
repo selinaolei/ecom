@@ -1,0 +1,77 @@
+{%- comment -%}
+  Huggaroo – Testimonials: large photo + quote cards.
+{%- endcomment -%}
+<section class="hgt" id="hg-testimonials-{{ section.id }}">
+  <div class="hgt__inner">
+    {%- if section.settings.heading != blank -%}<h2 class="hgt__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+    <div class="hgt__grid">
+      {%- for block in section.blocks -%}
+        <article class="hgt__card" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="hgt__media">{{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 90vw', alt: block.settings.name }}</div>
+          {%- endif -%}
+          <div class="hgt__body">
+            <span class="hgt__quote-mark" aria-hidden="true">&ldquo;</span>
+            <span class="hgt__stars" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}</span>
+            {%- if block.settings.title != blank -%}<h3 class="hgt__title">&ldquo;{{ block.settings.title }}&rdquo;</h3>{%- endif -%}
+            <p class="hgt__text">{{ block.settings.text }}</p>
+            <p class="hgt__name">&mdash; {{ block.settings.name }}</p>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hgt { --hg-brown: #6B4A3A; --hg-tan: #C9A98A; --hg-cream: #F7EFE3; --hg-line: #E6D9C4; --hg-muted: #8A7A6C;
+    background: var(--hg-cream); padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .hgt *, .hgt *::before, .hgt *::after { box-sizing: border-box; min-width: 0; }
+  .hgt { width: 100%; max-width: 100%; overflow-x: clip; }
+  .hgt__inner { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .hgt__heading { text-align: center; font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin: 0 0 30px; color: var(--hg-brown); }
+  .hgt__grid { display: grid; gap: 20px; }
+  @media (min-width: 750px) { .hgt__grid { grid-template-columns: repeat(3, 1fr); } }
+  .hgt__card { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid var(--hg-line); display: flex; flex-direction: column; }
+  .hgt__media { aspect-ratio: 4 / 5; background: var(--hg-cream); }
+  .hgt__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hgt__body { padding: 20px; position: relative; }
+  .hgt__quote-mark { position: absolute; top: -10px; right: 16px; font-size: 52px; font-family: Georgia, serif; color: var(--hg-tan); opacity: .5; line-height: 1; }
+  .hgt__stars { display: inline-flex; gap: 2px; margin-bottom: 10px; }
+  .hgt__stars svg { width: 15px; height: 15px; fill: var(--hg-tan); }
+  .hgt__title { font-size: 16px; font-weight: 800; margin: 0 0 8px; color: var(--hg-brown); line-height: 1.3; }
+  .hgt__text { font-size: 13px; line-height: 1.6; color: #4a3c30; margin: 0 0 12px; }
+  .hgt__name { font-size: 12px; font-weight: 700; color: var(--hg-muted); margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HG Testimonials",
+  "tag": "section",
+  "class": "hg-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Testimonials" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Quote headline", "default": "So worth it" },
+        { "type": "textarea", "id": "text", "label": "Full quote", "default": "Replace with a real customer quote." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Customer name" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    { "name": "HG Testimonials", "blocks": [
+      { "type": "testimonial", "settings": { "title": "My mom saw the photo and ordered one for my sister", "text": "I sent my mum a picture of us by the window watching the rain. Two days later she'd ordered one for my sister who's due in March. That's all I need to say really.", "name": "Emma O." } },
+      { "type": "testimonial", "settings": { "title": "Both hands free for the first time in months", "text": "I can finally make coffee, fold laundry, whatever, with the baby right against me and totally content. Wish I'd bought this on day one.", "name": "Rachel P." } },
+      { "type": "testimonial", "settings": { "title": "So soft, so warm", "text": "It's like wearing a blanket that also happens to hold my baby. We both fell asleep on the couch in it more than once.", "name": "Maya T." } }
+    ] }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

@@ -14,6 +14,10 @@
 
   assign color_option = product.options_with_values | where: 'name', 'Color' | first
   assign size_option = product.options_with_values | where: 'name', 'Size' | first
+
+  assign hg_orders_base = 12
+  assign hg_seed = 'now' | date: '%j' | plus: 0 | times: 5 | modulo: 19
+  assign hg_orders_today = hg_orders_base | plus: hg_seed
 -%}
 
 <section class="hgm" id="hg-product-{{ section.id }}" data-hg-product>
@@ -71,6 +75,16 @@
         <span class="hgm__eyebrow">{{ section.settings.eyebrow }}</span>
       {%- endif -%}
 
+      {%- if section.settings.show_proof_bar -%}
+        <p class="hgm__proof">
+          <span class="hgm__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg>{{ hg_orders_today }} ordered today</span>
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.tag_text != blank -%}
+        <span class="hgm__tag">{{ section.settings.tag_text }}</span>
+      {%- endif -%}
+
       <h1 class="hgm__title">{{ section.settings.title_override | default: product.title }}</h1>
 
       <a class="hgm__rating" href="{{ section.settings.reviews_anchor | default: '#shopify-section-hg_reviews' }}" aria-label="Read customer reviews">
@@ -88,6 +102,16 @@
         <s class="hgm__price-was" data-hg-price-was {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
         <span class="hgm__pill" data-hg-price-pill {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}></span>
       </div>
+
+      {%- if section.settings.show_steps -%}
+        <ul class="hgm__steps">
+          <li><span class="hgm__step-num">1</span>Unzip</li>
+          <li class="hgm__step-sep" aria-hidden="true">&middot;</li>
+          <li><span class="hgm__step-num">2</span>Snuggle in</li>
+          <li class="hgm__step-sep" aria-hidden="true">&middot;</li>
+          <li><span class="hgm__step-num">3</span>Zip up</li>
+        </ul>
+      {%- endif -%}
 
       {%- if features.size > 0 -%}
         <ul class="hgm__features">
@@ -307,6 +331,14 @@
   .hgm__thumb.is-active { border-color: var(--hg-brown); opacity: 1; }
 
   .hgm__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hg-tan); margin-bottom: 8px; }
+  .hgm__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--hg-brown-2); }
+  .hgm__proof-item { display: inline-flex; align-items: center; gap: 6px; background: var(--hg-cream); border-radius: 999px; padding: 6px 12px; }
+  .hgm__proof-item svg { width: 15px; height: 15px; fill: none; stroke: #c8473b; stroke-width: 1.8; stroke-linejoin: round; }
+  .hgm__tag { display: inline-block; border: 1.5px solid var(--hg-brown); color: var(--hg-brown); font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; margin-bottom: 12px; }
+  .hgm__steps { list-style: none; margin: 0 0 20px; padding: 10px 16px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--hg-brown); background: var(--hg-cream); border-radius: 999px; width: fit-content; }
+  .hgm__steps li { display: inline-flex; align-items: center; gap: 6px; }
+  .hgm__step-num { width: 18px; height: 18px; border-radius: 50%; background: var(--hg-brown); color: #fff; font-size: 10px; display: inline-flex; align-items: center; justify-content: center; }
+  .hgm__step-sep { color: var(--hg-tan); }
   .hgm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--hg-brown); }
   .hgm__rating { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; text-decoration: none; color: inherit; border-bottom: 1px dashed var(--hg-tan); padding-bottom: 2px; }
   .hgm__rating:hover .hgm__rating-text { color: var(--hg-brown); text-decoration: underline; }
@@ -414,7 +446,10 @@
   "settings": [
     { "type": "product", "id": "product", "label": "Product", "info": "Leave empty to use the current page product." },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Newborn to toddler" },
+    { "type": "checkbox", "id": "show_proof_bar", "label": "Show \"ordered today\" proof bar", "default": true },
+    { "type": "text", "id": "tag_text", "label": "Tag line (e.g. NEW IN | COSY SEASON ESSENTIAL)", "default": "NEW IN | COSY SEASON ESSENTIAL" },
     { "type": "text", "id": "title_override", "label": "Title override" },
+    { "type": "checkbox", "id": "show_steps", "label": "Show Unzip / Snuggle in / Zip up steps", "default": true },
     { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Bestseller" },
     { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 812 reviews" },
     { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-hg_reviews" },

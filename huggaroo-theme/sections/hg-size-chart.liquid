@@ -1,0 +1,92 @@
+{%- comment -%}
+  Huggaroo – Size chart, graphic card style (inches + centimeters side by side).
+  Numbers are the same verified Length/Bust/Shoulder/Sleeve measurements shown on the
+  product page description, just also broken out here as a standalone visual reference.
+{%- endcomment -%}
+<section class="hgs" id="hg-size-chart-{{ section.id }}">
+  <div class="hgs__inner">
+    <div class="hgs__card">
+      {%- if section.settings.eyebrow != blank -%}<span class="hgs__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      <h2 class="hgs__heading">{{ section.settings.heading }}</h2>
+      {%- if section.settings.subheading != blank -%}<p class="hgs__sub">{{ section.settings.subheading }}</p>{%- endif -%}
+
+      <div class="hgs__tables">
+        <div class="hgs__table-wrap">
+          <p class="hgs__table-label">Inches</p>
+          <table class="hgs__table">
+            <thead><tr><th>Size</th><th>Bust</th><th>Length</th><th>Sleeve</th></tr></thead>
+            <tbody>
+              <tr><td>S</td><td>46.5</td><td>26.0</td><td>26.4</td></tr>
+              <tr><td>M</td><td>48.0</td><td>26.4</td><td>26.8</td></tr>
+              <tr><td>L</td><td>49.6</td><td>26.8</td><td>27.2</td></tr>
+              <tr><td>XL</td><td>51.2</td><td>27.2</td><td>27.6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="hgs__table-wrap">
+          <p class="hgs__table-label">Centimeters</p>
+          <table class="hgs__table">
+            <thead><tr><th>Size</th><th>Bust</th><th>Length</th><th>Sleeve</th></tr></thead>
+            <tbody>
+              <tr><td>S</td><td>118</td><td>66</td><td>67</td></tr>
+              <tr><td>M</td><td>122</td><td>67</td><td>68</td></tr>
+              <tr><td>L</td><td>126</td><td>68</td><td>69</td></tr>
+              <tr><td>XL</td><td>130</td><td>69</td><td>70</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {%- if section.settings.note != blank -%}
+        <div class="hgs__note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
+          <span>{{ section.settings.note }}</span>
+        </div>
+      {%- endif -%}
+
+      <p class="hgs__footnote">{{ section.settings.footnote }}</p>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hgs { --hg-brown: #6B4A3A; --hg-brown-2: #4A3428; --hg-tan: #C9A98A; --hg-cream: #F7EFE3; --hg-line: #E6D9C4; --hg-muted: #8A7A6C;
+    background: #fff; padding: 48px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .hgs *, .hgs *::before, .hgs *::after { box-sizing: border-box; min-width: 0; }
+  .hgs { width: 100%; max-width: 100%; overflow-x: clip; }
+  .hgs__inner { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+  .hgs__card { background: var(--hg-cream); border: 1px solid var(--hg-line); border-radius: 20px; padding: 32px 24px; text-align: center; }
+  .hgs__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hg-tan); margin-bottom: 10px; }
+  .hgs__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(24px, 3.6vw, 34px); font-weight: 800; margin: 0 0 6px; color: var(--hg-brown); }
+  .hgs__sub { font-size: 14px; color: var(--hg-muted); margin: 0 0 24px; font-style: italic; }
+  .hgs__tables { display: grid; gap: 18px; margin-bottom: 20px; }
+  @media (min-width: 650px) { .hgs__tables { grid-template-columns: 1fr 1fr; } }
+  .hgs__table-label { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--hg-brown); text-align: left; margin: 0 0 6px; }
+  .hgs__table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; font-size: 13px; }
+  .hgs__table th, .hgs__table td { padding: 9px 8px; text-align: center; border-bottom: 1px solid var(--hg-line); }
+  .hgs__table th { background: var(--hg-brown); color: #fff; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  .hgs__table td:first-child, .hgs__table th:first-child { font-weight: 800; color: var(--hg-brown); }
+  .hgs__table tbody tr:last-child td { border-bottom: 0; }
+  .hgs__note { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; border: 1px solid var(--hg-line); border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 700; color: var(--hg-brown); margin-bottom: 12px; }
+  .hgs__note svg { width: 22px; height: 22px; flex: 0 0 22px; fill: none; stroke: var(--hg-brown); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .hgs__footnote { font-size: 12px; color: var(--hg-muted); margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HG Size chart",
+  "tag": "section",
+  "class": "hg-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Size guide" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find your fit" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Relaxed oversized fit — order your usual size" },
+    { "type": "text", "id": "note", "label": "Note callout", "default": "One baby pocket size fits every hoodie" },
+    { "type": "textarea", "id": "footnote", "label": "Footnote", "default": "These are garment measurements, not body measurements. Allow 1-2cm (½-¾ in) either way." }
+  ],
+  "presets": [
+    { "name": "HG Size chart" }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

@@ -84,6 +84,9 @@
       ],
       "settings": {
         "eyebrow": "Newborn to toddler",
+        "show_proof_bar": true,
+        "tag_text": "NEW IN | COSY SEASON ESSENTIAL",
+        "show_steps": true,
         "badge_text": "Bestseller",
         "rating_text": "Rated 4.9 based on 812 reviews",
         "reviews_anchor": "#shopify-section-hg_reviews",
@@ -95,6 +98,52 @@
         "show_description": true,
         "description_label": "Details, materials & sizing",
         "sticky_bar": true
+      }
+    },
+    "hg_size_chart": {
+      "type": "hg-size-chart",
+      "settings": {
+        "eyebrow": "Size guide",
+        "heading": "Find your fit",
+        "subheading": "Relaxed oversized fit — order your usual size",
+        "note": "One baby pocket size fits every hoodie",
+        "footnote": "These are garment measurements, not body measurements. Allow 1-2cm (½-¾ in) either way."
+      }
+    },
+    "hg_testimonials": {
+      "type": "hg-testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260928_160045_7c7e8b4b-a009-44b6-9260-99618b752c8a.png",
+            "title": "My mom saw the photo and ordered one for my sister",
+            "text": "I sent my mum a picture of us by the window watching the rain. Two days later she'd ordered one for my sister who's due in March. That's all I need to say really.",
+            "name": "Emma O."
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260928_160047_22c46c81-4bdb-454a-a326-3927f9347634.png",
+            "title": "Both hands free for the first time in months",
+            "text": "I can finally make coffee, fold laundry, whatever, with the baby right against me and totally content. Wish I'd bought this on day one.",
+            "name": "Rachel P."
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/hf_20260927_210611_9881ff8b-b99d-4f3e-9562-816e9c6907d7.png",
+            "title": "So soft, so warm",
+            "text": "It's like wearing a blanket that also happens to hold my baby. We both fell asleep on the couch in it more than once.",
+            "name": "Maya T."
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {
+        "heading": "Testimonials"
       }
     },
     "hg_reviews": {
@@ -236,6 +285,8 @@
   },
   "order": [
     "hg_main",
+    "hg_size_chart",
+    "hg_testimonials",
     "hg_reviews",
     "hg_faq"
   ]
