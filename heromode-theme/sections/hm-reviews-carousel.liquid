@@ -1,0 +1,174 @@
+{%- comment -%}
+  HeroMode – Reviews Carousel: sliding review cards with smooth animation.
+  Displays individual reviews one at a time with navigation.
+{%- endcomment -%}
+<section class="hmrc" id="hm-reviews-carousel-{{ section.id }}">
+  <div class="hmrc__inner">
+    <div class="hmrc__header">
+      {%- if section.settings.heading != blank -%}<h2 class="hmrc__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      <div class="hmrc__rating-group">
+        <div class="hmrc__stars" aria-hidden="true">
+          {%- for i in (1..5) -%}
+            {%- if i <= section.settings.rating -%}
+              <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+            {%- else -%}
+              <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <span class="hmrc__rating-text">{{ section.settings.rating }} &middot; {{ section.settings.rating_text }}</span>
+      </div>
+    </div>
+
+    <div class="hmrc__carousel" data-hmrc-carousel>
+      <div class="hmrc__track" data-hmrc-track>
+        {%- for block in section.blocks -%}
+          <article class="hmrc__card" data-hmrc-card {{ block.shopify_attributes }}>
+            <div class="hmrc__stars-row" aria-hidden="true">
+              {%- for i in (1..5) -%}
+                {%- if i <= block.settings.stars -%}
+                  <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if block.settings.title != blank -%}<h3 class="hmrc__title">{{ block.settings.title }}</h3>{%- endif -%}
+            <p class="hmrc__text">{{ block.settings.text }}</p>
+            <div class="hmrc__footer">
+              <p class="hmrc__name">{{ block.settings.name }}</p>
+              {%- if block.settings.verified -%}<span class="hmrc__badge">Verified</span>{%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+
+      <button type="button" class="hmrc__arrow hmrc__arrow--prev" data-hmrc-prev aria-label="Previous review">&#8249;</button>
+      <button type="button" class="hmrc__arrow hmrc__arrow--next" data-hmrc-next aria-label="Next review">&#8250;</button>
+
+      <div class="hmrc__dots" role="tablist">
+        {%- for block in section.blocks -%}
+          <button type="button" class="hmrc__dot{% if forloop.first %} is-active{% endif %}" data-hmrc-dot="{{ forloop.index0 }}" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Go to review {{ forloop.index }}"></button>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+(function() {
+  const carousel = document.querySelector('[data-hmrc-carousel]');
+  if (!carousel) return;
+
+  const track = carousel.querySelector('[data-hmrc-track]');
+  const cards = carousel.querySelectorAll('[data-hmrc-card]');
+  const prevBtn = carousel.querySelector('[data-hmrc-prev]');
+  const nextBtn = carousel.querySelector('[data-hmrc-next]');
+  const dots = carousel.querySelectorAll('[data-hmrc-dot]');
+
+  let currentIndex = 0;
+  let autoplayTimer;
+
+  function goToSlide(index) {
+    currentIndex = (index + cards.length) % cards.length;
+    const offset = -currentIndex * 100;
+    track.style.transform = `translateX(${offset}%)`;
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === currentIndex);
+      dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
+    });
+
+    resetAutoplay();
+  }
+
+  function nextSlide() {
+    goToSlide(currentIndex + 1);
+  }
+
+  function prevSlide() {
+    goToSlide(currentIndex - 1);
+  }
+
+  function resetAutoplay() {
+    clearTimeout(autoplayTimer);
+    autoplayTimer = setTimeout(nextSlide, 6000);
+  }
+
+  prevBtn?.addEventListener('click', prevSlide);
+  nextBtn?.addEventListener('click', nextSlide);
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => goToSlide(Number(dot.dataset.hmrcDot)));
+  });
+
+  resetAutoplay();
+})();
+</script>
+
+{% stylesheet %}
+  .hmrc { --hm-red: #E2231A; --hm-gold: #D9A520; --hm-black: #1A1A1A; --hm-cream: #F5EFE3; --hm-line: #E6DFCF; --hm-muted: #7A756D;
+    background: #fff; padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .hmrc *, .hmrc *::before, .hmrc *::after { box-sizing: border-box; min-width: 0; }
+  .hmrc { width: 100%; max-width: 100%; overflow: hidden; }
+  .hmrc__inner { max-width: 1100px; margin: 0 auto; padding: 0 16px; text-align: center; }
+  .hmrc__header { margin-bottom: 40px; }
+  .hmrc__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 38px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 16px; color: var(--hm-black); }
+  .hmrc__rating-group { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .hmrc__stars { display: inline-flex; gap: 3px; }
+  .hmrc__stars svg { width: 20px; height: 20px; fill: var(--hm-gold); }
+  .hmrc__rating-text { font-size: 14px; font-weight: 600; color: var(--hm-muted); }
+  .hmrc__carousel { position: relative; max-width: 700px; margin: 0 auto; }
+  .hmrc__track { display: flex; transition: transform 0.6s ease-out; }
+  .hmrc__card { flex: 0 0 100%; background: #fff; padding: 40px 24px; border: 1px solid var(--hm-line); border-radius: 14px; text-align: left; }
+  .hmrc__stars-row { display: flex; gap: 3px; margin-bottom: 12px; justify-content: flex-start; }
+  .hmrc__stars-row svg { width: 16px; height: 16px; fill: var(--hm-gold); }
+  .hmrc__title { font-size: 16px; font-weight: 800; margin: 0 0 12px; color: var(--hm-black); }
+  .hmrc__text { font-size: 14px; line-height: 1.6; color: var(--hm-muted); margin: 0 0 16px; }
+  .hmrc__footer { display: flex; align-items: center; gap: 12px; }
+  .hmrc__name { font-size: 13px; font-weight: 700; color: var(--hm-black); margin: 0; }
+  .hmrc__badge { display: inline-block; background: var(--hm-cream); color: var(--hm-black); font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+  .hmrc__arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(226, 35, 26, 0.1); color: var(--hm-red); font-size: 26px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: .2s; }
+  .hmrc__arrow:hover { background: rgba(226, 35, 26, 0.2); }
+  .hmrc__arrow--prev { left: -55px; } .hmrc__arrow--next { right: -55px; }
+  @media (max-width: 800px) { .hmrc__arrow--prev { left: 8px; } .hmrc__arrow--next { right: 8px; } }
+  .hmrc__dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+  .hmrc__dot { width: 10px; height: 10px; border-radius: 50%; border: 0; background: var(--hm-line); cursor: pointer; transition: .2s; }
+  .hmrc__dot.is-active { background: var(--hm-red); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM Reviews Carousel",
+  "tag": "section",
+  "class": "hm-section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What riders say about HeroMode" },
+    { "type": "text", "id": "rating", "label": "Overall rating (0-5)", "default": "4.9" },
+    { "type": "text", "id": "rating_text", "label": "Rating subtext", "default": "Based on 640 reviews" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "default": 5 },
+        { "type": "text", "id": "title", "label": "Review headline", "default": "Great quality" },
+        { "type": "textarea", "id": "text", "label": "Review text", "default": "Replace with a real review." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Customer name" },
+        { "type": "checkbox", "id": "verified", "label": "Verified buyer", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "presets": [
+    { "name": "HM Reviews Carousel", "blocks": [
+      { "type": "review", "settings": { "stars": 5, "title": "Stands out on the mountain", "text": "Everyone kept asking where I got it. Fits perfectly under my helmet and goggles, no gaps.", "name": "Jordan L.", "verified": true } },
+      { "type": "review", "settings": { "stars": 5, "title": "Warm and comfortable", "text": "Wasn't expecting it to be this soft. Kept my face warm all day on the lift.", "name": "Marcus T.", "verified": true } },
+      { "type": "review", "settings": { "stars": 4, "title": "Great fit", "text": "One size fits most is accurate for me. Stretchy enough to pull on and off easily.", "name": "Devon K.", "verified": true } },
+      { "type": "review", "settings": { "stars": 5, "title": "Exactly as pictured", "text": "Color is bold in person too. Shipped fast and arrived before my trip.", "name": "Casey R.", "verified": true } },
+      { "type": "review", "settings": { "stars": 5, "title": "Bought two colors", "text": "Got the Crimson Gold and Shadow Black. Both fit the same and the knit feels sturdy.", "name": "Priya N.", "verified": true } },
+      { "type": "review", "settings": { "stars": 5, "title": "Fast shipping", "text": "Ordered on a Monday, arrived before the weekend trip. Exactly as described.", "name": "Sam W.", "verified": true } }
+    ] }
+  ]
+}
+{% endschema %}

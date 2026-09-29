@@ -1,0 +1,38 @@
+{%- comment -%}
+  HeroMode – Shipping Banner: animated "Free worldwide shipping" promotional banner
+  Rendered as a static section with sliding text animation.
+{%- endcomment -%}
+<section class="hmsb" data-hm-shipping-banner>
+  <div class="hmsb__content">
+    <span class="hmsb__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+    </span>
+    <span class="hmsb__text">{{ section.settings.text }}</span>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hmsb { --hm-red: #E2231A; --hm-black: #1A1A1A; background: var(--hm-red); padding: 12px 0; width: 100%; overflow: hidden; }
+  .hmsb__content { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 1200px; margin: 0 auto; padding: 0 16px; font-weight: 700; letter-spacing: 0.5px; color: var(--hm-black); font-size: 14px; }
+  .hmsb__icon { display: inline-flex; flex: 0 0 18px; width: 18px; height: 18px; }
+  .hmsb__icon svg { width: 100%; height: 100%; fill: none; stroke: var(--hm-black); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .hmsb__text { animation: hmsb-slide 20s linear infinite; white-space: nowrap; }
+  @keyframes hmsb-slide {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM Shipping Banner",
+  "tag": "section",
+  "class": "hm-section hm-shipping-section",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Banner text", "default": "FREE WORLDWIDE SHIPPING" }
+  ],
+  "presets": [
+    { "name": "HM Shipping Banner", "settings": { "text": "FREE WORLDWIDE SHIPPING" } }
+  ]
+}
+{% endschema %}

@@ -107,7 +107,7 @@
       }
     },
     "hm_testimonials": {
-      "type": "hm-testimonials",
+      "type": "hm-testimonials-carousel",
       "blocks": {
         "t1": {
           "type": "testimonial",
@@ -144,7 +144,7 @@
       }
     },
     "hm_reviews": {
-      "type": "hm-reviews",
+      "type": "hm-reviews-carousel",
       "blocks": {
         "v1": {
           "type": "review",

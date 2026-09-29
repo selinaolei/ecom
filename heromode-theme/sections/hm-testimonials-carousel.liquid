@@ -1,0 +1,142 @@
+{%- comment -%}
+  HeroMode – Testimonials Carousel: sliding testimonial cards with smooth animation.
+{%- endcomment -%}
+<section class="hmtc" id="hm-testimonials-carousel-{{ section.id }}">
+  <div class="hmtc__inner">
+    {%- if section.settings.eyebrow != blank -%}<span class="hmtc__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+    {%- if section.settings.heading != blank -%}<h2 class="hmtc__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+    <div class="hmtc__carousel" data-hmtc-carousel>
+      <div class="hmtc__track" data-hmtc-track>
+        {%- for block in section.blocks -%}
+          <article class="hmtc__card" data-hmtc-card {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <div class="hmtc__media">{{ block.settings.image | image_url: width: 700 | image_tag: loading: 'lazy', sizes: '90vw', alt: block.settings.name }}</div>
+            {%- endif -%}
+            <div class="hmtc__body">
+              <span class="hmtc__stars" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>{%- endfor -%}</span>
+              {%- if block.settings.title != blank -%}<h3 class="hmtc__title">&ldquo;{{ block.settings.title }}&rdquo;</h3>{%- endif -%}
+              <p class="hmtc__text">{{ block.settings.text }}</p>
+              <p class="hmtc__name">&mdash; {{ block.settings.name }}</p>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+      <button type="button" class="hmtc__arrow hmtc__arrow--prev" data-hmtc-prev aria-label="Previous testimonial">&#8249;</button>
+      <button type="button" class="hmtc__arrow hmtc__arrow--next" data-hmtc-next aria-label="Next testimonial">&#8250;</button>
+      <div class="hmtc__dots" role="tablist">
+        {%- for block in section.blocks -%}
+          <button type="button" class="hmtc__dot{% if forloop.first %} is-active{% endif %}" data-hmtc-dot="{{ forloop.index0 }}" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Go to testimonial {{ forloop.index }}"></button>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+(function() {
+  const carousel = document.querySelector('[data-hmtc-carousel]');
+  if (!carousel) return;
+
+  const track = carousel.querySelector('[data-hmtc-track]');
+  const cards = carousel.querySelectorAll('[data-hmtc-card]');
+  const prevBtn = carousel.querySelector('[data-hmtc-prev]');
+  const nextBtn = carousel.querySelector('[data-hmtc-next]');
+  const dots = carousel.querySelectorAll('[data-hmtc-dot]');
+
+  let currentIndex = 0;
+  let autoplayTimer;
+
+  function goToSlide(index) {
+    currentIndex = (index + cards.length) % cards.length;
+    const offset = -currentIndex * 100;
+    track.style.transform = `translateX(${offset}%)`;
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === currentIndex);
+      dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
+    });
+
+    resetAutoplay();
+  }
+
+  function nextSlide() {
+    goToSlide(currentIndex + 1);
+  }
+
+  function prevSlide() {
+    goToSlide(currentIndex - 1);
+  }
+
+  function resetAutoplay() {
+    clearTimeout(autoplayTimer);
+    autoplayTimer = setTimeout(nextSlide, 5000);
+  }
+
+  prevBtn?.addEventListener('click', prevSlide);
+  nextBtn?.addEventListener('click', nextSlide);
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => goToSlide(Number(dot.dataset.hmtcDot)));
+  });
+
+  resetAutoplay();
+})();
+</script>
+
+{% stylesheet %}
+  .hmtc { --hm-red: #E2231A; --hm-gold: #D9A520; --hm-black: #1A1A1A; --hm-cream: #F5EFE3; --hm-line: #2e2e2e; --hm-muted: #b9b2a6;
+    background: var(--hm-black); padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .hmtc *, .hmtc *::before, .hmtc *::after { box-sizing: border-box; min-width: 0; }
+  .hmtc { width: 100%; max-width: 100%; overflow: hidden; }
+  .hmtc__inner { max-width: 1100px; margin: 0 auto; padding: 0 16px; text-align: center; }
+  .hmtc__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hm-gold); margin-bottom: 12px; }
+  .hmtc__heading { text-align: center; font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 38px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 30px; color: #fff; }
+  .hmtc__carousel { position: relative; max-width: 600px; margin: 0 auto; }
+  .hmtc__track { display: flex; transition: transform 0.6s ease-out; }
+  .hmtc__card { flex: 0 0 100%; background: #232323; border-radius: 14px; overflow: hidden; border: 1px solid var(--hm-line); display: flex; flex-direction: column; }
+  .hmtc__media { aspect-ratio: 4 / 5; background: var(--hm-black); }
+  .hmtc__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hmtc__body { padding: 20px; }
+  .hmtc__stars { display: inline-flex; gap: 2px; margin-bottom: 10px; }
+  .hmtc__stars svg { width: 15px; height: 15px; fill: var(--hm-gold); }
+  .hmtc__title { font-size: 16px; font-weight: 800; margin: 0 0 8px; color: #fff; line-height: 1.3; }
+  .hmtc__text { font-size: 13px; line-height: 1.6; color: #cfc8ba; margin: 0 0 12px; }
+  .hmtc__name { font-size: 12px; font-weight: 700; color: var(--hm-gold); margin: 0; }
+  .hmtc__arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--hm-red); font-size: 26px; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; z-index: 10; }
+  .hmtc__arrow--prev { left: -55px; } .hmtc__arrow--next { right: -55px; }
+  @media (max-width: 800px) { .hmtc__arrow--prev { left: 8px; } .hmtc__arrow--next { right: 8px; } }
+  .hmtc__dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+  .hmtc__dot { width: 10px; height: 10px; border-radius: 50%; border: 0; background: rgba(255,255,255,.3); cursor: pointer; transition: .2s; }
+  .hmtc__dot.is-active { background: var(--hm-red); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM Testimonials Carousel",
+  "tag": "section",
+  "class": "hm-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Riders love it" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Everyone was asking" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "title", "label": "Quote headline", "default": "So worth it" },
+        { "type": "textarea", "id": "text", "label": "Full quote", "default": "Replace with a real customer quote." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Customer name" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    { "name": "HM Testimonials Carousel", "blocks": [
+      { "type": "testimonial", "settings": { "title": "Everyone was asking where I got it", "text": "Wore it on the first chairlift of the day and three people asked where to get one. Fits perfectly under my helmet.", "name": "Jordan L." } },
+      { "type": "testimonial", "settings": { "title": "Warmer than I expected", "text": "Kept my whole face warm on a windy day at the top of the mountain. Goggles sat right over the eye opening with no gaps.", "name": "Marcus T." } },
+      { "type": "testimonial", "settings": { "title": "Stands out in every photo", "text": "Bought it for the look but it's actually really practical too. One size fit me and my partner just fine.", "name": "Casey R." } }
+    ] }
+  ]
+}
+{% endschema %}
