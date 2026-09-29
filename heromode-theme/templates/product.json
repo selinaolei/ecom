@@ -69,6 +69,13 @@
             "icon": "star",
             "text": "Rated 4.9 by riders"
           }
+        },
+        "tr5": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Fast shipping"
+          }
         }
       },
       "block_order": [
@@ -80,7 +87,8 @@
         "a2",
         "tr2",
         "tr3",
-        "tr4"
+        "tr4",
+        "tr5"
       ],
       "settings": {
         "eyebrow": "",
