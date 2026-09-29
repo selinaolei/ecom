@@ -17,6 +17,19 @@
   assign hm_orders_base = 24
   assign hm_seed = 'now' | date: '%j' | plus: 0 | times: 5 | modulo: 19
   assign hm_orders_today = hm_orders_base | plus: hm_seed
+
+  assign hm_unit_price = current_variant.price
+  assign hm_t2_qty = section.settings.tier2_qty
+  assign hm_t2_pct = section.settings.tier2_discount_pct
+  assign hm_t2_gross = hm_unit_price | times: hm_t2_qty
+  assign hm_t2_off = hm_t2_gross | times: hm_t2_pct | divided_by: 100
+  assign hm_t2_net = hm_t2_gross | minus: hm_t2_off
+
+  assign hm_t3_qty = section.settings.tier3_qty
+  assign hm_t3_pct = section.settings.tier3_discount_pct
+  assign hm_t3_gross = hm_unit_price | times: hm_t3_qty
+  assign hm_t3_off = hm_t3_gross | times: hm_t3_pct | divided_by: 100
+  assign hm_t3_net = hm_t3_gross | minus: hm_t3_off
 -%}
 
 <section class="hmm" id="hm-product-{{ section.id }}" data-hm-product>
@@ -133,7 +146,7 @@
                   type="button"
                   class="hmm__swatch{% if value == current_variant.option1 %} is-active{% endif %}"
                   data-hm-color="{{ value | escape }}"
-                  style="--swatch-color: {% if value == 'Crimson Gold' %}#B3272C{% elsif value == 'Web Red' %}#8C1A1A{% elsif value == 'Shadow Black' %}#1A1A1A{% else %}#ccc{% endif %};"
+                  style="--swatch-color: {% if value == 'Crimson Gold' %}#E2231A{% elsif value == 'Web Red' %}#B01712{% elsif value == 'Shadow Black' %}#1A1A1A{% else %}#ccc{% endif %};"
                   role="radio"
                   aria-checked="{% if value == current_variant.option1 %}true{% else %}false{% endif %}"
                   aria-label="{{ value }}"
@@ -147,10 +160,35 @@
         </div>
       {%- endif -%}
 
+      {%- comment -%} ===== BUNDLE TIERS ===== {%- endcomment -%}
+      {%- if section.settings.show_bundle_tiers -%}
+        <div class="hmm__tiers" data-hm-tiers>
+          <p class="hmm__label hmm__label--center"><span>{{ section.settings.bundle_heading }}</span></p>
+          <div class="hmm__tier-grid" role="radiogroup" aria-label="{{ section.settings.bundle_heading }}">
+            <button type="button" class="hmm__tier is-active" data-hm-tier="1" role="radio" aria-checked="true">
+              <span class="hmm__tier-qty">1 Mask</span>
+              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_unit_price | money }}</b></span>
+            </button>
+            <button type="button" class="hmm__tier" data-hm-tier="{{ hm_t2_qty }}" role="radio" aria-checked="false">
+              <span class="hmm__tier-badge">Save {{ hm_t2_pct }}%</span>
+              <span class="hmm__tier-qty">{{ hm_t2_qty }} Masks</span>
+              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_t2_net | money }}</b> <s data-hm-tier-was>{{ hm_t2_gross | money }}</s></span>
+              <span class="hmm__tier-note">{{ section.settings.bundle_addon_note }}</span>
+            </button>
+            <button type="button" class="hmm__tier" data-hm-tier="{{ hm_t3_qty }}" role="radio" aria-checked="false">
+              <span class="hmm__tier-badge hmm__tier-badge--best">Best value · Save {{ hm_t3_pct }}%</span>
+              <span class="hmm__tier-qty">{{ hm_t3_qty }} Masks</span>
+              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_t3_net | money }}</b> <s data-hm-tier-was>{{ hm_t3_gross | money }}</s></span>
+              <span class="hmm__tier-note">{{ section.settings.bundle_addon_note }}</span>
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+
       {%- comment -%} ===== ADD-ONS ===== {%- endcomment -%}
       {%- if addons.size > 0 -%}
         <div class="hmm__bundle">
-          <p class="hmm__label hmm__label--center"><span>{{ section.settings.addons_heading }}</span></p>
+          <p class="hmm__label hmm__label--center"><span data-hm-addons-heading>{{ section.settings.addons_heading }}</span></p>
           <div class="hmm__addons">
             {%- for ab in addons -%}
               {%- assign aidx = forloop.index0 -%}
@@ -167,7 +205,7 @@
                   {%- endif -%}
                 </span>
                 <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
-                <span class="hmm__addon-price">{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+                <span class="hmm__addon-price" data-hm-addon-price>{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
               </label>
             {%- endfor -%}
           </div>
@@ -263,6 +301,11 @@
           { "variantId": {{ av.id | default: null | json }}, "price": {{ av.price | default: 0 | json }}, "defaultOn": {{ block.settings.default_on | json }} }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ],
+      "tiers": [
+        { "qty": 1, "pct": 0 },
+        { "qty": {{ hm_t2_qty | json }}, "pct": {{ hm_t2_pct | json }} },
+        { "qty": {{ hm_t3_qty | json }}, "pct": {{ hm_t3_pct | json }} }
+      ],
       "text": {
         "addToCart": {{ section.settings.button_text | json }},
         "soldOut": "Sold out",
@@ -276,7 +319,7 @@
 <script type="module" src="{{ 'hm-product.js' | asset_url }}"></script>
 
 {% stylesheet %}
-  .hmm { --hm-red: #B3272C; --hm-red-2: #8C1A1A; --hm-black: #1A1A1A; --hm-gold: #D9A520; --hm-cream: #F5EFE3; --hm-ink: #1A1A1A; --hm-muted: #7A756D; --hm-line: #E6DFCF; --hm-radius: 14px;
+  .hmm { --hm-red: #E2231A; --hm-red-2: #B01712; --hm-black: #1A1A1A; --hm-gold: #D9A520; --hm-cream: #F5EFE3; --hm-ink: #1A1A1A; --hm-muted: #7A756D; --hm-line: #E6DFCF; --hm-radius: 14px;
     background: #fff; color: var(--hm-ink); font-family: var(--font-body--family, Inter, sans-serif); padding: 12px 0 40px; width: 100%; max-width: 100%; overflow-x: clip; }
   .hmm *, .hmm *::before, .hmm *::after { box-sizing: border-box; min-width: 0; }
   html { scroll-behavior: smooth; }
@@ -306,7 +349,7 @@
   .hmm__proof-item svg { width: 15px; height: 15px; fill: none; stroke: var(--hm-red); stroke-width: 1.8; stroke-linejoin: round; }
   .hmm__tag { display: inline-block; background: var(--hm-black); color: var(--hm-gold); font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; margin-bottom: 12px; }
   .hmm__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hm-red); margin-bottom: 8px; }
-  .hmm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 900; line-height: 1.05; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--hm-black); text-transform: uppercase; }
+  .hmm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 900; line-height: 1.05; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--hm-black); }
   .hmm__rating { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; text-decoration: none; color: inherit; border-bottom: 1px dashed var(--hm-gold); padding-bottom: 2px; }
   .hmm__rating:hover .hmm__rating-text { color: var(--hm-red); text-decoration: underline; }
   .hmm__rating-arrow { color: var(--hm-gold); font-size: 20px; line-height: 1; }
@@ -328,6 +371,19 @@
   .hmm__label--center { text-align: center; position: relative; }
   .hmm__label--center::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--hm-line); }
   .hmm__label--center span { position: relative; background: #fff; padding: 0 12px; }
+
+  .hmm__tiers { margin-bottom: 18px; }
+  .hmm__tier-grid { display: grid; gap: 8px; }
+  @media (min-width: 460px) { .hmm__tier-grid { grid-template-columns: repeat(3, 1fr); } }
+  .hmm__tier { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 14px 10px 12px; border: 2px solid var(--hm-line); border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
+  .hmm__tier.is-active { border-color: var(--hm-red); background: var(--hm-cream); box-shadow: 0 0 0 1px var(--hm-red); }
+  .hmm__tier-badge { display: inline-block; background: var(--hm-black); color: var(--hm-gold); font-size: 10px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; margin-bottom: 2px; }
+  .hmm__tier-badge--best { background: var(--hm-red); color: #fff; }
+  .hmm__tier-qty { font-size: 14px; font-weight: 800; color: var(--hm-ink); }
+  .hmm__tier-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; flex-wrap: wrap; }
+  .hmm__tier-price b { font-size: 16px; font-weight: 900; color: var(--hm-red); }
+  .hmm__tier-price s { font-size: 12px; color: #a89a8c; }
+  .hmm__tier-note { font-size: 10px; line-height: 1.35; color: var(--hm-muted); }
 
   .hmm__variants { margin-bottom: 18px; display: grid; gap: 10px; }
   .hmm__opt-label { font-size: 13px; font-weight: 700; margin: 0 0 8px; }
@@ -356,10 +412,10 @@
   .hmm__addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
 
   .hmm__buy { margin-top: 4px; }
-  .hmm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 18px 20px; border: 0; border-radius: var(--hm-radius); background: linear-gradient(135deg, #D63A3F 0%, #B3272C 60%, #8C1A1A 100%); color: #fff; font: inherit; font-size: 17px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; transition: .15s; box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55); animation: hmm-pulse 2.4s ease-in-out infinite; }
-  .hmm__atc:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(179,39,44,.4), inset 0 0 0 1.5px var(--hm-gold); animation: none; }
+  .hmm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 18px 20px; border: 0; border-radius: var(--hm-radius); background: linear-gradient(135deg, #FF4A3D 0%, #E2231A 60%, #B01712 100%); color: #fff; font: inherit; font-size: 17px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; transition: .15s; box-shadow: 0 12px 28px rgba(226,35,26,.32), inset 0 0 0 1.5px rgba(217,165,32,.55); animation: hmm-pulse 2.4s ease-in-out infinite; }
+  .hmm__atc:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(226,35,26,.4), inset 0 0 0 1.5px var(--hm-gold); animation: none; }
   .hmm__atc:disabled { background: #b9b0a5; box-shadow: none; cursor: not-allowed; animation: none; }
-  @keyframes hmm-pulse { 0%, 100% { box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 0 rgba(217,165,32,.45); } 50% { box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 8px rgba(217,165,32,0); } }
+  @keyframes hmm-pulse { 0%, 100% { box-shadow: 0 12px 28px rgba(226,35,26,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 0 rgba(217,165,32,.45); } 50% { box-shadow: 0 12px 28px rgba(226,35,26,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 8px rgba(217,165,32,0); } }
   @media (prefers-reduced-motion: reduce) { .hmm__atc { animation: none; } }
   .hmm__atc-spinner { display: none; position: absolute; right: 20px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: hmm-spin .7s linear infinite; }
   .hmm__atc.is-loading .hmm__atc-spinner { display: block; }
@@ -406,13 +462,20 @@
   "settings": [
     { "type": "product", "id": "product", "label": "Product", "info": "Leave empty to use the current page product." },
     { "type": "checkbox", "id": "show_proof_bar", "label": "Show \"ordered today\" proof bar", "default": true },
-    { "type": "text", "id": "tag_text", "label": "Tag line", "default": "LIMITED DROP" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "One size fits most" },
+    { "type": "text", "id": "tag_text", "label": "Tag line", "default": "" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "" },
     { "type": "text", "id": "title_override", "label": "Title override" },
     { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Bestseller" },
     { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 640 reviews" },
     { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-hm_reviews" },
-    { "type": "text", "id": "size_note", "label": "Size note", "default": "One size fits most. Stretch knit fits comfortably under a helmet." },
+    { "type": "text", "id": "size_note", "label": "Size note", "default": "Stretch knit fits comfortably under a helmet." },
+    { "type": "checkbox", "id": "show_bundle_tiers", "label": "Show multi-pack bundle selector", "default": true },
+    { "type": "text", "id": "bundle_heading", "label": "Bundle heading", "default": "Choose your bundle" },
+    { "type": "text", "id": "bundle_addon_note", "label": "Bundle note (2 & 3 packs)", "default": "Includes shipping protection & 30-day warranty" },
+    { "type": "range", "id": "tier2_qty", "label": "Tier 2 quantity", "min": 2, "max": 5, "step": 1, "default": 2 },
+    { "type": "range", "id": "tier2_discount_pct", "label": "Tier 2 discount %", "min": 0, "max": 50, "step": 1, "default": 15 },
+    { "type": "range", "id": "tier3_qty", "label": "Tier 3 quantity", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "range", "id": "tier3_discount_pct", "label": "Tier 3 discount %", "min": 0, "max": 60, "step": 1, "default": 25 },
     { "type": "text", "id": "addons_heading", "label": "Add-ons heading", "default": "Protect your order" },
     { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to cart" },
     { "type": "text", "id": "button_subtext", "label": "Text under button", "default": "Order today, ships within 24 hours" },
@@ -468,7 +531,9 @@
         { "type": "feature", "settings": { "icon": "truck", "text": "Free shipping and 30-day guarantee" } },
         { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "default_on": true } },
         { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "default_on": true } },
-        { "type": "trust", "settings": { "icon": "truck", "text": "Free shipping" } },
+        { "type": "trust", "settings": { "icon": "truck", "text": "Free shipping worldwide" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "Limited stock" } },
+        { "type": "trust", "settings": { "icon": "star", "text": "Selling fast" } },
         { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
         { "type": "trust", "settings": { "icon": "shield", "text": "30-day guarantee" } },
         { "type": "trust", "settings": { "icon": "star", "text": "Rated 4.9 by riders" } }

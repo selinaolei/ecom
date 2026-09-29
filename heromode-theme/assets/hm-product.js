@@ -14,13 +14,17 @@
   const qa = (sel, el = root) => Array.from(el.querySelectorAll(sel));
 
   const initial = cfg.variants.find((v) => String(v.id) === String(cfg.selectedVariantId)) || cfg.variants[0];
+  const tiers = cfg.tiers && cfg.tiers.length ? cfg.tiers : [{ qty: 1, pct: 0 }];
   const state = {
     color: initial ? initial.option1 : null,
     addons: new Set(),
+    tier: tiers[0].qty,
   };
   cfg.addons.forEach((a, i) => {
     if (a.defaultOn && a.variantId) state.addons.add(i);
   });
+
+  const tierInfo = () => tiers.find((t) => t.qty === state.tier) || tiers[0];
 
   const money = (cents) => {
     const amount = (cents / 100).toFixed(2);
@@ -86,13 +90,50 @@
     });
   });
 
+  function setAddonsForced(forced) {
+    qa('[data-hm-addon-input]').forEach((input) => {
+      const i = Number(input.dataset.hmAddonInput);
+      input.disabled = forced || !cfg.addons[i]?.variantId;
+      if (forced) {
+        input.checked = true;
+        state.addons.add(i);
+      } else {
+        const on = !!cfg.addons[i]?.defaultOn;
+        input.checked = on;
+        if (on) state.addons.add(i);
+        else state.addons.delete(i);
+      }
+      input.closest('[data-hm-addon]')?.classList.toggle('is-on', input.checked);
+    });
+  }
+
+  qa('[data-hm-tier]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.tier = Number(btn.dataset.hmTier);
+      qa('[data-hm-tier]').forEach((b) => {
+        b.classList.toggle('is-active', b === btn);
+        b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+      });
+      setAddonsForced(state.tier >= 2);
+      render();
+    });
+  });
+
   function computeTotals() {
     const v = currentVariant();
-    const now = v ? v.price : 0;
-    const was = v && v.compareAtPrice > v.price ? v.compareAtPrice : now;
+    const unit = v ? v.price : 0;
+    const tier = tierInfo();
+    const grossMasks = unit * tier.qty;
+    const maskOff = Math.round((grossMasks * tier.pct) / 100);
+    const netMasks = grossMasks - maskOff;
+    // Tier 1 (single mask) keeps showing the variant's own standalone sale price
+    // (its compareAtPrice), not a bundle-savings figure. Tiers 2+ show bundle-only
+    // savings against buying that many units at the current per-unit price, so the
+    // two savings stories never stack into an inflated combined percentage.
+    const maskWas = tier.qty === 1 && v && v.compareAtPrice > unit ? v.compareAtPrice : grossMasks;
     let addonTotal = 0;
     state.addons.forEach((i) => (addonTotal += cfg.addons[i]?.price || 0));
-    return { now, was, total: now + addonTotal, totalWas: was + addonTotal };
+    return { maskNow: netMasks, maskWas, total: netMasks + addonTotal, totalWas: maskWas + addonTotal };
   }
 
   function render() {
@@ -101,15 +142,14 @@
     const priceNow = q('[data-hm-price-now]');
     const priceWas = q('[data-hm-price-was]');
     const pricePill = q('[data-hm-price-pill]');
-    const unit = v ? v.price : 0;
-    const compareUnit = v && v.compareAtPrice > unit ? v.compareAtPrice : unit;
-    if (priceNow) priceNow.textContent = money(unit);
+    const totals = computeTotals();
+    if (priceNow) priceNow.textContent = money(totals.maskNow);
     if (priceWas) {
-      priceWas.textContent = compareUnit > unit ? money(compareUnit) : '';
-      priceWas.hidden = !(compareUnit > unit);
+      priceWas.textContent = totals.maskWas > totals.maskNow ? money(totals.maskWas) : '';
+      priceWas.hidden = !(totals.maskWas > totals.maskNow);
     }
     if (pricePill) {
-      const pct = compareUnit > unit ? Math.round((1 - unit / compareUnit) * 100) : 0;
+      const pct = totals.maskWas > totals.maskNow ? Math.round((1 - totals.maskNow / totals.maskWas) * 100) : 0;
       pricePill.textContent = pct > 0 ? (cfg.text.savePct || 'SAVE {pct}%').replace('{pct}', pct) : '';
       pricePill.hidden = !(pct > 0);
     }
@@ -122,7 +162,6 @@
       if (label) label.textContent = available ? cfg.text.addToCart : cfg.text.soldOut;
     }
 
-    const totals = computeTotals();
     const stickyTotal = q('[data-hm-sticky-total]');
     const stickyWas = q('[data-hm-sticky-was]');
     if (stickyTotal) stickyTotal.textContent = money(totals.total);
@@ -134,7 +173,8 @@
 
   function buildItems() {
     const v = currentVariant();
-    const items = v ? [{ id: Number(v.id), quantity: 1 }] : [];
+    const tier = tierInfo();
+    const items = v ? [{ id: Number(v.id), quantity: tier.qty }] : [];
     state.addons.forEach((i) => {
       const a = cfg.addons[i];
       if (a && a.variantId) items.push({ id: Number(a.variantId), quantity: 1 });

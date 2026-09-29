@@ -53,7 +53,21 @@
           "type": "trust",
           "settings": {
             "icon": "truck",
-            "text": "Free shipping"
+            "text": "Free shipping worldwide"
+          }
+        },
+        "tr1b": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "Limited stock"
+          }
+        },
+        "tr1c": {
+          "type": "trust",
+          "settings": {
+            "icon": "star",
+            "text": "Selling fast"
           }
         },
         "tr2": {
@@ -86,18 +100,27 @@
         "a1",
         "a2",
         "tr1",
+        "tr1b",
+        "tr1c",
         "tr2",
         "tr3",
         "tr4"
       ],
       "settings": {
-        "eyebrow": "One size fits most",
+        "eyebrow": "",
         "show_proof_bar": true,
-        "tag_text": "LIMITED DROP",
+        "tag_text": "",
         "badge_text": "Bestseller",
         "rating_text": "Rated 4.9 based on 640 reviews",
         "reviews_anchor": "#shopify-section-hm_reviews",
-        "size_note": "One size fits most. Stretch knit fits comfortably under a helmet.",
+        "size_note": "Stretch knit fits comfortably under a helmet.",
+        "show_bundle_tiers": true,
+        "bundle_heading": "Choose your bundle",
+        "bundle_addon_note": "Includes shipping protection & 30-day warranty",
+        "tier2_qty": 2,
+        "tier2_discount_pct": 15,
+        "tier3_qty": 3,
+        "tier3_discount_pct": 25,
         "addons_heading": "Protect your order",
         "button_text": "Add to cart",
         "button_subtext": "Order today, ships within 24 hours",
@@ -113,7 +136,7 @@
         "t1": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/heromode-mask-red-gold-1.webp",
+            "image": "shopify://shop_images/heromode-lifestyle-chairlift-selfie.png",
             "title": "Everyone was asking where I got it",
             "text": "Wore it on the first chairlift of the day and three people asked where to get one. Fits perfectly under my helmet.",
             "name": "Jordan L."
@@ -122,7 +145,7 @@
         "t2": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/heromode-mask-web-red.webp",
+            "image": "shopify://shop_images/heromode-lifestyle-skiing-red-gold.png",
             "title": "Warmer than I expected",
             "text": "Kept my whole face warm on a windy day at the top of the mountain. Goggles sat right over the eye opening with no gaps.",
             "name": "Marcus T."
@@ -131,7 +154,7 @@
         "t3": {
           "type": "testimonial",
           "settings": {
-            "image": "shopify://shop_images/heromode-mask-shadow-black.webp",
+            "image": "shopify://shop_images/heromode-lifestyle-thumbsup-selfie.png",
             "title": "Stands out in every photo",
             "text": "Bought it for the look but it's actually really practical too. One size fit me and my partner just fine.",
             "name": "Casey R."
