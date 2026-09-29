@@ -163,42 +163,93 @@
       {%- comment -%} ===== BUNDLE TIERS ===== {%- endcomment -%}
       {%- if section.settings.show_bundle_tiers -%}
         <div class="hmm__tiers" data-hm-tiers>
-          <p class="hmm__label hmm__label--center"><span>{{ section.settings.bundle_heading }}</span></p>
-          <div class="hmm__tier-grid" role="radiogroup" aria-label="{{ section.settings.bundle_heading }}">
-            <button type="button" class="hmm__tier is-active" data-hm-tier="1" role="radio" aria-checked="true">
-              <span class="hmm__tier-qty">1 Mask</span>
-              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_unit_price | money }}</b></span>
-            </button>
-            <button type="button" class="hmm__tier" data-hm-tier="{{ hm_t2_qty }}" role="radio" aria-checked="false">
-              <span class="hmm__tier-badge">Save {{ hm_t2_pct }}%</span>
-              <span class="hmm__tier-qty">{{ hm_t2_qty }} Masks</span>
-              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_t2_net | money }}</b> <s data-hm-tier-was>{{ hm_t2_gross | money }}</s></span>
-              <span class="hmm__tier-note">{{ section.settings.bundle_addon_note }}</span>
-            </button>
-            <button type="button" class="hmm__tier" data-hm-tier="{{ hm_t3_qty }}" role="radio" aria-checked="false">
-              <span class="hmm__tier-badge hmm__tier-badge--best">Best value · Save {{ hm_t3_pct }}%</span>
-              <span class="hmm__tier-qty">{{ hm_t3_qty }} Masks</span>
-              <span class="hmm__tier-price"><b data-hm-tier-now>{{ hm_t3_net | money }}</b> <s data-hm-tier-was>{{ hm_t3_gross | money }}</s></span>
-              <span class="hmm__tier-note">{{ section.settings.bundle_addon_note }}</span>
-            </button>
+          <div class="hmm__tiers-header">
+            <h3 class="hmm__tiers-heading">{{ section.settings.bundle_heading }}</h3>
           </div>
-
-          {%- comment -%} ===== ADD-ONS: small inline checkboxes directly under the tier picker, on every tier ===== {%- endcomment -%}
-          {%- if addons.size > 0 -%}
-            <div class="hmm__addons hmm__addons--compact">
-              {%- for ab in addons -%}
-                {%- assign aidx = forloop.index0 -%}
-                {%- assign ap = ab.settings.product -%}
-                {%- assign av = ap.selected_or_first_available_variant -%}
-                <label class="hmm__addon hmm__addon--compact{% if ab.settings.default_on %} is-on{% endif %}" data-hm-addon="{{ aidx }}">
-                  <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
-                  <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                  <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
-                  <span class="hmm__addon-price" data-hm-addon-price>{%- if av -%}+{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
-                </label>
-              {%- endfor -%}
+          <div class="hmm__tier-cards" role="radiogroup" aria-label="{{ section.settings.bundle_heading }}">
+            {%- comment -%} TIER 1: 1 Mask {%- endcomment -%}
+            <div class="hmm__tier-card is-active" data-hm-tier="1" role="radio" aria-checked="true" tabindex="0">
+              <div class="hmm__tier-card-head">
+                <span class="hmm__tier-radio"></span>
+                <span class="hmm__tier-title">1 Mask</span>
+              </div>
+              <div class="hmm__tier-card-body">
+                <div class="hmm__tier-pricing">
+                  <span class="hmm__tier-price-now" data-hm-tier-now>{{ hm_unit_price | money }}</span>
+                </div>
+                <div class="hmm__tier-shipping-badge">FREE SHIPPING</div>
+              </div>
             </div>
-          {%- endif -%}
+
+            {%- comment -%} TIER 2: 2 Masks - Most Popular {%- endcomment -%}
+            <div class="hmm__tier-card" data-hm-tier="{{ hm_t2_qty }}" role="radio" aria-checked="false" tabindex="0">
+              <div class="hmm__tier-card-badges">
+                <span class="hmm__tier-badge-popular">MOST POPULAR</span>
+              </div>
+              <div class="hmm__tier-card-head">
+                <span class="hmm__tier-radio"></span>
+                <span class="hmm__tier-title">{{ hm_t2_qty }} Masks</span>
+              </div>
+              <div class="hmm__tier-card-body">
+                <div class="hmm__tier-pricing">
+                  <span class="hmm__tier-price-now" data-hm-tier-now>{{ hm_t2_net | money }}</span>
+                  <s class="hmm__tier-price-was" data-hm-tier-was>{{ hm_t2_gross | money }}</s>
+                </div>
+                <div class="hmm__tier-save-badge">Save {{ hm_t2_pct }}%</div>
+                <div class="hmm__tier-shipping-badge">FREE SHIPPING</div>
+                {%- if addons.size > 0 -%}
+                  <div class="hmm__tier-card-addons">
+                    {%- for ab in addons -%}
+                      {%- assign aidx = forloop.index0 -%}
+                      {%- assign ap = ab.settings.product -%}
+                      {%- assign av = ap.selected_or_first_available_variant -%}
+                      <label class="hmm__tier-addon" data-hm-addon="{{ aidx }}">
+                        <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                        <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="hmm__tier-addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                        <span class="hmm__tier-addon-price" data-hm-addon-price>{%- if av -%}+{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+
+            {%- comment -%} TIER 3: 3 Masks - Most Value {%- endcomment -%}
+            <div class="hmm__tier-card" data-hm-tier="{{ hm_t3_qty }}" role="radio" aria-checked="false" tabindex="0">
+              <div class="hmm__tier-card-badges">
+                <span class="hmm__tier-badge-value">MOST VALUE</span>
+              </div>
+              <div class="hmm__tier-card-head">
+                <span class="hmm__tier-radio"></span>
+                <span class="hmm__tier-title">{{ hm_t3_qty }} Masks</span>
+              </div>
+              <div class="hmm__tier-card-body">
+                <div class="hmm__tier-pricing">
+                  <span class="hmm__tier-price-now" data-hm-tier-now>{{ hm_t3_net | money }}</span>
+                  <s class="hmm__tier-price-was" data-hm-tier-was>{{ hm_t3_gross | money }}</s>
+                </div>
+                <div class="hmm__tier-save-badge">Save {{ hm_t3_pct }}%</div>
+                <div class="hmm__tier-shipping-badge">FREE SHIPPING</div>
+                <div class="hmm__tier-bonus-banner">+ Free mystery gift</div>
+                {%- if addons.size > 0 -%}
+                  <div class="hmm__tier-card-addons">
+                    {%- for ab in addons -%}
+                      {%- assign aidx = forloop.index0 -%}
+                      {%- assign ap = ab.settings.product -%}
+                      {%- assign av = ap.selected_or_first_available_variant -%}
+                      <label class="hmm__tier-addon" data-hm-addon="{{ aidx }}">
+                        <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                        <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="hmm__tier-addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                        <span class="hmm__tier-addon-price" data-hm-addon-price>{%- if av -%}+{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
         </div>
       {%- endif -%}
 
@@ -362,18 +413,40 @@
   .hmm__label--center::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--hm-line); }
   .hmm__label--center span { position: relative; background: #fff; padding: 0 12px; }
 
-  .hmm__tiers { margin-bottom: 18px; }
-  .hmm__tier-grid { display: grid; gap: 8px; }
-  @media (min-width: 460px) { .hmm__tier-grid { grid-template-columns: repeat(3, 1fr); } }
-  .hmm__tier { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 14px 10px 12px; border: 2px solid var(--hm-line); border-radius: 12px; background: #fff; cursor: pointer; transition: .15s; }
-  .hmm__tier.is-active { border-color: var(--hm-red); background: var(--hm-cream); box-shadow: 0 0 0 1px var(--hm-red); }
-  .hmm__tier-badge { display: inline-block; background: var(--hm-black); color: var(--hm-gold); font-size: 10px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; margin-bottom: 2px; }
-  .hmm__tier-badge--best { background: var(--hm-red); color: #fff; }
-  .hmm__tier-qty { font-size: 14px; font-weight: 800; color: var(--hm-ink); }
-  .hmm__tier-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; flex-wrap: wrap; }
-  .hmm__tier-price b { font-size: 16px; font-weight: 900; color: var(--hm-red); }
-  .hmm__tier-price s { font-size: 12px; color: #a89a8c; }
-  .hmm__tier-note { font-size: 10px; line-height: 1.35; color: var(--hm-muted); }
+  .hmm__tiers { margin-bottom: 22px; }
+  .hmm__tiers-header { margin-bottom: 24px; text-align: center; }
+  .hmm__tiers-heading { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase; color: var(--hm-ink); margin: 0; }
+
+  .hmm__tier-cards { display: grid; gap: 14px; }
+  @media (min-width: 660px) { .hmm__tier-cards { grid-template-columns: repeat(3, 1fr); } }
+
+  .hmm__tier-card { position: relative; display: flex; flex-direction: column; padding: 20px 16px; border: 2px solid var(--hm-line); border-radius: 14px; background: #fff; cursor: pointer; transition: all .2s ease; }
+  .hmm__tier-card:hover { border-color: var(--hm-red); box-shadow: 0 2px 8px rgba(226, 35, 26, 0.08); }
+  .hmm__tier-card.is-active { border-color: var(--hm-red); background: var(--hm-cream); }
+
+  .hmm__tier-card-badges { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+  .hmm__tier-badge-popular, .hmm__tier-badge-value { display: inline-block; background: var(--hm-black); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; }
+  .hmm__tier-badge-value { background: var(--hm-red); }
+
+  .hmm__tier-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .hmm__tier-radio { flex: 0 0 22px; width: 22px; height: 22px; border: 2px solid var(--hm-line); border-radius: 50%; background: #fff; transition: .2s; }
+  .hmm__tier-card.is-active .hmm__tier-radio { border-color: var(--hm-red); background: var(--hm-red); box-shadow: inset 0 0 0 4px #fff; }
+  .hmm__tier-title { font-size: 15px; font-weight: 800; color: var(--hm-ink); margin: 0; }
+
+  .hmm__tier-card-body { display: flex; flex-direction: column; gap: 12px; }
+  .hmm__tier-pricing { display: flex; align-items: center; gap: 8px; }
+  .hmm__tier-price-now { font-size: 22px; font-weight: 900; color: var(--hm-red); letter-spacing: -0.5px; }
+  .hmm__tier-price-was { font-size: 13px; color: #a89a8c; font-weight: 600; }
+
+  .hmm__tier-save-badge { display: inline-block; background: var(--hm-black); color: var(--hm-gold); font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; width: fit-content; }
+  .hmm__tier-shipping-badge { display: inline-block; background: #E8F4FF; color: #0066CC; font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 5px 12px; border-radius: 4px; width: fit-content; }
+  .hmm__tier-bonus-banner { display: flex; align-items: center; gap: 8px; background: #E8F4FF; color: #0066CC; font-size: 12px; font-weight: 700; padding: 10px 12px; border-radius: 8px; text-align: center; justify-content: center; }
+
+  .hmm__tier-card-addons { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--hm-line); }
+  .hmm__tier-addon { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; cursor: pointer; }
+  .hmm__tier-addon-title { font-size: 12px; font-weight: 600; color: var(--hm-ink); }
+  .hmm__tier-addon-price { font-size: 12px; font-weight: 700; color: var(--hm-red); }
+  .hmm__tier-addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
 
   .hmm__variants { margin-bottom: 18px; display: grid; gap: 10px; }
   .hmm__opt-label { font-size: 13px; font-weight: 700; margin: 0 0 8px; }
