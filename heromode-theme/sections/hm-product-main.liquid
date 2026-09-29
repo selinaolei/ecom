@@ -182,33 +182,23 @@
               <span class="hmm__tier-note">{{ section.settings.bundle_addon_note }}</span>
             </button>
           </div>
-        </div>
-      {%- endif -%}
 
-      {%- comment -%} ===== ADD-ONS ===== {%- endcomment -%}
-      {%- if addons.size > 0 -%}
-        <div class="hmm__bundle">
-          <p class="hmm__label hmm__label--center"><span data-hm-addons-heading>{{ section.settings.addons_heading }}</span></p>
-          <div class="hmm__addons">
-            {%- for ab in addons -%}
-              {%- assign aidx = forloop.index0 -%}
-              {%- assign ap = ab.settings.product -%}
-              {%- assign av = ap.selected_or_first_available_variant -%}
-              <label class="hmm__addon{% if ab.settings.default_on %} is-on{% endif %}" data-hm-addon="{{ aidx }}">
-                <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
-                <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                <span class="hmm__addon-img">
-                  {%- if ab.settings.image != blank -%}
-                    {{ ab.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
-                  {%- elsif ap.featured_media -%}
-                    {{ ap.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
-                  {%- endif -%}
-                </span>
-                <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
-                <span class="hmm__addon-price" data-hm-addon-price>{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
-              </label>
-            {%- endfor -%}
-          </div>
+          {%- comment -%} ===== ADD-ONS: small inline checkboxes directly under the tier picker, on every tier ===== {%- endcomment -%}
+          {%- if addons.size > 0 -%}
+            <div class="hmm__addons hmm__addons--compact">
+              {%- for ab in addons -%}
+                {%- assign aidx = forloop.index0 -%}
+                {%- assign ap = ab.settings.product -%}
+                {%- assign av = ap.selected_or_first_available_variant -%}
+                <label class="hmm__addon hmm__addon--compact{% if ab.settings.default_on %} is-on{% endif %}" data-hm-addon="{{ aidx }}">
+                  <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                  <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                  <span class="hmm__addon-price" data-hm-addon-price>{%- if av -%}+{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
         </div>
       {%- endif -%}
 
@@ -410,6 +400,14 @@
   .hmm__addon-title { font-size: 13px; font-weight: 600; line-height: 1.2; }
   .hmm__addon-price { font-size: 13px; font-weight: 700; color: var(--hm-red); }
   .hmm__addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
+
+  .hmm__addons--compact { margin-top: 10px; display: grid; gap: 5px; }
+  .hmm__addon--compact { grid-template-columns: 18px 1fr auto; padding: 5px 8px; border: none; background: none; border-radius: 6px; }
+  .hmm__addon--compact.is-on { background: var(--hm-cream); }
+  .hmm__addon--compact .hmm__checkbox { width: 18px; height: 18px; border-radius: 5px; }
+  .hmm__addon--compact .hmm__checkbox svg { width: 11px; height: 11px; }
+  .hmm__addon--compact .hmm__addon-title { font-size: 12px; font-weight: 500; color: var(--hm-muted); }
+  .hmm__addon--compact .hmm__addon-price { font-size: 12px; font-weight: 600; }
 
   .hmm__buy { margin-top: 4px; }
   .hmm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 18px 20px; border: 0; border-radius: var(--hm-radius); background: linear-gradient(135deg, #FF4A3D 0%, #E2231A 60%, #B01712 100%); color: #fff; font: inherit; font-size: 17px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; transition: .15s; box-shadow: 0 12px 28px rgba(226,35,26,.32), inset 0 0 0 1.5px rgba(217,165,32,.55); animation: hmm-pulse 2.4s ease-in-out infinite; }
