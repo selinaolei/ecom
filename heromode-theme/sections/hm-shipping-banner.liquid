@@ -1,25 +1,36 @@
 {%- comment -%}
   HeroMode – Shipping Banner: animated "Free worldwide shipping" promotional banner
-  Rendered as a static section with sliding text animation.
+  Ticker-style animation with multiple repeating messages
 {%- endcomment -%}
 <section class="hmsb" data-hm-shipping-banner>
   <div class="hmsb__content">
-    <span class="hmsb__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
-    </span>
-    <span class="hmsb__text">{{ section.settings.text }}</span>
+    <div class="hmsb__ticker">
+      <span class="hmsb__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+      </span>
+      <span class="hmsb__text">{{ section.settings.text }}</span>
+      <span class="hmsb__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+      </span>
+      <span class="hmsb__text">{{ section.settings.text }}</span>
+      <span class="hmsb__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+      </span>
+      <span class="hmsb__text">{{ section.settings.text }}</span>
+    </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .hmsb { --hm-red: #E2231A; --hm-black: #1A1A1A; background: var(--hm-red); padding: 12px 0; width: 100%; overflow: hidden; }
-  .hmsb__content { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 1200px; margin: 0 auto; padding: 0 16px; font-weight: 700; letter-spacing: 0.5px; color: var(--hm-black); font-size: 14px; }
-  .hmsb__icon { display: inline-flex; flex: 0 0 18px; width: 18px; height: 18px; }
-  .hmsb__icon svg { width: 100%; height: 100%; fill: none; stroke: var(--hm-black); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .hmsb__text { animation: hmsb-slide 20s linear infinite; white-space: nowrap; }
+  .hmsb { --hm-black: #1A1A1A; background: var(--hm-black); padding: 10px 0; width: 100%; overflow: hidden; }
+  .hmsb__content { display: flex; align-items: center; justify-content: center; gap: 0; max-width: 1200px; margin: 0 auto; padding: 0; font-weight: 600; letter-spacing: 0.3px; color: #fff; font-size: 11px; width: 100%; }
+  .hmsb__ticker { display: flex; align-items: center; gap: 12px; animation: hmsb-slide 16s linear infinite; white-space: nowrap; }
+  .hmsb__icon { display: inline-flex; flex: 0 0 14px; width: 14px; height: 14px; }
+  .hmsb__icon svg { width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .hmsb__text { display: inline-block; }
   @keyframes hmsb-slide {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 {% endstylesheet %}
 
