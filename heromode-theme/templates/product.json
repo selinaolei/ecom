@@ -1,0 +1,290 @@
+{
+  "sections": {
+    "hm_main": {
+      "type": "hm-product-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "star",
+            "text": "Premium knit construction, built to last"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "snow",
+            "text": "Keeps you warm on every run"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "goggles",
+            "text": "Wide eye opening, compatible with goggles"
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "heromode-shipping-protection",
+            "title": "Shipping protection",
+            "text": "",
+            "default_on": true
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "heromode-30-day-warranty",
+            "title": "30-day warranty",
+            "text": "",
+            "default_on": true
+          }
+        },
+        "tr1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping"
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "star",
+            "text": "Rated 4.9 by riders"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "a1",
+        "a2",
+        "tr1",
+        "tr2",
+        "tr3",
+        "tr4"
+      ],
+      "settings": {
+        "eyebrow": "One size fits most",
+        "show_proof_bar": true,
+        "tag_text": "LIMITED DROP",
+        "badge_text": "Bestseller",
+        "rating_text": "Rated 4.9 based on 640 reviews",
+        "reviews_anchor": "#shopify-section-hm_reviews",
+        "size_note": "One size fits most. Stretch knit fits comfortably under a helmet.",
+        "addons_heading": "Protect your order",
+        "button_text": "Add to cart",
+        "button_subtext": "Order today, ships within 24 hours",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "Details & fit",
+        "sticky_bar": true
+      }
+    },
+    "hm_testimonials": {
+      "type": "hm-testimonials",
+      "blocks": {
+        "t1": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/heromode-mask-red-gold-1.webp",
+            "title": "Everyone was asking where I got it",
+            "text": "Wore it on the first chairlift of the day and three people asked where to get one. Fits perfectly under my helmet.",
+            "name": "Jordan L."
+          }
+        },
+        "t2": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/heromode-mask-web-red.webp",
+            "title": "Warmer than I expected",
+            "text": "Kept my whole face warm on a windy day at the top of the mountain. Goggles sat right over the eye opening with no gaps.",
+            "name": "Marcus T."
+          }
+        },
+        "t3": {
+          "type": "testimonial",
+          "settings": {
+            "image": "shopify://shop_images/heromode-mask-shadow-black.webp",
+            "title": "Stands out in every photo",
+            "text": "Bought it for the look but it's actually really practical too. One size fit me and my partner just fine.",
+            "name": "Casey R."
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {
+        "eyebrow": "Riders love it",
+        "heading": "Everyone was asking"
+      }
+    },
+    "hm_reviews": {
+      "type": "hm-reviews",
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Stands out on the mountain",
+            "text": "Everyone kept asking where I got it. Fits perfectly under my helmet and goggles, no gaps.",
+            "name": "Jordan L.",
+            "verified": true
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Warm and comfortable",
+            "text": "Wasn't expecting it to be this soft. Kept my face warm all day on the lift.",
+            "name": "Marcus T.",
+            "verified": true
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "title": "Great fit",
+            "text": "One size fits most is accurate for me. Stretchy enough to pull on and off easily.",
+            "name": "Devon K.",
+            "verified": true
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Exactly as pictured",
+            "text": "Color is bold in person too. Shipped fast and arrived before my trip.",
+            "name": "Casey R.",
+            "verified": true
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Bought two colors",
+            "text": "Got the Crimson Gold and Shadow Black. Both fit the same and the knit feels sturdy.",
+            "name": "Priya N.",
+            "verified": true
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "title": "Fast shipping",
+            "text": "Ordered on a Monday, arrived before the weekend trip. Exactly as described.",
+            "name": "Sam W.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6"
+      ],
+      "settings": {
+        "heading": "What riders say about HeroMode",
+        "rating": "4.9",
+        "rating_text": "Based on 640 reviews",
+        "bar_5": 87,
+        "bar_4": 9,
+        "bar_3": 3,
+        "bar_2": 1,
+        "bar_1": 0
+      }
+    },
+    "hm_faq": {
+      "type": "hm-faq",
+      "blocks": {
+        "q1": {
+          "type": "faq",
+          "settings": {
+            "question": "Will it fit under a helmet?",
+            "answer": "<p>Yes. The stretch knit construction is designed to sit comfortably under a helmet, with a wide eye opening shaped to work with ski goggles.</p>"
+          }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": {
+            "question": "What sizes are available?",
+            "answer": "<p>One size fits most. The stretch knit adjusts to a wide range of head sizes.</p>"
+          }
+        },
+        "q3": {
+          "type": "faq",
+          "settings": {
+            "question": "Does it come in other colors?",
+            "answer": "<p>Yes — Crimson Gold, Web Red, and Shadow Black.</p>"
+          }
+        },
+        "q4": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>"
+          }
+        },
+        "q5": {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>If you're not happy within 30 days, contact us for a replacement or full refund.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "eyebrow": "Good to know",
+        "heading": "Frequently asked questions",
+        "text": "Everything you need to know before you order.",
+        "open_first": true
+      }
+    }
+  },
+  "order": [
+    "hm_main",
+    "hm_testimonials",
+    "hm_reviews",
+    "hm_faq"
+  ]
+}

@@ -1,0 +1,106 @@
+{%- comment -%}
+  HeroMode cart bridge. Rendered once from layout/theme.liquid, outside every section that
+  gets re-rendered, so it is always present.
+
+  Every cart change is a fetch() to Shopify's cart JSON endpoints. The page never navigates.
+  On success the drawer section is re-fetched through the Section Rendering API and its markup
+  swapped into the open drawer. No iframe, no page reload.
+{%- endcomment -%}
+<script>
+  (function () {
+    if (window.hmCartSubmit) return;
+
+    var SECTION = 'cart-drawer-section';
+
+    function wrap() { return document.querySelector('[data-hm-cart]'); }
+
+    function sectionUrl() {
+      var u = new URL(window.location.href);
+      u.searchParams.set('section_id', SECTION);
+      u.searchParams.set('hmts', String(Date.now()));
+      return u.pathname + u.search;
+    }
+
+    function openDrawer() {
+      var d = document.getElementById('cart-drawer');
+      if (!d) return;
+      if (typeof d.open === 'function') { if (!d.hasAttribute('open')) d.open(); return; }
+      var dlg = d.querySelector('dialog');
+      if (dlg && !dlg.open && dlg.showModal) dlg.showModal();
+    }
+
+    function busy(on) {
+      var w = wrap();
+      if (w) w.classList.toggle('is-busy', !!on);
+      document.querySelectorAll('[data-hm-atc]').forEach(function (b) {
+        b.classList.toggle('is-loading', !!on);
+        b.disabled = !!on;
+      });
+    }
+
+    function syncHeader(cart) {
+      // Deliberately does NOT dispatch the theme's CartLinesUpdateEvent. Horizon's own
+      // cart-drawer.js listens for that event and reconciles the drawer's DOM against its own
+      // idea of the cart's line items — which doesn't know about this custom markup — and
+      // would clobber it moments after renderDrawer() had just rendered it correctly. A plain
+      // text update is all the header badge needs.
+      document.querySelectorAll('.cart-bubble__text, [data-cart-count]').forEach(function (el) {
+        el.textContent = String(cart.item_count);
+      });
+    }
+
+    async function renderDrawer() {
+      var r = await fetch(sectionUrl(), { credentials: 'same-origin', cache: 'no-store' });
+      var html = await r.text();
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var fresh = doc.querySelector('[data-hm-cart]');
+      var current = wrap();
+      if (fresh && current) {
+        current.innerHTML = fresh.innerHTML;
+        current.className = fresh.className;
+        current.setAttribute('data-count', fresh.getAttribute('data-count') || '0');
+      }
+    }
+
+    window.hmCartRender = renderDrawer;
+
+    window.hmCartSubmit = async function (form) {
+      var action = form.getAttribute('action') || '/cart/add';
+      if (action.indexOf('.js') === -1) action = action.replace(/[?#].*$/, '') + '.js';
+      var body = new FormData(form);
+      body.delete('return_to');
+
+      busy(true);
+      try {
+        var res = await fetch(action, {
+          method: (form.getAttribute('method') || 'post').toUpperCase(),
+          body: body,
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error('Cart request failed (' + res.status + ')');
+        var cart = await fetch('{{ routes.cart_url }}.js', { headers: { Accept: 'application/json' }, credentials: 'same-origin', cache: 'no-store' }).then(function (r) { return r.json(); });
+
+        await renderDrawer();
+        openDrawer();
+        syncHeader(cart);
+        if (typeof window.hmCartGuardCheck === 'function') setTimeout(window.hmCartGuardCheck, 300);
+      } catch (e) {
+        form.submit();
+        return;
+      } finally {
+        busy(false);
+      }
+    };
+
+    window.hmCartOpen = openDrawer;
+
+    document.addEventListener('submit', function (e) {
+      var form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      if (!form.hasAttribute('data-hm-cart-form')) return;
+      e.preventDefault();
+      window.hmCartSubmit(form);
+    }, true);
+  })();
+</script>

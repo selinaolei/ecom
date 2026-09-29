@@ -1,0 +1,77 @@
+{%- comment -%}
+  HeroMode – FAQ accordion (details/summary, no JS).
+{%- endcomment -%}
+<section class="hmf" id="hm-faq-{{ section.id }}">
+  <div class="hmf__inner">
+    <div class="hmf__head">
+      {%- if section.settings.eyebrow != blank -%}<span class="hmf__eyebrow">{{ section.settings.eyebrow }}</span>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="hmf__heading">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="hmf__text">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="hmf__list">
+      {%- for block in section.blocks -%}
+        <details class="hmf__item" {% if forloop.first and section.settings.open_first %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="hmf__q"><span>{{ block.settings.question }}</span><span class="hmf__icon" aria-hidden="true"></span></summary>
+          <div class="hmf__a">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hmf { --hm-red: #B3272C; --hm-gold: #D9A520; --hm-black: #1A1A1A; --hm-cream: #F5EFE3; --hm-line: #E6DFCF; --hm-muted: #7A756D;
+    background: #fff; color: var(--hm-black); padding: 56px 0; font-family: var(--font-body--family, Inter, sans-serif); }
+  .hmf *, .hmf *::before, .hmf *::after { box-sizing: border-box; min-width: 0; }
+  .hmf { width: 100%; max-width: 100%; overflow-x: clip; }
+  .hmf__inner { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+  .hmf__head { text-align: center; margin-bottom: 26px; }
+  .hmf__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hm-red); margin-bottom: 12px; }
+  .hmf__heading { font-family: var(--font-heading--family, inherit); font-size: clamp(26px, 4vw, 40px); font-weight: 900; line-height: 1.15; margin: 0 0 10px; color: var(--hm-black); text-transform: uppercase; letter-spacing: -0.5px; }
+  .hmf__text { font-size: 15px; line-height: 1.6; color: var(--hm-muted); margin: 0; }
+  .hmf__list { display: grid; gap: 10px; }
+  .hmf__item { border: 1px solid var(--hm-line); border-radius: 12px; background: #fff; overflow: hidden; }
+  .hmf__item[open] { border-color: var(--hm-red); }
+  .hmf__q { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px; font-size: 15px; font-weight: 700; }
+  .hmf__q::-webkit-details-marker { display: none; }
+  .hmf__icon { position: relative; flex: 0 0 26px; width: 26px; height: 26px; border-radius: 50%; background: var(--hm-cream); }
+  .hmf__icon::before, .hmf__icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: var(--hm-black); transform: translate(-50%, -50%); transition: .2s; }
+  .hmf__icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .hmf__item[open] .hmf__icon::after { transform: translate(-50%, -50%) rotate(0); }
+  .hmf__a { padding: 0 18px 16px; font-size: 14px; line-height: 1.7; color: var(--hm-muted); }
+  .hmf__a p { margin: 0 0 8px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM FAQ",
+  "tag": "section",
+  "class": "hm-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Good to know" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently asked questions" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Everything you need to know before you order." },
+    { "type": "checkbox", "id": "open_first", "label": "Open first question by default", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    { "name": "HM FAQ", "blocks": [
+      { "type": "faq", "settings": { "question": "Will it fit under a helmet?", "answer": "<p>Yes. The stretch knit construction is designed to sit comfortably under a helmet, with a wide eye opening shaped to work with ski goggles.</p>" } },
+      { "type": "faq", "settings": { "question": "What sizes are available?", "answer": "<p>One size fits most. The stretch knit adjusts to a wide range of head sizes.</p>" } },
+      { "type": "faq", "settings": { "question": "Does it come in other colors?", "answer": "<p>Yes — Crimson Gold, Web Red, and Shadow Black.</p>" } },
+      { "type": "faq", "settings": { "question": "Do you offer free shipping?", "answer": "<p>Yes, shipping is free on every order. Add shipping protection at checkout to cover loss or damage in transit.</p>" } },
+      { "type": "faq", "settings": { "question": "What is your return policy?", "answer": "<p>If you're not happy within 30 days, contact us for a replacement or full refund.</p>" } }
+    ] }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,480 @@
+{%- comment -%}
+  HeroMode – Product hero
+  Adapted from the Huggaroo/Dear Paws pattern (gallery, price, feature rows, add-on
+  checkboxes, sticky add-to-cart bar) re-themed to HeroMode's red/black/gold palette,
+  with a single Color picker (no Size — one size fits most).
+{%- endcomment -%}
+{%- liquid
+  assign product = section.settings.product | default: product
+  assign current_variant = product.selected_or_first_available_variant
+  assign media_list = product.media
+  assign features = section.blocks | where: 'type', 'feature'
+  assign addons = section.blocks | where: 'type', 'addon'
+  assign trusts = section.blocks | where: 'type', 'trust'
+
+  assign color_option = product.options_with_values | where: 'name', 'Color' | first
+
+  assign hm_orders_base = 24
+  assign hm_seed = 'now' | date: '%j' | plus: 0 | times: 5 | modulo: 19
+  assign hm_orders_today = hm_orders_base | plus: hm_seed
+-%}
+
+<section class="hmm" id="hm-product-{{ section.id }}" data-hm-product>
+  <div class="hmm__inner">
+
+    {%- comment -%} ===== GALLERY ===== {%- endcomment -%}
+    <div class="hmm__gallery">
+      <div class="hmm__main">
+        {%- if section.settings.badge_text != blank -%}
+          <span class="hmm__badge">{{ section.settings.badge_text }}</span>
+        {%- endif -%}
+        {%- if media_list.size > 0 -%}
+          {%- assign first = media_list.first -%}
+          <img
+            data-hm-main-image
+            src="{{ first | image_url: width: 1000 }}"
+            srcset="{{ first | image_url: width: 600 }} 600w, {{ first | image_url: width: 1000 }} 1000w, {{ first | image_url: width: 1400 }} 1400w"
+            sizes="(min-width: 990px) 560px, 100vw"
+            width="1000" height="1000"
+            alt="{{ first.alt | default: product.title | escape }}"
+            fetchpriority="high"
+          >
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'hmm__placeholder' }}
+        {%- endif -%}
+        {%- if media_list.size > 1 -%}
+          <button type="button" class="hmm__arrow hmm__arrow--prev" data-hm-prev aria-label="Previous image">&#8249;</button>
+          <button type="button" class="hmm__arrow hmm__arrow--next" data-hm-next aria-label="Next image">&#8250;</button>
+        {%- endif -%}
+      </div>
+      {%- if media_list.size > 1 -%}
+        <div class="hmm__thumbs" role="list">
+          {%- for media in media_list -%}
+            <button
+              type="button"
+              role="listitem"
+              class="hmm__thumb{% if forloop.first %} is-active{% endif %}"
+              data-hm-thumb
+              data-src="{{ media | image_url: width: 1000 }}"
+              data-srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 1000 }} 1000w, {{ media | image_url: width: 1400 }} 1400w"
+              data-alt="{{ media.alt | default: product.title | escape }}"
+              aria-label="Show image {{ forloop.index }}"
+            >
+              <img src="{{ media | image_url: width: 160 }}" width="80" height="80" loading="lazy" alt="">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ===== DETAILS ===== {%- endcomment -%}
+    <div class="hmm__details">
+
+      {%- if section.settings.show_proof_bar -%}
+        <p class="hmm__proof">
+          <span class="hmm__proof-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg>{{ hm_orders_today }} ordered today</span>
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.tag_text != blank -%}
+        <span class="hmm__tag">{{ section.settings.tag_text }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="hmm__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+      <h1 class="hmm__title">{{ section.settings.title_override | default: product.title }}</h1>
+
+      <a class="hmm__rating" href="{{ section.settings.reviews_anchor | default: '#shopify-section-hm_reviews' }}" aria-label="Read customer reviews">
+        <span class="hmm__stars" aria-hidden="true">
+          {%- for i in (1..5) -%}
+            <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
+          {%- endfor -%}
+        </span>
+        <span class="hmm__rating-text">{{ section.settings.rating_text }}</span>
+        <span class="hmm__rating-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+
+      <div class="hmm__price">
+        <span class="hmm__price-now" data-hm-price-now>{{ current_variant.price | money }}</span>
+        <s class="hmm__price-was" data-hm-price-was {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
+        <span class="hmm__pill" data-hm-price-pill {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}></span>
+      </div>
+
+      {%- if features.size > 0 -%}
+        <ul class="hmm__features">
+          {%- for block in features -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="hmm__feature-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'snow' -%}<svg viewBox="0 0 24 24"><path d="M12 2v20M4.9 4.9l14.2 14.2M19.1 4.9L4.9 19.1M2 12h20M7 5l5 3 5-3M7 19l5-3 5 3M5 7l3 5-3 5M19 7l-3 5 3 5"/></svg>
+                  {%- when 'goggles' -%}<svg viewBox="0 0 24 24"><ellipse cx="7.5" cy="12" rx="4.5" ry="4"/><ellipse cx="16.5" cy="12" rx="4.5" ry="4"/><path d="M12 12h0"/></svg>
+                  {%- when 'star' -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.4 6.9.5-5.3 4.4 1.8 6.7L12 16.5l-6 3.5 1.8-6.7-5.3-4.4 6.9-.5z"/></svg>
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                  {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} ===== VARIANT PICKER: Color ===== {%- endcomment -%}
+      {%- if color_option -%}
+        <div class="hmm__variants">
+          <div class="hmm__opt-group">
+            <p class="hmm__opt-label">Design: <span data-hm-color-label>{{ current_variant.option1 }}</span></p>
+            <div class="hmm__swatches" role="radiogroup" aria-label="Design">
+              {%- for value in color_option.values -%}
+                <button
+                  type="button"
+                  class="hmm__swatch{% if value == current_variant.option1 %} is-active{% endif %}"
+                  data-hm-color="{{ value | escape }}"
+                  style="--swatch-color: {% if value == 'Crimson Gold' %}#B3272C{% elsif value == 'Web Red' %}#8C1A1A{% elsif value == 'Shadow Black' %}#1A1A1A{% else %}#ccc{% endif %};"
+                  role="radio"
+                  aria-checked="{% if value == current_variant.option1 %}true{% else %}false{% endif %}"
+                  aria-label="{{ value }}"
+                ></button>
+              {%- endfor -%}
+            </div>
+          </div>
+          {%- if section.settings.size_note != blank -%}
+            <p class="hmm__size-guide">{{ section.settings.size_note }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ===== ADD-ONS ===== {%- endcomment -%}
+      {%- if addons.size > 0 -%}
+        <div class="hmm__bundle">
+          <p class="hmm__label hmm__label--center"><span>{{ section.settings.addons_heading }}</span></p>
+          <div class="hmm__addons">
+            {%- for ab in addons -%}
+              {%- assign aidx = forloop.index0 -%}
+              {%- assign ap = ab.settings.product -%}
+              {%- assign av = ap.selected_or_first_available_variant -%}
+              <label class="hmm__addon{% if ab.settings.default_on %} is-on{% endif %}" data-hm-addon="{{ aidx }}">
+                <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="hmm__addon-img">
+                  {%- if ab.settings.image != blank -%}
+                    {{ ab.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
+                  {%- elsif ap.featured_media -%}
+                    {{ ap.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: ab.settings.title }}
+                  {%- endif -%}
+                </span>
+                <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                <span class="hmm__addon-price">{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+              </label>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ===== ADD TO CART ===== {%- endcomment -%}
+      <div class="hmm__buy">
+        <button type="button" class="hmm__atc" data-hm-atc {% unless current_variant.available %}disabled{% endunless %}>
+          <span class="hmm__atc-label" data-hm-btn-label>{{ section.settings.button_text }}</span>
+          <span class="hmm__atc-spinner" aria-hidden="true"></span>
+        </button>
+        {%- if section.settings.button_subtext != blank -%}
+          <p class="hmm__atc-sub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{{ section.settings.button_subtext }}</p>
+        {%- endif -%}
+        <p class="hmm__error" data-hm-error hidden role="alert"></p>
+        <ul class="hmm__guarantees" aria-label="Guarantees">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>30-day guarantee</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure checkout</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Free shipping</li>
+        </ul>
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="hmm__payments" aria-label="Accepted payment methods">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'hmm__payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if trusts.size > 0 -%}
+        <ul class="hmm__trust">
+          {%- for block in trusts -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="hmm__trust-icon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                  {%- when 'lock' -%}<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                  {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                  {%- when 'star' -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.4 6.9.5-5.3 4.4 1.8 6.7L12 16.5l-6 3.5 1.8-6.7-5.3-4.4 6.9-.5z"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <details class="hmm__desc">
+          <summary>{{ section.settings.description_label }}</summary>
+          <div class="hmm__desc-body rte">{{ product.description }}</div>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.sticky_bar -%}
+    <div class="hmm__sticky" data-hm-sticky>
+      <div class="hmm__sticky-inner">
+        {%- if product.featured_media -%}<img src="{{ product.featured_media | image_url: width: 100 }}" width="48" height="48" alt="" loading="lazy" data-hm-sticky-img>{%- endif -%}
+        <div class="hmm__sticky-meta">
+          <strong>{{ product.title }}</strong>
+          <span><s data-hm-sticky-was hidden></s> <b data-hm-sticky-total></b></span>
+        </div>
+        <button type="button" class="hmm__sticky-btn" data-hm-sticky-atc>{{ section.settings.button_text }}</button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <script type="application/json" data-hm-config>
+    {
+      "productId": {{ product.id | json }},
+      "selectedVariantId": {{ current_variant.id | json }},
+      "moneyFormat": {{ shop.money_format | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {%- assign img_index = -1 -%}
+          {%- if variant.featured_media -%}
+            {%- for media in media_list -%}
+              {%- if media.id == variant.featured_media.id -%}{%- assign img_index = forloop.index0 -%}{%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          { "id": {{ variant.id | json }}, "title": {{ variant.title | json }}, "option1": {{ variant.option1 | json }}, "price": {{ variant.price | json }}, "compareAtPrice": {{ variant.compare_at_price | default: 0 | json }}, "available": {{ variant.available | json }}, "imageIndex": {{ img_index }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "addons": [
+        {%- for block in addons -%}
+          {%- assign ap = block.settings.product -%}
+          {%- assign av = ap.selected_or_first_available_variant -%}
+          { "variantId": {{ av.id | default: null | json }}, "price": {{ av.price | default: 0 | json }}, "defaultOn": {{ block.settings.default_on | json }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "text": {
+        "addToCart": {{ section.settings.button_text | json }},
+        "soldOut": "Sold out",
+        "save": "Save",
+        "savePct": "SAVE {pct}%"
+      }
+    }
+  </script>
+</section>
+
+<script type="module" src="{{ 'hm-product.js' | asset_url }}"></script>
+
+{% stylesheet %}
+  .hmm { --hm-red: #B3272C; --hm-red-2: #8C1A1A; --hm-black: #1A1A1A; --hm-gold: #D9A520; --hm-cream: #F5EFE3; --hm-ink: #1A1A1A; --hm-muted: #7A756D; --hm-line: #E6DFCF; --hm-radius: 14px;
+    background: #fff; color: var(--hm-ink); font-family: var(--font-body--family, Inter, sans-serif); padding: 12px 0 40px; width: 100%; max-width: 100%; overflow-x: clip; }
+  .hmm *, .hmm *::before, .hmm *::after { box-sizing: border-box; min-width: 0; }
+  html { scroll-behavior: smooth; }
+  body { overflow-x: clip; }
+  .hm-section, .shopify-section:has(> .hm-section) { max-width: 100%; overflow-x: clip; }
+  [id^="shopify-section-hm_"] { scroll-margin-top: 90px; }
+  .hmm__inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: grid; gap: 22px; }
+  @media (min-width: 990px) {
+    .hmm { padding: 32px 0 64px; }
+    .hmm__inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: start; padding: 0 32px; }
+    .hmm__gallery { position: sticky; top: 90px; }
+  }
+
+  .hmm__main { position: relative; aspect-ratio: 1 / 1; border-radius: var(--hm-radius); overflow: hidden; background: var(--hm-black); }
+  .hmm__main img, .hmm__placeholder { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hmm__badge { position: absolute; top: 14px; left: 14px; z-index: 2; background: var(--hm-gold); color: var(--hm-black); font-size: 11px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
+  .hmm__arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--hm-red); font-size: 26px; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+  .hmm__arrow--prev { left: 12px; } .hmm__arrow--next { right: 12px; }
+  .hmm__thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .hmm__thumbs::-webkit-scrollbar { display: none; }
+  .hmm__thumb { flex: 0 0 auto; width: 68px; height: 68px; padding: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; background: var(--hm-black); cursor: pointer; opacity: .75; transition: .2s; }
+  .hmm__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hmm__thumb.is-active { border-color: var(--hm-gold); opacity: 1; }
+
+  .hmm__proof { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; font-weight: 700; color: var(--hm-red-2); }
+  .hmm__proof-item { display: inline-flex; align-items: center; gap: 6px; background: var(--hm-cream); border-radius: 999px; padding: 6px 12px; }
+  .hmm__proof-item svg { width: 15px; height: 15px; fill: none; stroke: var(--hm-red); stroke-width: 1.8; stroke-linejoin: round; }
+  .hmm__tag { display: inline-block; background: var(--hm-black); color: var(--hm-gold); font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; margin-bottom: 12px; }
+  .hmm__eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--hm-red); margin-bottom: 8px; }
+  .hmm__title { font-family: var(--font-heading--family, inherit); font-size: clamp(28px, 4.5vw, 40px); font-weight: 900; line-height: 1.05; letter-spacing: -0.5px; margin: 0 0 10px; color: var(--hm-black); text-transform: uppercase; }
+  .hmm__rating { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; text-decoration: none; color: inherit; border-bottom: 1px dashed var(--hm-gold); padding-bottom: 2px; }
+  .hmm__rating:hover .hmm__rating-text { color: var(--hm-red); text-decoration: underline; }
+  .hmm__rating-arrow { color: var(--hm-gold); font-size: 20px; line-height: 1; }
+  .hmm__stars { display: inline-flex; gap: 2px; }
+  .hmm__stars svg { width: 16px; height: 16px; fill: var(--hm-gold); }
+  .hmm__rating-text { font-size: 13px; font-weight: 600; color: var(--hm-ink); }
+  .hmm__price { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .hmm__price-now { font-size: 30px; font-weight: 900; color: var(--hm-red); letter-spacing: -0.5px; }
+  .hmm__price-was { font-size: 18px; color: #a89a8c; }
+  .hmm__pill { background: var(--hm-gold); color: var(--hm-black); font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 5px 10px; border-radius: 999px; }
+  @media (max-width: 749px) { .hmm__title { font-size: 26px; } .hmm__price-now { font-size: 26px; } .hmm__price-was { font-size: 16px; } }
+
+  .hmm__features { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 10px; }
+  .hmm__features li { display: flex; gap: 12px; align-items: center; font-size: 14px; font-weight: 600; line-height: 1.4; }
+  .hmm__feature-icon { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; background: var(--hm-black); border: 1px solid var(--hm-black); display: inline-flex; align-items: center; justify-content: center; }
+  .hmm__feature-icon svg { width: 17px; height: 17px; fill: none; stroke: var(--hm-gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hmm__label { font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--hm-ink); margin: 0 0 12px; }
+  .hmm__label--center { text-align: center; position: relative; }
+  .hmm__label--center::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--hm-line); }
+  .hmm__label--center span { position: relative; background: #fff; padding: 0 12px; }
+
+  .hmm__variants { margin-bottom: 18px; display: grid; gap: 10px; }
+  .hmm__opt-label { font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+  .hmm__opt-label span { font-weight: 800; color: var(--hm-red); }
+  .hmm__swatches { display: flex; gap: 10px; }
+  .hmm__swatch { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; padding: 3px; cursor: pointer; background: #fff; box-shadow: 0 0 0 1.5px var(--hm-line); position: relative; }
+  .hmm__swatch::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: var(--swatch-color); }
+  .hmm__swatch.is-active { box-shadow: 0 0 0 2px var(--hm-red); }
+  .hmm__size-guide { margin: 0; font-size: 12px; color: var(--hm-muted); }
+
+  .hmm__bundle { margin-bottom: 18px; }
+  .hmm__addons { display: grid; gap: 6px; }
+  .hmm__addon { display: grid; grid-template-columns: 22px 30px 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border: 1px solid var(--hm-line); border-radius: 10px; background: #fff; cursor: pointer; transition: .15s; }
+  .hmm__addon.is-on { border-color: var(--hm-red); background: var(--hm-cream); }
+  .hmm__check-input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .hmm__checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #d8c8b3; background: #fff; display: inline-flex; align-items: center; justify-content: center; color: #fff; transition: .15s; }
+  .hmm__checkbox svg { width: 14px; height: 14px; opacity: 0; transform: scale(.6); transition: .15s; }
+  .hmm__check-input:checked + .hmm__checkbox { background: var(--hm-red); border-color: var(--hm-red); }
+  .hmm__check-input:checked + .hmm__checkbox svg { opacity: 1; transform: scale(1); }
+  .hmm__check-input:focus-visible + .hmm__checkbox { outline: 2px solid var(--hm-gold); outline-offset: 2px; }
+  .hmm__check-input:disabled + .hmm__checkbox { opacity: .4; }
+  .hmm__addon-img { width: 30px; height: 30px; border-radius: 7px; overflow: hidden; background: var(--hm-cream); }
+  .hmm__addon-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hmm__addon-title { font-size: 13px; font-weight: 600; line-height: 1.2; }
+  .hmm__addon-price { font-size: 13px; font-weight: 700; color: var(--hm-red); }
+  .hmm__addon-price em { font-style: normal; font-size: 11px; color: #b0483a; }
+
+  .hmm__buy { margin-top: 4px; }
+  .hmm__atc { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 18px 20px; border: 0; border-radius: var(--hm-radius); background: linear-gradient(135deg, #D63A3F 0%, #B3272C 60%, #8C1A1A 100%); color: #fff; font: inherit; font-size: 17px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; cursor: pointer; transition: .15s; box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55); animation: hmm-pulse 2.4s ease-in-out infinite; }
+  .hmm__atc:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(179,39,44,.4), inset 0 0 0 1.5px var(--hm-gold); animation: none; }
+  .hmm__atc:disabled { background: #b9b0a5; box-shadow: none; cursor: not-allowed; animation: none; }
+  @keyframes hmm-pulse { 0%, 100% { box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 0 rgba(217,165,32,.45); } 50% { box-shadow: 0 12px 28px rgba(179,39,44,.32), inset 0 0 0 1.5px rgba(217,165,32,.55), 0 0 0 8px rgba(217,165,32,0); } }
+  @media (prefers-reduced-motion: reduce) { .hmm__atc { animation: none; } }
+  .hmm__atc-spinner { display: none; position: absolute; right: 20px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: hmm-spin .7s linear infinite; }
+  .hmm__atc.is-loading .hmm__atc-spinner { display: block; }
+  .hmm__atc.is-added .hmm__atc-label::after { content: " \2713"; }
+  @keyframes hmm-spin { to { transform: rotate(360deg); } }
+  .hmm__atc-sub { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--hm-red); }
+  .hmm__atc-sub svg { width: 16px; height: 16px; fill: none; stroke: var(--hm-red); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .hmm__error { color: #b0483a; font-size: 13px; margin: 8px 0 0; text-align: center; }
+  .hmm__guarantees { list-style: none; margin: 12px 0 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; font-weight: 600; color: var(--hm-muted); }
+  .hmm__guarantees li { display: inline-flex; align-items: center; gap: 5px; }
+  .hmm__guarantees svg { width: 14px; height: 14px; fill: none; stroke: var(--hm-gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hmm__payments { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0 4px; }
+  .hmm__payment-icon { width: 38px; height: 24px; border-radius: 4px; }
+
+  .hmm__trust { list-style: none; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid var(--hm-line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .hmm__trust li { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+  .hmm__trust-icon { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--hm-cream); display: inline-flex; align-items: center; justify-content: center; }
+  .hmm__trust-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--hm-red); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hmm__desc { margin-top: 18px; border-top: 1px solid var(--hm-line); border-bottom: 1px solid var(--hm-line); }
+  .hmm__desc summary { cursor: pointer; padding: 14px 0; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .hmm__desc summary::-webkit-details-marker { display: none; }
+  .hmm__desc summary::after { content: "+"; font-size: 18px; color: var(--hm-gold); }
+  .hmm__desc[open] summary::after { content: "\2013"; }
+  .hmm__desc-body { padding: 0 0 16px; font-size: 14px; line-height: 1.7; color: var(--hm-muted); }
+
+  .hmm__sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid var(--hm-line); box-shadow: 0 -8px 24px rgba(0,0,0,.08); transform: translateY(110%); transition: transform .25s; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .hmm__sticky.is-visible { transform: translateY(0); }
+  .hmm__sticky-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .hmm__sticky img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+  .hmm__sticky-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; }
+  .hmm__sticky-meta strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hmm__sticky-meta span { color: var(--hm-red); font-weight: 800; }
+  .hmm__sticky-meta s { color: #a89a8c; font-weight: 500; font-size: 12px; margin-right: 3px; }
+  .hmm__sticky-btn { border: 0; border-radius: 10px; background: var(--hm-red); color: #fff; font: inherit; font-weight: 800; font-size: 14px; padding: 12px 18px; cursor: pointer; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM Product hero",
+  "tag": "section",
+  "class": "hm-section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "Leave empty to use the current page product." },
+    { "type": "checkbox", "id": "show_proof_bar", "label": "Show \"ordered today\" proof bar", "default": true },
+    { "type": "text", "id": "tag_text", "label": "Tag line", "default": "LIMITED DROP" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "One size fits most" },
+    { "type": "text", "id": "title_override", "label": "Title override" },
+    { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Bestseller" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 640 reviews" },
+    { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-hm_reviews" },
+    { "type": "text", "id": "size_note", "label": "Size note", "default": "One size fits most. Stretch knit fits comfortably under a helmet." },
+    { "type": "text", "id": "addons_heading", "label": "Add-ons heading", "default": "Protect your order" },
+    { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to cart" },
+    { "type": "text", "id": "button_subtext", "label": "Text under button", "default": "Order today, ships within 24 hours" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show product description accordion", "default": true },
+    { "type": "text", "id": "description_label", "label": "Description label", "default": "Details & fit" },
+    { "type": "checkbox", "id": "sticky_bar", "label": "Sticky add-to-cart bar", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature row",
+      "limit": 4,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "snow", "label": "Snow" }, { "value": "goggles", "label": "Goggles" }, { "value": "star", "label": "Star" },
+          { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" }, { "value": "check", "label": "Check" }
+        ], "default": "snow" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Keeps you warm on every run" }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Add-on product",
+      "limit": 4,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Add-on product" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "text", "label": "Description" },
+        { "type": "image_picker", "id": "image", "label": "Image (optional override)" },
+        { "type": "checkbox", "id": "default_on", "label": "Selected by default", "default": false }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust item",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "truck", "label": "Truck" }, { "value": "lock", "label": "Lock" },
+          { "value": "shield", "label": "Shield" }, { "value": "star", "label": "Star" }
+        ], "default": "truck" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HM Product hero",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "snow", "text": "Keeps you warm on every run" } },
+        { "type": "feature", "settings": { "icon": "goggles", "text": "Wide eye opening, compatible with goggles" } },
+        { "type": "feature", "settings": { "icon": "truck", "text": "Free shipping and 30-day guarantee" } },
+        { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "default_on": true } },
+        { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "default_on": true } },
+        { "type": "trust", "settings": { "icon": "truck", "text": "Free shipping" } },
+        { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "30-day guarantee" } },
+        { "type": "trust", "settings": { "icon": "star", "text": "Rated 4.9 by riders" } }
+      ]
+    }
+  ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}
