@@ -1,0 +1,87 @@
+{%- comment -%}
+  HeroMode – top announcement bar. Static section rendered directly from layout/theme.liquid,
+  above the header, on every page. Cycles through short urgency/shipping messages one at a
+  time, CSS-only (no JS dependency).
+{%- endcomment -%}
+{%- liquid
+  assign count = section.blocks.size
+  if count == 0
+    assign count = 1
+  endif
+  assign item_seconds = 3
+  assign total_seconds = count | times: item_seconds
+-%}
+<div class="hmab" data-hm-announcement>
+  <div class="hmab__track" style="--hmab-duration: {{ total_seconds }}s;">
+    {%- for block in section.blocks -%}
+      {%- assign delay = forloop.index0 | times: item_seconds -%}
+      <span class="hmab__item" style="animation-delay: {{ delay }}s;" {{ block.shopify_attributes }}>
+        <span class="hmab__icon" aria-hidden="true">
+          {%- case block.settings.icon -%}
+            {%- when 'truck' -%}<svg viewBox="0 0 24 24"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+            {%- when 'shield' -%}<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            {%- when 'star' -%}<svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.4 6.9.5-5.3 4.4 1.8 6.7L12 16.5l-6 3.5 1.8-6.7-5.3-4.4 6.9-.5z"/></svg>
+            {%- else -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          {%- endcase -%}
+        </span>
+        {{ block.settings.text }}
+      </span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .hmab { --hm-red: #E2231A; --hm-gold: #D9A520; background: var(--hm-red); color: #fff; overflow: hidden; }
+  .hmab__track { position: relative; height: 34px; max-width: 1200px; margin: 0 auto; }
+  .hmab__item {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px;
+    font-size: 12px; font-weight: 700; letter-spacing: .3px; padding: 0 14px; white-space: nowrap;
+    opacity: 0; transform: translateY(10px);
+    animation-name: hmab-cycle; animation-duration: var(--hmab-duration, 9s); animation-iteration-count: infinite; animation-timing-function: ease;
+  }
+  .hmab__icon { display: inline-flex; flex: 0 0 14px; }
+  .hmab__icon svg { width: 14px; height: 14px; fill: none; stroke: var(--hm-gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes hmab-cycle {
+    0% { opacity: 0; transform: translateY(10px); }
+    5% { opacity: 1; transform: translateY(0); }
+    28% { opacity: 1; transform: translateY(0); }
+    33% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hmab__item { animation: none; opacity: 0; }
+    .hmab__item:first-child { opacity: 1; transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HM Announcement bar",
+  "tag": "section",
+  "class": "hm-section hm-announcement-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" }, { "value": "star", "label": "Star" }, { "value": "check", "label": "Check" }
+        ], "default": "truck" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping worldwide" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HM Announcement bar",
+      "blocks": [
+        { "type": "message", "settings": { "icon": "truck", "text": "Free shipping worldwide" } },
+        { "type": "message", "settings": { "icon": "shield", "text": "Limited stock" } },
+        { "type": "message", "settings": { "icon": "star", "text": "Selling fast" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

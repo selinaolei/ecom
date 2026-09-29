@@ -49,27 +49,6 @@
             "default_on": true
           }
         },
-        "tr1": {
-          "type": "trust",
-          "settings": {
-            "icon": "truck",
-            "text": "Free shipping worldwide"
-          }
-        },
-        "tr1b": {
-          "type": "trust",
-          "settings": {
-            "icon": "shield",
-            "text": "Limited stock"
-          }
-        },
-        "tr1c": {
-          "type": "trust",
-          "settings": {
-            "icon": "star",
-            "text": "Selling fast"
-          }
-        },
         "tr2": {
           "type": "trust",
           "settings": {
@@ -99,9 +78,6 @@
         "f4",
         "a1",
         "a2",
-        "tr1",
-        "tr1b",
-        "tr1c",
         "tr2",
         "tr3",
         "tr4"
