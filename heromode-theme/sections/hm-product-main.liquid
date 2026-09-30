@@ -178,6 +178,21 @@
               </button>
               <div class="hmm__tier-body">
                 <div class="hmm__tier-shipping-badge">FREE SHIPPING</div>
+                {%- if addons.size > 0 -%}
+                  <div class="hmm__addons">
+                    {%- for ab in addons -%}
+                      {%- assign aidx = forloop.index0 -%}
+                      {%- assign ap = ab.settings.product -%}
+                      {%- assign av = ap.selected_or_first_available_variant -%}
+                      <label class="hmm__addon{% if ab.settings.default_on %} is-on{% endif %}" data-hm-addon="{{ aidx }}">
+                        <input type="checkbox" class="hmm__check-input" data-hm-addon-input="{{ aidx }}" {% if ab.settings.default_on %}checked{% endif %} {% unless av %}disabled{% endunless %} aria-label="Add {{ ab.settings.title | default: ap.title | escape }}">
+                        <span class="hmm__checkbox" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <span class="hmm__addon-title">{{ ab.settings.title | default: ap.title }}</span>
+                        <span class="hmm__addon-price">{%- if av -%}{{ av.price | money }}{%- else -%}<em>Pick product</em>{%- endif -%}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
               </div>
             </div>
 
@@ -597,8 +612,8 @@
         { "type": "feature", "settings": { "icon": "snow", "text": "Keeps you warm on every run" } },
         { "type": "feature", "settings": { "icon": "goggles", "text": "Wide eye opening, compatible with goggles" } },
         { "type": "feature", "settings": { "icon": "truck", "text": "Free shipping and 30-day guarantee" } },
-        { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "default_on": true } },
-        { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "default_on": true } },
+        { "type": "addon", "settings": { "title": "Shipping protection", "text": "Covers loss, theft or damage in transit", "default_on": false } },
+        { "type": "addon", "settings": { "title": "30-day warranty", "text": "Replacement if anything arrives damaged", "default_on": false } },
         { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
         { "type": "trust", "settings": { "icon": "shield", "text": "30-day guarantee" } },
         { "type": "trust", "settings": { "icon": "star", "text": "Rated 4.9 by riders" } }
