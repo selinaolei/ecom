@@ -114,7 +114,7 @@
         b.classList.toggle('is-active', b === btn);
         b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
       });
-      setAddonsForced(state.tier >= 2);
+      setAddonsForced(false);
       render();
     });
   });
