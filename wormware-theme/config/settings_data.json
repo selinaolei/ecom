@@ -1,13 +1,31 @@
 {
   "current": {
     "colors": {
-      "text": "#1a1a1a",
-      "background": "#ffffff"
+      "primary": "#C85A17",
+      "primary_dark": "#B8530D",
+      "secondary": "#4A2C1A",
+      "accent": "#E67E22",
+      "text": "#2C1810",
+      "text_light": "#5C4A3D",
+      "background": "#FEFDFB",
+      "background_light": "#F5F3F0"
     },
     "typography": {
-      "font_body": "system-ui, -apple-system, sans-serif",
-      "font_heading": "system-ui, -apple-system, sans-serif"
+      "font_heading": "'Georgia', 'Garamond', serif",
+      "font_body": "'Segoe UI', 'Helvetica Neue', sans-serif"
+    },
+    "spacing": {
+      "section_padding": "60px"
     }
   },
-  "presets": {}
+  "presets": {
+    "warm_wear_premium": {
+      "description": "Warm Wear Premium Brand Theme",
+      "colors": {
+        "primary": "#C85A17",
+        "accent": "#E67E22",
+        "secondary": "#4A2C1A"
+      }
+    }
+  }
 }
