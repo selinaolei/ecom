@@ -76,6 +76,34 @@
             "icon": "truck",
             "text": "Fast shipping"
           }
+        },
+        "faq1": {
+          "type": "faq",
+          "settings": {
+            "question": "What size gloves should I order?",
+            "answer": "Refer to our sizing chart above for palm circumference and glove length. Most customers find Medium fits hands 7-8 inches in circumference, Large fits 8-9 inches, and XL fits 9+ inches."
+          }
+        },
+        "faq2": {
+          "type": "faq",
+          "settings": {
+            "question": "Are the gloves touchscreen compatible?",
+            "answer": "Yes! Warm Wear Heated Gloves feature touchscreen-sensitive fingertips so you can use your phone or tablet without removing them."
+          }
+        },
+        "faq3": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I wear them all day?",
+            "answer": "Absolutely. The gloves are designed for all-day comfort with flexible materials and adjustable wrist straps. Most users comfortably wear them from early morning to evening."
+          }
+        },
+        "faq4": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "Yes, we offer free shipping on all orders in Canada and the US. Most orders ship within 48 hours and arrive in 3-5 business days."
+          }
         }
       },
       "block_order": [
@@ -88,7 +116,11 @@
         "tr2",
         "tr3",
         "tr4",
-        "tr5"
+        "tr5",
+        "faq1",
+        "faq2",
+        "faq3",
+        "faq4"
       ],
       "settings": {
         "eyebrow": "Warm hands, all season",

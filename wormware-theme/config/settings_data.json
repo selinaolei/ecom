@@ -1,14 +1,14 @@
 {
   "current": {
     "colors": {
-      "primary": "#C85A17",
-      "primary_dark": "#B8530D",
-      "secondary": "#4A2C1A",
-      "accent": "#E67E22",
-      "text": "#2C1810",
-      "text_light": "#5C4A3D",
-      "background": "#FEFDFB",
-      "background_light": "#F5F3F0"
+      "primary": "#2D4A3E",
+      "primary_dark": "#1F3530",
+      "secondary": "#1F3530",
+      "accent": "#D4AF86",
+      "text": "#FEFDFB",
+      "text_light": "#E8E8E8",
+      "background": "#2D4A3E",
+      "background_light": "#FEFDFB"
     },
     "typography": {
       "font_heading": "'Georgia', 'Garamond', serif",
