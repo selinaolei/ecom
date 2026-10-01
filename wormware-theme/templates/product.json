@@ -1,0 +1,121 @@
+{
+  "sections": {
+    "wm_main": {
+      "type": "wm-product-main",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "fire",
+            "text": "3-speed temperature regulation (35°C - 55°C)"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "battery",
+            "text": "USB battery powered, 8+ hour runtime"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "thermometer",
+            "text": "Detachable hood, safe overheat protection"
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "truck",
+            "text": "Free shipping and 30-day guarantee"
+          }
+        },
+        "a1": {
+          "type": "addon",
+          "settings": {
+            "product": "wormware-replacement-battery",
+            "title": "Replacement batteries",
+            "text": "Extra battery pack for extended use",
+            "default_on": false
+          }
+        },
+        "a2": {
+          "type": "addon",
+          "settings": {
+            "product": "wormware-usb-cable",
+            "title": "USB charging cable",
+            "text": "Includes Type-C and Micro-USB adapters",
+            "default_on": false
+          }
+        },
+        "tr2": {
+          "type": "trust",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "tr3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "tr4": {
+          "type": "trust",
+          "settings": {
+            "icon": "star",
+            "text": "Rated 4.9 by customers"
+          }
+        },
+        "tr5": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Fast shipping"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "a1",
+        "a2",
+        "tr2",
+        "tr3",
+        "tr4",
+        "tr5"
+      ],
+      "settings": {
+        "eyebrow": "Stay warm all winter",
+        "show_proof_bar": true,
+        "tag_text": "Premium heated apparel",
+        "badge_text": "Hot seller",
+        "rating_text": "Rated 4.9 based on 485 reviews",
+        "reviews_anchor": "#shopify-section-wm_reviews",
+        "size_note": "3-speed temperature regulation: High (55°C/131°F) • Middle (45°C/113°F) • Low (35°C/95°F)",
+        "show_bundle_tiers": true,
+        "bundle_heading": "Choose your set",
+        "bundle_addon_note": "Add batteries and charging cables",
+        "tier2_qty": 2,
+        "tier2_discount_pct": 12,
+        "tier3_qty": 2,
+        "tier3_discount_pct": 20,
+        "addons_heading": "Accessories",
+        "button_text": "Add to cart",
+        "button_subtext": "Order today, ships within 48 hours",
+        "show_payment_icons": true,
+        "show_description": true,
+        "description_label": "Features & specs",
+        "sticky_bar": true
+      }
+    }
+  },
+  "order": [
+    "wm_main"
+  ]
+}

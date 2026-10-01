@@ -1,0 +1,13 @@
+{
+  "current": {
+    "colors": {
+      "text": "#1a1a1a",
+      "background": "#ffffff"
+    },
+    "typography": {
+      "font_body": "system-ui, -apple-system, sans-serif",
+      "font_heading": "system-ui, -apple-system, sans-serif"
+    }
+  },
+  "presets": {}
+}
