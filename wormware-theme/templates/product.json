@@ -34,7 +34,7 @@
         "a1": {
           "type": "addon",
           "settings": {
-            "product": "wormware-replacement-battery",
+            "product": "wormware-replacement-batteries",
             "title": "Replacement batteries",
             "text": "Extra battery pack for extended use",
             "default_on": false
@@ -43,7 +43,7 @@
         "a2": {
           "type": "addon",
           "settings": {
-            "product": "wormware-usb-cable",
+            "product": "wormware-usb-charging-cable",
             "title": "USB charging cable",
             "text": "Includes Type-C and Micro-USB adapters",
             "default_on": false
