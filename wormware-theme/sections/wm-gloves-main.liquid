@@ -1,7 +1,7 @@
 {%- comment -%}
-  Wormware – Product hero
-  Heated jackets and gloves bundle selector with 3-speed temperature control,
-  detachable features, and optional add-ons (batteries, charging cables, etc).
+  Wormware – Gloves product hero
+  Heated gloves bundle selector with 3-speed temperature control,
+  optional add-ons (batteries, charging cables, etc).
 {%- endcomment -%}
 {%- liquid
   assign product = section.settings.product | default: product
@@ -13,7 +13,7 @@
 
   assign color_option = product.options_with_values | where: 'name', 'Color' | first
 
-  assign wm_orders_base = 18
+  assign wm_orders_base = 16
   assign wm_seed = 'now' | date: '%j' | plus: 0 | times: 5 | modulo: 19
   assign wm_orders_today = wm_orders_base | plus: wm_seed
 
@@ -31,7 +31,7 @@
   assign wm_t3_net = wm_t3_gross | minus: wm_t3_off
 -%}
 
-<section class="wmm" id="wm-product-{{ section.id }}" data-hm-product>
+<section class="wmm" id="wm-gloves-{{ section.id }}" data-hm-product>
   <div class="wmm__inner">
 
     {%- comment -%} ===== GALLERY ===== {%- endcomment -%}
@@ -98,7 +98,7 @@
 
       <h1 class="wmm__title">{{ section.settings.title_override | default: product.title }}</h1>
 
-      <a class="wmm__rating" href="{{ section.settings.reviews_anchor | default: '#shopify-section-wm_reviews' }}" aria-label="Read customer reviews">
+      <a class="wmm__rating" href="{{ section.settings.reviews_anchor | default: '#shopify-section-wm_gloves_reviews' }}" aria-label="Read customer reviews">
         <span class="wmm__stars" aria-hidden="true">
           {%- for i in (1..5) -%}
             <svg viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L10 14.9l-5.3 2.8 1.1-5.9L1.5 7.7l5.9-.8z"/></svg>
@@ -165,12 +165,12 @@
         <div class="wmm__bundle">
           <p class="wmm__label wmm__label--center"><span>{{ section.settings.bundle_heading }}</span></p>
           <div class="wmm__tiers" data-hm-tiers>
-            {%- comment -%} TIER 1: 1 Jacket {%- endcomment -%}
+            {%- comment -%} TIER 1: 1 Glove {%- endcomment -%}
             <div class="wmm__tier is-active" data-hm-tier="1">
               <button type="button" class="wmm__tier-head" data-hm-tier-select aria-expanded="true">
                 <span class="wmm__radio" aria-hidden="true"></span>
                 <span class="wmm__tier-info">
-                  <span class="wmm__tier-name">1 Jacket</span>
+                  <span class="wmm__tier-name">1 Pair</span>
                 </span>
                 <span class="wmm__tier-pricing">
                   <span class="wmm__tier-now" data-hm-tier-now>{{ wm_unit_price | money }}</span>
@@ -196,13 +196,13 @@
               </div>
             </div>
 
-            {%- comment -%} TIER 2: 2 Jackets - Most Popular {%- endcomment -%}
+            {%- comment -%} TIER 2: 2 Gloves - Most Popular {%- endcomment -%}
             <div class="wmm__tier" data-hm-tier="{{ wm_t2_qty }}">
               {%- if wm_t2_qty > 1 -%}<span class="wmm__tier-tag">MOST POPULAR</span>{%- endif -%}
               <button type="button" class="wmm__tier-head" data-hm-tier-select aria-expanded="false">
                 <span class="wmm__radio" aria-hidden="true"></span>
                 <span class="wmm__tier-info">
-                  <span class="wmm__tier-name">{{ wm_t2_qty }} Jackets
+                  <span class="wmm__tier-name">{{ wm_t2_qty }} Pairs
                     <span class="wmm__tier-save" data-hm-tier-save hidden></span>
                   </span>
                 </span>
@@ -231,13 +231,13 @@
               </div>
             </div>
 
-            {%- comment -%} TIER 3: 3 Jackets - Most Value {%- endcomment -%}
+            {%- comment -%} TIER 3: 3 Gloves - Most Value {%- endcomment -%}
             <div class="wmm__tier" data-hm-tier="{{ wm_t3_qty }}">
               {%- if wm_t3_qty > 1 -%}<span class="wmm__tier-tag">MOST VALUE</span>{%- endif -%}
               <button type="button" class="wmm__tier-head" data-hm-tier-select aria-expanded="false">
                 <span class="wmm__radio" aria-hidden="true"></span>
                 <span class="wmm__tier-info">
-                  <span class="wmm__tier-name">{{ wm_t3_qty }} Jackets
+                  <span class="wmm__tier-name">{{ wm_t3_qty }} Pairs
                     <span class="wmm__tier-save" data-hm-tier-save hidden></span>
                   </span>
                 </span>
@@ -521,7 +521,7 @@
 
 {% schema %}
 {
-  "name": "WM Product hero",
+  "name": "WM Gloves hero",
   "tag": "section",
   "class": "wm-section",
   "settings": [
@@ -530,17 +530,17 @@
     { "type": "text", "id": "tag_text", "label": "Tag line" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
     { "type": "text", "id": "title_override", "label": "Title override" },
-    { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Bestseller" },
-    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 540 reviews" },
-    { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-wm_reviews" },
-    { "type": "text", "id": "size_note", "label": "Size note", "default": "3-speed temperature regulation: High (55°C), Middle (45°C), Low (35°C)" },
+    { "type": "text", "id": "badge_text", "label": "Image badge", "default": "Best seller" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "Rated 4.9 based on 425 reviews" },
+    { "type": "text", "id": "reviews_anchor", "label": "Reviews link (anchor)", "default": "#shopify-section-wm_gloves_reviews" },
+    { "type": "text", "id": "size_note", "label": "Size note", "default": "One size fits most. 3-speed control: High (55°C) • Middle (45°C) • Low (35°C)" },
     { "type": "checkbox", "id": "show_bundle_tiers", "label": "Show multi-pack bundle selector", "default": true },
-    { "type": "text", "id": "bundle_heading", "label": "Bundle heading", "default": "Choose your set" },
-    { "type": "text", "id": "bundle_addon_note", "label": "Bundle note (2 & 3 packs)", "default": "Add batteries and cables below" },
+    { "type": "text", "id": "bundle_heading", "label": "Bundle heading", "default": "Choose your pair" },
+    { "type": "text", "id": "bundle_addon_note", "label": "Bundle note (2 & 3 packs)", "default": "Add batteries and charging cables" },
     { "type": "range", "id": "tier2_qty", "label": "Tier 2 quantity", "min": 2, "max": 5, "step": 1, "default": 2 },
-    { "type": "range", "id": "tier2_discount_pct", "label": "Tier 2 discount %", "min": 0, "max": 50, "step": 1, "default": 12 },
-    { "type": "range", "id": "tier3_qty", "label": "Tier 3 quantity", "min": 2, "max": 6, "step": 1, "default": 2 },
-    { "type": "range", "id": "tier3_discount_pct", "label": "Tier 3 discount %", "min": 0, "max": 60, "step": 1, "default": 20 },
+    { "type": "range", "id": "tier2_discount_pct", "label": "Tier 2 discount %", "min": 0, "max": 50, "step": 1, "default": 10 },
+    { "type": "range", "id": "tier3_qty", "label": "Tier 3 quantity", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "range", "id": "tier3_discount_pct", "label": "Tier 3 discount %", "min": 0, "max": 60, "step": 1, "default": 18 },
     { "type": "text", "id": "addons_heading", "label": "Add-ons heading", "default": "Accessories" },
     { "type": "text", "id": "button_text", "label": "Button text", "default": "Add to cart" },
     { "type": "text", "id": "button_subtext", "label": "Text under button", "default": "Order today, ships within 48 hours" },
@@ -559,7 +559,7 @@
           { "value": "fire", "label": "Fire" }, { "value": "battery", "label": "Battery" }, { "value": "thermometer", "label": "Thermometer" },
           { "value": "star", "label": "Star" }, { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" }, { "value": "check", "label": "Check" }
         ], "default": "fire" },
-        { "type": "text", "id": "text", "label": "Text", "default": "Instantly warm with 3-speed control" }
+        { "type": "text", "id": "text", "label": "Text", "default": "3-speed temperature control" }
       ]
     },
     {
@@ -589,11 +589,11 @@
   ],
   "presets": [
     {
-      "name": "WM Product hero",
+      "name": "WM Gloves hero",
       "blocks": [
         { "type": "feature", "settings": { "icon": "fire", "text": "3-speed temperature regulation (35°C - 55°C)" } },
         { "type": "feature", "settings": { "icon": "battery", "text": "USB battery powered, 8+ hour runtime" } },
-        { "type": "feature", "settings": { "icon": "thermometer", "text": "Detachable hood, safe overheat protection" } },
+        { "type": "feature", "settings": { "icon": "thermometer", "text": "Touchscreen compatible, waterproof" } },
         { "type": "addon", "settings": { "title": "Replacement batteries", "text": "Extra battery pack for extended use", "default_on": false } },
         { "type": "addon", "settings": { "title": "USB charging cable", "text": "Includes Type-C and Micro-USB adapters", "default_on": false } },
         { "type": "trust", "settings": { "icon": "lock", "text": "Secure checkout" } },
