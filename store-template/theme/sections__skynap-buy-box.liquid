@@ -1,0 +1,202 @@
+{% comment %} Skynap buy box v2: swipeable gallery, pill social proof, swatches, icon addons, violet only {% endcomment %}
+{%- assign p = section.settings.product | default: product -%}
+<section class="pt-buy" data-pt-buy data-variants='[{% for v in p.variants %}{"id":{{ v.id }},"opt":{{ v.option1 | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]'>
+  <div class="pt-buy__grid">
+    <div class="pt-buy__gallery">
+      <div class="pt-buy__gallerywrap">
+        <div class="pt-buy__track" data-pt-track>
+          {% for media in p.media limit: 13 %}
+            <div class="pt-buy__slide" data-alt="{{ media.alt | escape }}">{{ media | image_url: width: 1100 | image_tag: loading: 'lazy', alt: media.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}</div>
+          {% endfor %}
+          {%- assign fmedia = p.media | first -%}
+          <div class="pt-buy__slide" data-clone="1" data-alt="{{ fmedia.alt | escape }}">{{ fmedia | image_url: width: 1100 | image_tag: loading: 'lazy', alt: fmedia.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}</div>
+        </div>
+        <button type="button" class="pt-buy__arrow pt-buy__arrow--prev" data-pt-prev aria-label="Previous image">&#8249;</button>
+        <button type="button" class="pt-buy__arrow pt-buy__arrow--next" data-pt-next aria-label="Next image">&#8250;</button>
+      </div>
+      <div class="pt-buy__thumbwrap">
+        <button type="button" class="pt-buy__tarrow pt-buy__tarrow--prev" data-pt-tprev aria-label="Previous thumbnails">&#8249;</button>
+        <div class="pt-buy__thumbs" data-pt-thumbtrack>
+          {% for media in p.media limit: 13 %}
+            <button type="button" class="pt-buy__thumb{% if forloop.first %} is-active{% endif %}" data-pt-thumb="{{ forloop.index0 }}">
+              {{ media | image_url: width: 200 | image_tag: loading: 'lazy', alt: '', width: 200 }}
+            </button>
+          {% endfor %}
+        </div>
+        <button type="button" class="pt-buy__tarrow pt-buy__tarrow--next" data-pt-tnext aria-label="More thumbnails">&#8250;</button>
+      </div>
+    </div>
+    <div class="pt-buy__col">
+      <a class="pt-buy__rating" href="#reviews"><span class="pt-buy__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>{{ section.settings.rating_text }}</a>
+      <div class="pt-buy__titlerow">
+        <h1 class="pt-buy__title">{{ section.settings.title | default: p.title }}</h1>
+        <span class="pt-buy__orderedpill">
+          {% for i in (1..3) %}
+            {%- assign key = 'avatar_' | append: i -%}
+            {%- assign av = section.settings[key] -%}
+            {% if av != blank %}{{ av | image_url: width: 52 | image_tag: class: 'pt-buy__av', loading: 'lazy', alt: '' }}{% endif %}
+          {% endfor %}
+          <em><strong>{{ section.settings.ordered_count }}</strong> ordered in 24h</em>
+        </span>
+      </div>
+      <div class="pt-buy__pricerow">
+        <span class="pt-buy__price" data-pt-price>{{ section.settings.b1_price }}</span>
+        <s class="pt-buy__compare" data-pt-compare>{{ section.settings.b1_compare }}</s>
+        <span class="pt-buy__save" data-pt-save>SAVE {{ section.settings.b1_save }}</span>
+      </div>
+      <ul class="pt-buy__benefits">
+        {% for block in section.blocks %}{% if block.type == 'benefit' %}
+          <li {{ block.shopify_attributes }}>
+            <span class="pt-buy__benico">
+            {% case block.settings.icon %}
+            {% when 'breath' %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 8h9a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7a2.5 2.5 0 1 1-2.5 2.5"/></svg>
+            {% when 'pouch' %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h10l2 11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zM9 8c0-4 6-4 6 0"/></svg>
+            {% when 'moon' %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 14A8.5 8.5 0 1 1 10 3.5 7 7 0 0 0 20 14z"/></svg>
+            {% else %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,13 10,19 20,6"/></svg>
+            {% endcase %}
+            </span>{{ block.settings.text }}
+          </li>
+        {% endif %}{% endfor %}
+      </ul>
+
+      <div class="pt-buy__bundles">
+        {% for b in (1..3) %}
+          {%- if b == 1 -%}
+            {%- assign btitle = section.settings.b1_title -%}{%- assign bsave = section.settings.b1_save -%}{%- assign bprice = section.settings.b1_price -%}{%- assign bcomp = section.settings.b1_compare -%}{%- assign bgift = section.settings.b1_gift -%}
+          {%- elsif b == 2 -%}
+            {%- assign btitle = section.settings.b2_title -%}{%- assign bsave = section.settings.b2_save -%}{%- assign bprice = section.settings.b2_price -%}{%- assign bcomp = section.settings.b2_compare -%}{%- assign bgift = section.settings.b2_gift -%}
+          {%- else -%}
+            {%- assign btitle = section.settings.b3_title -%}{%- assign bsave = section.settings.b3_save -%}{%- assign bprice = section.settings.b3_price -%}{%- assign bcomp = section.settings.b3_compare -%}{%- assign bgift = section.settings.b3_gift -%}
+          {%- endif -%}
+          <div class="pt-buy__bundle{% if b == 1 %} is-selected{% endif %}" data-pt-bundle="{{ b }}" data-price="{{ bprice }}" data-compare="{{ bcomp }}" data-save="{{ bsave }}">
+            {% if b == 2 %}<span class="pt-buy__popular">Most popular</span>{% endif %}
+            <button type="button" class="pt-buy__bundlehead" data-pt-bundle-pick>
+              <span class="pt-buy__radio"></span>
+              <span class="pt-buy__bundletitle">{{ btitle }}<span class="pt-buy__savebadge">SAVE {{ bsave }}</span></span>
+              <span class="pt-buy__bundleprice"><b>{{ bprice }}</b><s>{{ bcomp }}</s></span>
+            </button>
+            <div class="pt-buy__inner" {% if b != 1 %}hidden{% endif %}>
+              <div data-pt-styles="{{ b }}"></div>
+              <div class="pt-buy__addons" data-pt-addons>
+                {% for i in (1..3) %}
+                  {%- assign akey = 'addon_' | append: i -%}
+                  {%- assign ap = section.settings[akey] -%}
+                  {%- assign imkey = 'addon_' | append: i | append: '_img' -%}
+                  {%- assign aim = section.settings[imkey] -%}
+                  {% if ap != blank %}
+                    <label class="pt-buy__addon">
+                      <input type="checkbox" {% unless i == 3 %}checked{% endunless %} data-pt-addon="{{ ap.selected_or_first_available_variant.id }}" data-label="{{ ap.title | escape }}">
+                      {% if aim != blank %}{{ aim | image_url: width: 72 | image_tag: class: 'pt-buy__addonimg', loading: 'lazy', alt: '' }}{% endif %}
+                      <span class="pt-buy__addonname">{{ ap.title }}</span>
+                      <span class="pt-buy__addonprice">{{ ap.price | money }}</span>
+                    </label>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            {% if bgift != blank and bgift != '-' %}<div class="pt-buy__gift">{% assign glines = bgift | split: '|' %}{% for gl in glines %}<span>{{ gl }}</span>{% endfor %}</div>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="pt-buy__stock">
+        <div class="pt-buy__stockrow"><span>{{ section.settings.stock_text }}</span><span data-pt-stockleft></span></div>
+        <div class="pt-buy__stockbar"><i data-pt-stockfill></i></div>
+      </div>
+      <button type="button" class="pt-buy__atc" data-pt-atc>Add to cart</button>
+      <div class="pt-buy__pays">
+        <span class="pt-pay pt-pay--visa">VISA</span><span class="pt-pay pt-pay--mc"><i></i><i></i></span><span class="pt-pay pt-pay--amex">AMEX</span><span class="pt-pay pt-pay--ap">&#63743; Pay</span><span class="pt-pay pt-pay--gp">G Pay</span><span class="pt-pay pt-pay--sp">Shop</span>
+      </div>
+      <div class="pt-buy__timeline">
+        <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M2 3h3l2.6 12.5a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.2L21 8H6"/></svg><b>Ordered</b><span data-pt-d0></span></div>
+        <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 7h12v9H1zM13 10h5l3 3v3h-8z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><b>Ships</b><span data-pt-d1></span></div>
+        <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg><b>Delivered</b><span data-pt-d2></span></div>
+      </div>
+      <div class="pt-buy__guarantee">
+        <span class="pt-buy__gtext"><b>30-day happiness guarantee</b><span>Love it or we make it right &middot; every order &middot; no fine print</span></span>
+        <svg class="pt-buy__gbadge" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><polyline points="9.2,9 11.2,11 15,6.8"/><path d="M8 14l-2 7 6-3 6 3-2-7"/></svg>
+      </div>
+    </div>
+  </div>
+
+  {%- assign up = section.settings.upsell -%}
+  <div class="pt-cart" data-pt-cart hidden
+    {% if up != blank %}data-upsell-id="{{ up.selected_or_first_available_variant.id }}" data-upsell-title="{{ up.title | escape }}" data-upsell-price="{{ up.price | money }}" data-upsell-img="{{ up.featured_image | image_url: width: 180 }}"{% endif %}>
+    <div class="pt-cart__overlay" data-pt-cart-close></div>
+    <aside class="pt-cart__panel" role="dialog" aria-modal="true" aria-label="Cart">
+      <div class="pt-cart__head">
+        <h3>Your cart <span data-pt-cart-count></span></h3>
+        <button type="button" class="pt-cart__x" data-pt-cart-close aria-label="Close">&times;</button>
+      </div>
+      <div class="pt-cart__proof">&#128293; {{ section.settings.ordered_count }} ordered today &middot; <span class="pt-cart__star">&#9733;</span> {{ section.settings.rating_text }}</div>
+      <div class="pt-cart__banner">
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 7h12v9H1zM13 10h5l3 3v3h-8z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg> Free insured shipping applied</span>
+        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/></svg> 30-day money-back guarantee</span>
+      </div>
+      <div class="pt-cart__items" data-pt-cart-items></div>
+      <div class="pt-cart__upsell" data-pt-cart-upsell hidden>
+        <img data-pt-up-img alt="" width="54" height="54">
+        <span class="pt-cart__uptext"><b data-pt-up-title></b><em>A surprise travel sleep bundle &middot; <span data-pt-up-price></span></em></span>
+        <button type="button" class="pt-cart__upbtn" data-pt-up-add>Add</button>
+      </div>
+      <div class="pt-cart__foot">
+        <div class="pt-cart__subrow"><span>Subtotal</span><b data-pt-cart-subtotal></b></div>
+        <p class="pt-cart__note">Taxes calculated at checkout. Shipping is free and insured.</p>
+        <a class="pt-cart__checkout" href="/checkout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><polyline points="8,12.5 11,15.5 16,9.5"/></svg> Secure checkout</a>
+        <div class="pt-buy__pays"><span class="pt-pay pt-pay--visa">VISA</span><span class="pt-pay pt-pay--mc"><i></i><i></i></span><span class="pt-pay pt-pay--amex">AMEX</span><span class="pt-pay pt-pay--ap">&#63743; Pay</span><span class="pt-pay pt-pay--gp">G Pay</span><span class="pt-pay pt-pay--sp">Shop</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+{{ 'skynap-buy.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'skynap-buy.js' | asset_url }}" defer></script>
+{% schema %}
+{
+  "name": "Skynap buy box",
+  "tag": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product (blank = current)" },
+    { "type": "text", "id": "title", "label": "Display title", "default": "Skynap" },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.8 (1,286 reviews)" },
+    { "type": "text", "id": "ordered_count", "label": "Ordered in 24h", "default": "268" },
+    { "type": "image_picker", "id": "avatar_1", "label": "Avatar 1" },
+    { "type": "image_picker", "id": "avatar_2", "label": "Avatar 2" },
+    { "type": "image_picker", "id": "avatar_3", "label": "Avatar 3" },
+    { "type": "header", "content": "Bundle 1" },
+    { "type": "text", "id": "b1_title", "label": "Title", "default": "1 Pillow" },
+    { "type": "text", "id": "b1_price", "label": "Price", "default": "$54.95" },
+    { "type": "text", "id": "b1_compare", "label": "Compare at", "default": "$109.95" },
+    { "type": "text", "id": "b1_save", "label": "Save", "default": "50%" },
+    { "type": "text", "id": "b1_gift", "label": "Gift strip (- = none)", "default": "-" },
+    { "type": "header", "content": "Bundle 2" },
+    { "type": "text", "id": "b2_title", "label": "Title", "default": "2 Pillows" },
+    { "type": "text", "id": "b2_price", "label": "Price", "default": "$97.95" },
+    { "type": "text", "id": "b2_compare", "label": "Compare at", "default": "$219.90" },
+    { "type": "text", "id": "b2_save", "label": "Save", "default": "55%" },
+    { "type": "text", "id": "b2_gift", "label": "Gift strip (- = none)", "default": "+ Free priority dispatch" },
+    { "type": "header", "content": "Bundle 3" },
+    { "type": "text", "id": "b3_title", "label": "Title", "default": "3 Pillows" },
+    { "type": "text", "id": "b3_price", "label": "Price", "default": "$128.95" },
+    { "type": "text", "id": "b3_compare", "label": "Compare at", "default": "$329.85" },
+    { "type": "text", "id": "b3_save", "label": "Save", "default": "61%" },
+    { "type": "text", "id": "b3_gift", "label": "Gift strip (- = none)", "default": "-" },
+    { "type": "header", "content": "Add-ons" },
+    { "type": "product", "id": "addon_1", "label": "Add-on 1" },
+    { "type": "image_picker", "id": "addon_1_img", "label": "Add-on 1 icon" },
+    { "type": "product", "id": "addon_2", "label": "Add-on 2" },
+    { "type": "image_picker", "id": "addon_2_img", "label": "Add-on 2 icon" },
+    { "type": "product", "id": "addon_3", "label": "Add-on 3 (unchecked by default)" },
+    { "type": "image_picker", "id": "addon_3_img", "label": "Add-on 3 icon" },
+    { "type": "product", "id": "upsell", "label": "Cart drawer upsell product" },
+    { "type": "text", "id": "stock_text", "label": "Stock urgency text", "default": "Selling fast" }
+  ],
+  "blocks": [
+    { "type": "benefit", "name": "Benefit line", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "check", "options": [ {"value":"check","label":"Check"},{"value":"breath","label":"Breath"},{"value":"pouch","label":"Pouch"},{"value":"moon","label":"Moon"} ] },
+      { "type": "text", "id": "text", "label": "Text", "default": "Inflates in 3 breaths" }
+    ] }
+  ],
+  "max_blocks": 3,
+  "presets": [{ "name": "Skynap buy box", "blocks": [{ "type": "benefit" }, { "type": "benefit" }, { "type": "benefit" }] }]
+}
+{% endschema %}

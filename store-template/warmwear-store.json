@@ -1,0 +1,250 @@
+{
+  "_help": "Warm Wear heated jacket and gloves store configuration. Use with Universal Shopify Store Template.",
+  "brand": "Warm Wear",
+  "slug": "warmwear",
+  "title": "Warm Wear™",
+  "handle": "warmwear-heated-jacket-gloves",
+  "accent": "#C85C2D",
+  "ink": "#1a1a1a",
+  "unit": "Heated Jacket",
+  "unit_plural": "Heated Jackets",
+  "option_name": "Size",
+  "rating_text": "4.9 (485 reviews)",
+  "ordered_count": "1,247",
+  "upsell_sub": "Add heated gloves to stay warm",
+  "buy_box": {
+    "avatars": ["sn-avatar-1.png", "sn-avatar-3.png", "sn-avatar-6.png"],
+    "tiers": [
+      {
+        "title": "1 Heated Jacket",
+        "price": "$149.99 CAD",
+        "compare": "$299.98 CAD",
+        "save": "50%",
+        "gift": "+ Free shipping"
+      },
+      {
+        "title": "2 Heated Jackets",
+        "price": "$269.98 CAD",
+        "compare": "$599.96 CAD",
+        "save": "55%",
+        "gift": "+ Free priority shipping|+ Pair discounts"
+      }
+    ],
+    "benefits": [
+      ["bolt", "3-speed LED heat control"],
+      ["plug", "USB power bank compatible"],
+      ["snow", "Waterproof carbon fiber wires"]
+    ],
+    "addon_1": "shipping-protection",
+    "addon_1_img": "sn-icon-ship.png",
+    "addon_2": "30-day-warranty",
+    "addon_2_img": "sn-icon-warranty.png",
+    "upsell": "warmwear-heated-gloves",
+    "stock_text": "Selling fast this season",
+    "deadline_date": "2026-12-15",
+    "deadline_text": "for Christmas delivery"
+  },
+  "marquee": [
+    ["bolt", "Stay warm all winter with smart heat control"],
+    ["truck", "Free insured shipping today"],
+    ["shield", "30-day money-back guarantee"]
+  ],
+  "trust": [
+    ["truck", "Free insured shipping worldwide"],
+    ["shield", "30-day full refund guarantee"],
+    ["plug", "3 heat settings + power bank pocket"],
+    ["snow", "Waterproof & weatherproof design"],
+    ["gift", "Perfect gift for cold climates"]
+  ],
+  "fb_heading": "People keep posting about it",
+  "fb_posts": [
+    {
+      "avatar": "sn-avatar-1.png",
+      "name": "Michael Chen",
+      "time": "2d",
+      "text": "Finally a jacket that actually keeps me warm on the mountain. The heat settings are game-changing. Worth every penny for skiing season.",
+      "photo": "sn-rev-2.png",
+      "likes": "3.2K",
+      "comments": "428",
+      "shares": "312"
+    },
+    {
+      "avatar": "sn-avatar-2.png",
+      "name": "Sarah Williams",
+      "time": "4d",
+      "text": "My commute is 40 minutes in the cold. This jacket has saved my life. The power bank pocket means I charge my phone while staying warm. Genius design.",
+      "photo": "sn-rev-4.png",
+      "likes": "2.8K",
+      "comments": "356",
+      "shares": "241"
+    },
+    {
+      "avatar": "sn-avatar-3.png",
+      "name": "David Thompson",
+      "time": "6d",
+      "text": "Got two jackets - one for me, one for my wife. We wear them constantly. The detachable hood is such a smart move. Best winter investment ever made.",
+      "photo": "sn-rev-6.png",
+      "likes": "4.1K",
+      "comments": "523",
+      "shares": "387"
+    },
+    {
+      "avatar": "sn-avatar-4.png",
+      "name": "Jennifer Lee",
+      "time": "1w",
+      "text": "I was skeptical about the heated technology. Tried the highest setting outside in -15°C and it was like a personal heater. Ordered a second one for my son.",
+      "photo": "sn-rev-1.png",
+      "likes": "3.5K",
+      "comments": "472",
+      "shares": "298"
+    }
+  ],
+  "ugc": [
+    {
+      "image": "sn-ugc-1.png",
+      "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-1.mp4"
+    },
+    {
+      "image": "sn-ugc-2.png",
+      "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-2.mp4"
+    },
+    {
+      "image": "sn-ugc-3.png",
+      "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-3.mp4"
+    },
+    {
+      "image": "sn-ugc-4.png",
+      "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-4.mp4"
+    }
+  ],
+  "comparison": {
+    "heading": "Regular winter jackets vs Warm Wear",
+    "left_label": "Regular jackets",
+    "rows": [
+      ["No heat, just insulation", "3-speed LED heating system"],
+      ["Dead battery? You're cold", "Charges from any power bank"],
+      ["Bulky wires or none at all", "Carbon fiber heating element"],
+      ["Ice up and wear out", "Waterproof & weatherproof"],
+      ["One size fits most", "Perfectly tailored fit with hood"]
+    ]
+  },
+  "reviews": {
+    "heading": "See why 485+ customers trust Warm Wear",
+    "form_heading": "Share your Warm Wear story",
+    "average": "4.9",
+    "count": "485",
+    "pct": [88, 8, 2, 1, 1],
+    "items": [
+      {
+        "name": "Michael C.",
+        "date": "Nov 15, 2026",
+        "title": "Mountain skiing essential",
+        "text": "Spent the whole day on the slopes at -10°C. The jacket kept me toasty the entire time. The three heat settings let me dial in exactly what I need.",
+        "avatar": "sn-avatar-1.png",
+        "photo": "sn-rev-2.png"
+      },
+      {
+        "name": "Sarah W.",
+        "date": "Nov 10, 2026",
+        "title": "Commute game-changer",
+        "text": "My 40-minute commute through the city used to leave me shivering. Now I'm warm, and the power bank pocket charges my phone at the same time. Absolute win.",
+        "avatar": "sn-avatar-2.png",
+        "photo": "sn-rev-4.png"
+      },
+      {
+        "name": "David T.",
+        "date": "Nov 5, 2026",
+        "title": "Best purchase for our family",
+        "text": "Bought two jackets for my wife and me. The detachable hood is genius for different weather. We wear these constantly from October through March.",
+        "avatar": "sn-avatar-3.png",
+        "photo": "sn-rev-6.png"
+      },
+      {
+        "name": "Jennifer L.",
+        "date": "Oct 31, 2026",
+        "title": "Skeptic turned believer",
+        "text": "Didn't think heated jackets would actually work. Tested it at -15°C on the highest setting and felt like I was standing by a campfire. Ordered one for my son too.",
+        "avatar": "sn-avatar-4.png",
+        "photo": "sn-rev-1.png"
+      },
+      {
+        "name": "Robert K.",
+        "date": "Oct 27, 2026",
+        "title": "Quality construction",
+        "text": "The materials feel premium. Carbon fiber heating wires are clever. After a week of use in wet weather, everything still works perfectly.",
+        "avatar": "sn-avatar-5.png",
+        "photo": "sn-rev-5.png"
+      },
+      {
+        "name": "Emma S.",
+        "date": "Oct 23, 2026",
+        "title": "Finally warm on my dog walks",
+        "text": "I take my dog out rain or shine. This jacket has made winter walks enjoyable instead of miserable. The waterproofing is no joke.",
+        "avatar": "sn-avatar-6.png",
+        "photo": "sn-rev-3.png"
+      },
+      {
+        "name": "James M.",
+        "date": "Oct 19, 2026",
+        "rating": 5,
+        "title": "Worth every dollar",
+        "text": "I wear it every single day. The battery lasts longer than expected. Already bought the heated gloves to match."
+      },
+      {
+        "name": "Lisa P.",
+        "date": "Oct 15, 2026",
+        "title": "Perfect gift",
+        "text": "Bought one for my dad who works outdoors. He says it's changed his life. Planning to get more for Christmas gifts."
+      },
+      {
+        "name": "Carlos R.",
+        "date": "Oct 11, 2026",
+        "title": "Technology that works",
+        "text": "No gimmicks. The heat control is intuitive. The charging integration with power banks is exactly what outdoor workers need."
+      },
+      {
+        "name": "Nina V.",
+        "date": "Oct 7, 2026",
+        "title": "My new favorite jacket",
+        "text": "Looks sleek, feels premium, works amazing. The orange accent color is sharp. Gets compliments everywhere I go."
+      }
+    ]
+  },
+  "faq_heading": "Everything you need to know",
+  "faq": [
+    [
+      "How does the heating work?",
+      "Warm Wear uses carbon fiber heating wires woven throughout the jacket. Connect to any USB power bank, choose between 3 heat settings, and you're instantly warm. The wires distribute heat evenly across your core."
+    ],
+    [
+      "How long does the battery last?",
+      "On the medium setting, a standard 20,000mAh power bank keeps you warm for 8-10 hours. High setting runs 5-6 hours. Low setting can last 12+ hours. The power bank stays in the pocket under the jacket."
+    ],
+    [
+      "Is it waterproof?",
+      "Yes. The carbon fiber heating element is fully waterproof. You can wear it in rain, snow, or sleet. The controller and USB connection are weather-sealed. Keep the power bank dry inside the pocket."
+    ],
+    [
+      "Can I wash it?",
+      "Remove the power bank and controller, then hand wash in cold water with mild soap. Air dry only. Do not machine wash or dry clean. The heating element is built to last through many wash cycles."
+    ],
+    [
+      "What sizes are available?",
+      "Warm Wear comes in XS, S, M, L, XL, and XXL. Check the size chart on our product page. Most customers size up one size for layering room. The detachable hood adjusts for all head sizes."
+    ],
+    [
+      "What's the 30-day guarantee?",
+      "If you're not completely satisfied for any reason, return it within 30 days for a full refund. No questions asked. Plus, every jacket comes with a one-year warranty on heating elements."
+    ]
+  ],
+  "wheel": {
+    "heading": "Spin and save",
+    "prize": "50%"
+  },
+  "footer": {
+    "tagline": "Premium heated jackets with smart power bank integration. Stay warm, stay connected, stay moving. Made for cold climates, designed for active lifestyles.",
+    "email": "support@warmwear.store",
+    "news_heading": "Winter tips and heating hacks",
+    "news_text": "Cold-weather guides, product updates and exclusive member deals. Join thousands staying warm."
+  }
+}

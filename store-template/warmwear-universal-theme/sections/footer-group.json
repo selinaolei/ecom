@@ -1,0 +1,18 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "warmwear_footer_grp": {
+      "type": "warmwear-footer",
+      "settings": {
+        "tagline": "Premium heated jackets with smart power bank integration. Stay warm, stay connected, stay moving. Made for cold climates, designed for active lifestyles.",
+        "email": "support@warmwear.store",
+        "news_heading": "Winter tips and heating hacks",
+        "news_text": "Cold-weather guides, product updates and exclusive member deals. Join thousands staying warm."
+      }
+    }
+  },
+  "order": [
+    "warmwear_footer_grp"
+  ]
+}

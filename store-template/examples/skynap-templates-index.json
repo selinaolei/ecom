@@ -1,0 +1,512 @@
+{
+  "sections": {
+    "skynap_buy_box": {
+      "type": "skynap-buy-box",
+      "settings": {
+        "product": "skynap-travel-pillow",
+        "title": "Skynap™",
+        "rating_text": "4.8 (1,286 reviews)",
+        "ordered_count": "268",
+        "avatar_1": "shopify://shop_images/sn-avatar-1.png",
+        "avatar_2": "shopify://shop_images/sn-avatar-5.png",
+        "avatar_3": "shopify://shop_images/sn-avatar-6.png",
+        "b1_title": "1 Pillow",
+        "b1_price": "$41.95",
+        "b1_compare": "$83.95",
+        "b1_save": "50%",
+        "b1_gift": "+ Free shipping",
+        "b2_title": "2 Pillows",
+        "b2_price": "$74.95",
+        "b2_compare": "$167.90",
+        "b2_save": "55%",
+        "b2_gift": "+ Free priority dispatch|+ Free shipping",
+        "b3_title": "3 Pillows",
+        "b3_price": "$98.95",
+        "b3_compare": "$251.85",
+        "b3_save": "61%",
+        "b3_gift": "+ Free priority dispatch|+ Free shipping",
+        "addon_1": "shipping-protection",
+        "addon_1_img": "shopify://shop_images/sn-icon-ship.png",
+        "addon_2": "30-day-warranty",
+        "addon_2_img": "shopify://shop_images/sn-icon-warranty.png",
+        "stock_text": "Selling fast — holiday travel stock is going",
+        "upsell": "skynap-mystery-box"
+      },
+      "blocks": {
+        "ben1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "breath",
+            "text": "Inflates in 3 breaths — no pump"
+          }
+        },
+        "ben2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "pouch",
+            "text": "Packs smaller than a water bottle"
+          }
+        },
+        "ben3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "moon",
+            "text": "Sleep upright or face-forward"
+          }
+        }
+      },
+      "block_order": [
+        "ben1",
+        "ben2",
+        "ben3"
+      ]
+    },
+    "skynap_trust": {
+      "type": "skynap-trust-strip",
+      "settings": {
+        "speed": 34
+      },
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "text": "Free insured shipping"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day guarantee"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "breath",
+            "text": "Inflates in 3 breaths"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "plane",
+            "text": "Fits every tray table"
+          }
+        },
+        "t5": {
+          "type": "item",
+          "settings": {
+            "icon": "moon",
+            "text": "Sleep the whole flight"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ]
+    },
+    "skynap_fb_posts": {
+      "type": "skynap-fb-posts",
+      "settings": {
+        "eyebrow": "Straight from Facebook",
+        "heading": "People keep posting about it"
+      },
+      "blocks": {
+        "p1": {
+          "type": "post",
+          "settings": {
+            "avatar": "shopify://shop_images/sn-avatar-1.png",
+            "name": "Melissa Grant",
+            "time": "2d",
+            "text": "14 hours to Seoul and I slept 11 of them. My husband filmed me because he couldn't believe it 😂 The tray table thing actually works.",
+            "photo": "shopify://shop_images/sn-fb-3.png",
+            "likes": "1.4K",
+            "comments": "232",
+            "shares": "118"
+          }
+        },
+        "p2": {
+          "type": "post",
+          "settings": {
+            "avatar": "shopify://shop_images/sn-avatar-4.png",
+            "name": "Mark Delaney",
+            "time": "4d",
+            "text": "Guys. I'm 6'2 and I sleep NOWHERE. Red-eye to Lisbon, face down in this thing, woke up on descent. My neck pillow is officially retired.",
+            "photo": "shopify://shop_images/sn-fb-4.png",
+            "likes": "876",
+            "comments": "141",
+            "shares": "67"
+          }
+        },
+        "p3": {
+          "type": "post",
+          "settings": {
+            "avatar": "shopify://shop_images/sn-avatar-3.png",
+            "name": "Carmen Diaz",
+            "time": "6d",
+            "text": "It deflates into this tiny pouch?? Fits in my handbag next to my passport. Three breaths and it's up. Why did nobody tell me about this sooner.",
+            "photo": "shopify://shop_images/sn-rev-1.png",
+            "likes": "2.1K",
+            "comments": "318",
+            "shares": "204"
+          }
+        },
+        "p4": {
+          "type": "post",
+          "settings": {
+            "avatar": "shopify://shop_images/sn-avatar-2.png",
+            "name": "Jordan Velez",
+            "time": "1w",
+            "text": "Bought one as a joke for my brother who complains about every flight. He just texted me from a layover asking where to buy two more for his kids 💀",
+            "photo": "shopify://shop_images/sn-ugc-1.png",
+            "likes": "954",
+            "comments": "167",
+            "shares": "92"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ]
+    },
+    "skynap_ugc": {
+      "type": "skynap-ugc-carousel",
+      "settings": {
+        "eyebrow": "Instagram · TikTok",
+        "heading": "Seen on your feed"
+      },
+      "blocks": {
+        "u1": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/sn-ugc-1.png",
+            "video_url": "https://cdn.shopify.com/s/files/1/0830/9669/9103/files/sn-ugc-video-1.mp4?v=1790922238"
+          }
+        },
+        "u2": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/sn-ugc-2.png",
+            "video_url": "https://cdn.shopify.com/s/files/1/0830/9669/9103/files/sn-ugc-video-2.mp4?v=1790922238"
+          }
+        },
+        "u3": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/sn-ugc-3.png",
+            "video_url": "https://cdn.shopify.com/s/files/1/0830/9669/9103/files/sn-ugc-video-3.mp4?v=1790922238"
+          }
+        },
+        "u4": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/sn-ugc-4.png"
+          }
+        }
+      },
+      "block_order": [
+        "u1",
+        "u2",
+        "u3",
+        "u4"
+      ]
+    },
+    "skynap_comparison": {
+      "type": "skynap-comparison",
+      "settings": {
+        "eyebrow": "Why Skynap",
+        "heading": "Neck pillow vs Skynap",
+        "left_label": "U-shaped neck pillow",
+        "right_label": "Skynap",
+        "cta_label": "Get my Skynap"
+      },
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "bad": "Head still falls forward all flight",
+            "good": "Face rests supported on the tray"
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "bad": "Neck stiff when you land",
+            "good": "Wake up actually rested"
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "bad": "Bulky — dangles off your backpack",
+            "good": "Packs into a palm-size pouch"
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "bad": "One position, take it or leave it",
+            "good": "Upright or leaned forward — you pick"
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "bad": "You still can't fall asleep",
+            "good": "Sleep through the whole flight"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ]
+    },
+    "skynap_reviews": {
+      "type": "skynap-reviews",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "What travelers say about Skynap",
+        "average": "4.8",
+        "count": "1,286",
+        "pct_5": 81,
+        "pct_4": 13,
+        "pct_3": 3,
+        "pct_2": 2,
+        "pct_1": 1,
+        "per_page": 4,
+        "write_label": "Write a review",
+        "form_heading": "Share your Skynap flight",
+        "submit_label": "Submit review",
+        "thanks_text": "Thank you! Your review is in. It appears once we approve it."
+      },
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "name": "Melissa G.",
+            "date": "Sep 26, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Slept 11 hours of a 14-hour flight",
+            "text": "I never sleep on planes. Never. Set this on the tray, leaned in, and the next thing I knew the crew was serving breakfast. My husband took a photo because nobody would believe me.",
+            "avatar": "shopify://shop_images/sn-avatar-1.png",
+            "photo": "shopify://shop_images/sn-rev-5.png"
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "name": "Daniel K.",
+            "date": "Sep 22, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "The face cradle is the secret",
+            "text": "Your face goes into the opening, arms through the tunnel, and suddenly there is no engine noise, no cabin lights, nothing. Three breaths to inflate, honestly closer to four for me.",
+            "avatar": "shopify://shop_images/sn-avatar-2.png",
+            "photo": "shopify://shop_images/sn-rev-6.png"
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "name": "Carmen D.",
+            "date": "Sep 18, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "The pouch sold me, the sleep kept me",
+            "text": "I bought it because the pouch fits my handbag. I kept it because I did Toronto to London without a stiff neck for the first time in my life.",
+            "avatar": "shopify://shop_images/sn-avatar-3.png",
+            "photo": "shopify://shop_images/sn-rev-1.png"
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "name": "Sophie L.",
+            "date": "Sep 15, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "My neck pillow is retired",
+            "text": "Ten years of U-shaped pillows that never worked. This is the first thing that actually lets my head rest forward, which is apparently how I sleep.",
+            "avatar": "shopify://shop_images/sn-avatar-5.png",
+            "photo": "shopify://shop_images/sn-rev-7.png"
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "name": "Amara O.",
+            "date": "Sep 12, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Perfect for long-haul economy",
+            "text": "Doha to Montreal, middle seat. I didn't touch my seatback screen once. The breathing hole means your face never feels smothered.",
+            "avatar": "shopify://shop_images/sn-avatar-6.png"
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "name": "Tom W.",
+            "date": "Sep 8, 2026",
+            "rating": 4,
+            "verified": true,
+            "title": "Almost perfect",
+            "text": "Takes a couple of tries to find your height — start taller than you think. Once it's set, it's lights out. Wish I had it years ago."
+          }
+        },
+        "v7": {
+          "type": "review",
+          "settings": {
+            "name": "Priya N.",
+            "date": "Sep 3, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Bought a second one for my mom",
+            "text": "She's 68 and refuses to fly without it now. The 2-pillow bundle made it cheap enough to not think twice.",
+            "avatar": "shopify://shop_images/sn-avatar-4.png"
+          }
+        },
+        "v8": {
+          "type": "review",
+          "settings": {
+            "name": "Lucas F.",
+            "date": "Aug 29, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Deflates faster than it inflates",
+            "text": "The part nobody mentions: when you land, you open the valve, press, roll, pouch, done. No wrestling a memory foam brick back into a bag."
+          }
+        },
+        "v9": {
+          "type": "review",
+          "settings": {
+            "name": "Hannah B.",
+            "date": "Aug 24, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Office nap secret weapon",
+            "text": "I keep one in my desk drawer. Twenty-minute lunch naps without numb arms. My coworkers all asked where it's from."
+          }
+        },
+        "v10": {
+          "type": "review",
+          "settings": {
+            "name": "Grace M.",
+            "date": "Aug 19, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Train commuter approved",
+            "text": "Three hours each way, twice a week. Set it on the table, face in, gone. The carriage noise just disappears."
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8",
+        "v9",
+        "v10"
+      ]
+    },
+    "skynap_faq": {
+      "type": "skynap-faq",
+      "settings": {
+        "heading": "Questions, answered"
+      },
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "q": "Does it fit on the airplane tray table?",
+            "a": "Yes. Skynap is sized for standard economy tray tables and has two heights: stand it tall and hug it, or set it lower and lean forward onto it. It also works on train tables and desks."
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "q": "How do I inflate and deflate it?",
+            "a": "Blow into the valve 3 to 5 times — about 30 seconds. To pack up, open the valve, press it flat and roll it into its pouch. The pouch is 12 × 18 cm, smaller than a water bottle."
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "q": "What if the person in front reclines?",
+            "a": "Use the lower, flatter position. The pillow sits closer to you on the tray, so a reclined seat in front still leaves room to rest."
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "q": "Can I bring it through airport security?",
+            "a": "Of course. Deflated it is just a soft folded sheet of velvet weighing about 150 g. Keep it in your carry-on or even a jacket pocket."
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "q": "How do I keep it clean?",
+            "a": "The velvet surface wipes clean with a damp cloth. Because it packs into its own pouch, it never touches the seat pocket or the floor."
+          }
+        },
+        "q6": {
+          "type": "qa",
+          "settings": {
+            "q": "When will I get it?",
+            "a": "Orders are packed within 1 to 2 business days and arrive in 6 to 10 business days with free, insured, tracked shipping. There's a 30-day money-back guarantee on every order."
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ]
+    },
+    "skynap_wheel": {
+      "type": "skynap-wheel-popup",
+      "settings": {
+        "heading": "Spin before you fly",
+        "subheading": "One spin, one prize. Up to 50% off your Skynap.",
+        "prize": "50% OFF",
+        "win_heading": "You won 50% off!",
+        "win_text": "Lucky spin — the top prize. Your 50% off is locked in on every price below.",
+        "claim_label": "Claim my 50% off",
+        "delay": 5,
+        "claim_note": "Already applied to every price on this page"
+      }
+    }
+  },
+  "order": [
+    "skynap_buy_box",
+    "skynap_trust",
+    "skynap_fb_posts",
+    "skynap_ugc",
+    "skynap_comparison",
+    "skynap_reviews",
+    "skynap_faq",
+    "skynap_wheel"
+  ]
+}

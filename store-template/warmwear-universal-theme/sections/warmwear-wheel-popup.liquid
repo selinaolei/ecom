@@ -1,0 +1,81 @@
+{% comment %} Warm Wear wheel v2: no email, fixed $ prize, discount auto-applies via /discount/CODE {% endcomment %}
+<div class="pt-wheel" data-pt-wheel hidden>
+  <div class="pt-wheel__overlay" data-pt-wheel-close></div>
+  <div class="pt-wheel__card" role="dialog" aria-modal="true">
+    <button type="button" class="pt-wheel__x" data-pt-wheel-close aria-label="Close">&times;</button>
+    <div data-pt-stage-spin>
+      <h3 class="pt-wheel__h">{{ section.settings.heading }}</h3>
+      <p class="pt-wheel__p">{{ section.settings.subheading }}</p>
+      <div class="pt-wheel__wrap">
+        <span class="pt-wheel__pointer"></span>
+        <div class="pt-wheel__disc" data-pt-disc>
+          <span style="--a:30deg;color:#fff">{{ section.settings.prize }}</span><span style="--a:90deg;color:#1A1A1A">$5 off</span><span style="--a:150deg;color:#CF7046">Free ship</span><span style="--a:210deg;color:#5C4500">$10 off</span><span style="--a:270deg;color:#1A1A1A">Ear plugs</span><span style="--a:330deg;color:#CF7046">$5 off</span>
+        </div>
+        <span class="pt-wheel__hub">SPIN</span>
+      </div>
+      <button type="button" class="pt-wheel__btn" data-pt-spin>Spin the wheel</button>
+    </div>
+    <div data-pt-stage-won hidden>
+      <div class="pt-wheel__confetti">&#127881;</div>
+      <h3 class="pt-wheel__h">{{ section.settings.win_heading }}</h3>
+      <p class="pt-wheel__p">{{ section.settings.win_text }}</p>
+      <button type="button" class="pt-wheel__btn pt-wheel__btn--claim" data-pt-claim>{{ section.settings.claim_label }}</button>
+      <p class="pt-wheel__code">{{ section.settings.claim_note }}</p>
+    </div>
+  </div>
+</div>
+<style>
+  .pt-wheel{position:fixed;inset:0;z-index:300}
+  .pt-wheel__overlay{position:absolute;inset:0;background:rgba(26,26,26,.55)}
+  .pt-wheel__card{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:28px;max-width:420px;width:calc(100% - 40px);padding:28px;text-align:center;box-shadow:0 16px 40px rgba(26,26,26,.25)}
+  .pt-wheel__x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:none;background:#FBF2EE;color:#823C1D;font-size:20px;cursor:pointer}
+  .pt-wheel__h{margin:0;color:#1A1A1A}
+  .pt-wheel__p{margin:8px 0 0;color:#3C3C3C;font-size:15px}
+  .pt-wheel__wrap{position:relative;width:230px;height:230px;margin:20px auto 0}
+  .pt-wheel__pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:16px solid #1A1A1A;z-index:2}
+  .pt-wheel__disc{width:100%;height:100%;border-radius:50%;border:8px solid #1A1A1A;box-sizing:border-box;background:conic-gradient(#C85C2D 0 60deg,#F8EBE6 60deg 120deg,#F4DED5 120deg 180deg,#FAE28D 180deg 240deg,#E1A58C 240deg 300deg,#FAF0EC 300deg 360deg);transition:transform 3.2s cubic-bezier(.15,.8,.2,1)}
+  .pt-wheel__disc span{position:absolute;left:50%;top:50%;transform:rotate(var(--a)) translateY(-76px) translateX(-50%);transform-origin:0 0;font-weight:800;font-size:11px;white-space:nowrap}
+  .pt-wheel__hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:#1A1A1A;color:#fff;display:grid;place-items:center;font-weight:800;font-size:10px}
+  .pt-wheel__btn{display:inline-block;margin-top:18px;padding:14px 28px;border:none;border-radius:999px;background:#C85C2D;color:#fff;font-weight:800;font-size:15px;cursor:pointer;text-decoration:none}
+  .pt-wheel__btn:hover{background:#823C1D}
+  .pt-wheel__confetti{font-size:38px;line-height:1}
+  .pt-wheel__code{margin:12px 0 0;font-size:12.5px;color:#5F5F5F}
+</style>
+<script>
+(function(){
+  var KEY='warmwear-wheel-v2';
+  var el=document.querySelector('[data-pt-wheel]');if(!el)return;
+  if(localStorage.getItem(KEY))return;
+  setTimeout(function(){el.hidden=false},{{ section.settings.delay | default: 4 }}*1000);
+  el.querySelectorAll('[data-pt-wheel-close]').forEach(function(c){c.addEventListener('click',function(){localStorage.setItem(KEY,'1');el.hidden=true})});
+  var spun=false;
+  el.querySelector('[data-pt-spin]').addEventListener('click',function(){
+    if(spun)return;spun=true;
+    el.querySelector('[data-pt-disc]').style.transform='rotate(2130deg)';
+    setTimeout(function(){
+      el.querySelector('[data-pt-stage-spin]').hidden=true;
+      el.querySelector('[data-pt-stage-won]').hidden=false;
+    },3400);
+  });
+  var claim=el.querySelector('[data-pt-claim]');
+  if(claim)claim.addEventListener('click',function(){localStorage.setItem(KEY,'1');el.hidden=true;
+    var t=document.querySelector('[data-pt-buy]');if(t)t.scrollIntoView({behavior:'smooth'});});
+})();
+</script>
+{% schema %}
+{
+  "name": "Warm Wear wheel popup",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Spin before you fly" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "One spin, one prize. Up to 50% off your Warm Wear." },
+    { "type": "text", "id": "prize", "label": "Top prize label", "default": "$15 OFF" },
+    { "type": "text", "id": "win_heading", "label": "Win heading", "default": "You won $15 off!" },
+    { "type": "text", "id": "win_text", "label": "Win text", "default": "Your $15 discount is ready. Claim it and it applies at checkout on its own." },
+    { "type": "text", "id": "claim_label", "label": "Claim button", "default": "Claim my $15 off" },
+    { "type": "text", "id": "claim_note", "label": "Note under claim", "default": "Already applied to every price on this page" },
+    { "type": "range", "id": "delay", "label": "Show after (s)", "min": 1, "max": 15, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "Warm Wear wheel popup" }]
+}
+{% endschema %}

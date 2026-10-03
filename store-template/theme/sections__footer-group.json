@@ -1,0 +1,18 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "skynap_footer_grp": {
+      "type": "skynap-footer",
+      "settings": {
+        "tagline": "The inflatable pillow that lets you sleep face-forward on the plane. Three breaths, one tray table, a full night of sleep.",
+        "email": "support@skynap.store",
+        "news_heading": "Fly rested, land first",
+        "news_text": "Travel sleep tips and member-only deals. No spam."
+      }
+    }
+  },
+  "order": [
+    "skynap_footer_grp"
+  ]
+}

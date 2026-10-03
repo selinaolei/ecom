@@ -1,0 +1,92 @@
+{% comment %} Skynap — Facebook post carousel {% endcomment %}
+<section class="pt-fb">
+  <div class="pt-fb__head">
+    <div>
+      {% if section.settings.eyebrow != blank %}<span class="pt-fb__eyebrow">{{ section.settings.eyebrow }}</span>{% endif %}
+      <h2 class="pt-fb__h">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="pt-fb__nav">
+      <button type="button" class="pt-fb__btn" data-pt-fb-prev aria-label="Previous">&#8249;</button>
+      <button type="button" class="pt-fb__btn" data-pt-fb-next aria-label="Next">&#8250;</button>
+    </div>
+  </div>
+  <div class="pt-fb__track" data-pt-fb-track>
+    {% for block in section.blocks %}
+      <article class="pt-fb__card" {{ block.shopify_attributes }}>
+        <div class="pt-fb__top">
+          {% if block.settings.avatar != blank %}
+            {{ block.settings.avatar | image_url: width: 76 | image_tag: loading: 'lazy', class: 'pt-fb__avatar', alt: block.settings.name }}
+          {% else %}<span class="pt-fb__avatar pt-fb__avatar--ph">{{ block.settings.name | slice: 0 }}</span>{% endif %}
+          <span><strong>{{ block.settings.name }}</strong><em>{{ block.settings.time }} &middot; &#127760;</em></span>
+        </div>
+        <p class="pt-fb__text">{{ block.settings.text }}</p>
+        {% if block.settings.photo != blank %}
+          {{ block.settings.photo | image_url: width: 640 | image_tag: loading: 'lazy', class: 'pt-fb__photo', alt: '' }}
+        {% endif %}
+        <div class="pt-fb__meta">
+          <span class="pt-fb__reax"><i class="pt-fb__rx pt-fb__rx--like">&#128077;</i><i class="pt-fb__rx pt-fb__rx--love">&#10084;&#65039;</i><i class="pt-fb__rx pt-fb__rx--wow">&#128558;</i></span>
+          <span>{{ block.settings.likes }}</span>
+          <span class="pt-fb__right">{{ block.settings.comments }} comments &middot; {{ block.settings.shares }} shares</span>
+        </div>
+        <div class="pt-fb__actions"><span>&#128077; Like</span><span>&#128172; Comment</span><span>&#10150; Share</span></div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+<style>
+  .pt-fb{max-width:1120px;margin:0 auto;padding:44px 20px}
+  .pt-fb__head{display:flex;align-items:end;gap:16px}
+  .pt-fb__eyebrow{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8B6FF0}
+  .pt-fb__h{margin:8px 0 0}
+  .pt-fb__nav{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+  .pt-fb__btn{width:42px;height:42px;border-radius:50%;border:1.5px solid #CFC8EF;background:#fff;color:#31239E;font-size:22px;cursor:pointer}
+  .pt-fb__track{display:flex;gap:16px;margin-top:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+  .pt-fb__card{flex:0 0 300px;scroll-snap-align:start;background:#fff;border:1px solid #E6E2F6;border-radius:14px;box-shadow:0 2px 8px rgba(31,74,44,.08);display:flex;flex-direction:column}
+  .pt-fb__top{display:flex;align-items:center;gap:10px;padding:12px 14px 0}
+  .pt-fb__avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0}
+  .pt-fb__avatar--ph{background:#EFE9FF;color:#7A5CF0;display:grid;place-items:center;font-weight:800}
+  .pt-fb__top strong{display:block;font-size:13.5px;color:#050505}
+  .pt-fb__top em{display:block;font-style:normal;font-size:12px;color:#65676B}
+  .pt-fb__text{font-size:13.5px;line-height:1.45;color:#050505;margin:10px 14px}
+  .pt-fb__photo{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .pt-fb__meta{display:flex;align-items:center;gap:6px;padding:9px 14px;border-top:1px solid #E4E6EB;margin-top:auto;font-size:12.5px;color:#65676B}
+  .pt-fb__right{margin-left:auto}
+  .pt-fb__reax{display:inline-flex}
+  .pt-fb__rx{font-style:normal;font-size:12px;width:17px;height:17px;display:grid;place-items:center;border-radius:50%;background:#fff;margin-right:-5px;border:1.5px solid #fff}
+  .pt-fb__actions{display:flex;justify-content:space-around;border-top:1px solid #E4E6EB;padding:6px 8px;font-size:12.5px;font-weight:700;color:#65676B}
+</style>
+<script>
+  (function(){
+    var s=document.currentScript.parentElement;
+    var t=s.querySelector('[data-pt-fb-track]');
+    s.querySelector('[data-pt-fb-prev]').addEventListener('click',function(){t.scrollBy({left:-640,behavior:'smooth'})});
+    s.querySelector('[data-pt-fb-next]').addEventListener('click',function(){t.scrollBy({left:640,behavior:'smooth'})});
+  })();
+</script>
+{% schema %}
+{
+  "name": "Skynap Facebook posts",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Straight from Facebook" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "People keep posting about it" }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "Post",
+      "settings": [
+        { "type": "image_picker", "id": "avatar", "label": "Profile photo" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Amanda Reyes" },
+        { "type": "text", "id": "time", "label": "Time", "default": "2d" },
+        { "type": "textarea", "id": "text", "label": "Post text" },
+        { "type": "image_picker", "id": "photo", "label": "Post photo" },
+        { "type": "text", "id": "likes", "label": "Likes", "default": "1.2K" },
+        { "type": "text", "id": "comments", "label": "Comments", "default": "214" },
+        { "type": "text", "id": "shares", "label": "Shares", "default": "89" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Skynap Facebook posts", "blocks": [{ "type": "post" }, { "type": "post" }, { "type": "post" }] }]
+}
+{% endschema %}

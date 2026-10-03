@@ -1,0 +1,64 @@
+{% comment %} Warm Wear — comparison table {% endcomment %}
+<section class="pt-cmp">
+  <div class="pt-cmp__headwrap"><span class="pt-cmp__eyebrow">{{ section.settings.eyebrow }}</span>
+  <h2 class="pt-cmp__h">{{ section.settings.heading }}</h2></div>
+  <div class="pt-cmp__card">
+    <div class="pt-cmp__row pt-cmp__row--head">
+      <div>{{ section.settings.left_label }}</div>
+      <div class="pt-cmp__us"><span class="pt-cmp__uslabel">{{ section.settings.right_label }}</span><span class="pt-cmp__badge">Best choice</span></div>
+    </div>
+    {% for block in section.blocks %}
+      <div class="pt-cmp__row" {{ block.shopify_attributes }}>
+        <div class="pt-cmp__bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>{{ block.settings.bad }}</div>
+        <div class="pt-cmp__good"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,13 10,19 20,6"/></svg>{{ block.settings.good }}</div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="pt-cmp__ctawrap"><a class="pt-cmp__cta" href="#top">{{ section.settings.cta_label }}</a></div>
+</section>
+<style>
+  .pt-cmp{max-width:820px;margin:0 auto;padding:44px 20px}
+  .pt-cmp__headwrap{text-align:center;margin:0 0 24px}
+  .pt-cmp__eyebrow{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#D4805B}
+  .pt-cmp__h{margin:8px 0 0}
+  .pt-cmp__us{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .pt-cmp__badge{background:#C85C2D;color:#fff;font-size:10px;font-weight:800;padding:3px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  .pt-cmp__ctawrap{text-align:center;margin-top:24px}
+  .pt-cmp__cta{display:inline-block;background:#C85C2D;color:#fff;font-weight:800;font-size:15px;padding:14px 34px;border-radius:999px;text-decoration:none}
+  .pt-cmp__cta:hover{background:#823C1D}
+  .pt-cmp__card{border:1.5px solid #F8EAE4;border-radius:20px;overflow:hidden;background:#fff}
+  .pt-cmp__row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #F8EAE4}
+  .pt-cmp__row--head{border-top:none;background:#FBF2EE;font-weight:700;font-size:14px;color:#5F5F5F}
+  .pt-cmp__row--head>div{padding:14px 18px;text-align:center}
+  .pt-cmp__us{background:#F8EBE6;color:#823C1D;font-weight:800}
+  .pt-cmp__bad,.pt-cmp__good{padding:13px 18px;display:flex;gap:10px;align-items:center;font-size:14px}
+  .pt-cmp__bad svg,.pt-cmp__good svg{width:22px;height:22px;padding:4px;border-radius:50%;box-sizing:border-box}
+  .pt-cmp__bad svg{background:#F4F4F4}.pt-cmp__good svg{background:#fff}
+  .pt-cmp__bad{color:#5F5F5F}.pt-cmp__bad svg{color:#989898;flex-shrink:0}
+  .pt-cmp__good{background:#FBF2EE;color:#1A1A1A;font-weight:600}.pt-cmp__good svg{color:#C85C2D;flex-shrink:0}
+</style>
+{% schema %}
+{
+  "name": "Warm Wear comparison",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why Warm Wear" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Others vs Warm Wear" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Get my Warm Wear" },
+    { "type": "text", "id": "left_label", "label": "Left column", "default": "The usual option" },
+    { "type": "text", "id": "right_label", "label": "Right column", "default": "Warm Wear" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "bad", "label": "Theirs", "default": "The usual problem" },
+        { "type": "text", "id": "good", "label": "Ours", "default": "Solved" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Warm Wear comparison", "blocks": [{ "type": "row" }, { "type": "row" }, { "type": "row" }] }]
+}
+{% endschema %}

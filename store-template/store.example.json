@@ -1,0 +1,83 @@
+{
+  "_help": "Copy this file to <Product>/08 Store & Admin/Shopify design/store.json, change everything, run: python3 ~/Documents/UGC\\ Products/_Store\\ Template/build_store.py store.json",
+  "brand": "JollyLight",
+  "slug": "jollylight",
+  "title": "JollyLight™",
+  "handle": "jollylight-led-balcony-curtain",
+  "accent": "#1A6B45",
+  "ink": "#10261C",
+  "unit": "Curtain",
+  "unit_plural": "Curtains",
+  "option_name": "Color",
+  "rating_text": "4.8 (2,317 reviews)",
+  "ordered_count": "312",
+  "upsell_sub": "A surprise holiday bundle",
+  "buy_box": {
+    "avatars": ["sn-avatar-1.png", "sn-avatar-3.png", "sn-avatar-6.png"],
+    "tiers": [
+      {"title": "1 Curtain", "price": "$84.95", "compare": "$169.95", "save": "50%", "gift": "+ Free shipping"},
+      {"title": "2 Curtains", "price": "$149.95", "compare": "$339.90", "save": "56%", "gift": "+ Free priority dispatch|+ Free shipping"},
+      {"title": "3 Curtains", "price": "$198.95", "compare": "$509.85", "save": "61%", "gift": "+ Free priority dispatch|+ Free shipping"}
+    ],
+    "benefits": [["phone", "Pick any design from your phone"], ["spark", "10,000+ animated designs"], ["plug", "Zip-tie on, plug in, done"]],
+    "addon_1": "shipping-protection", "addon_1_img": "sn-icon-ship.png",
+    "addon_2": "30-day-warranty", "addon_2_img": "sn-icon-warranty.png",
+    "upsell": "jollylight-mystery-box",
+    "stock_text": "Selling fast before Christmas",
+    "deadline_date": "2026-12-08",
+    "deadline_text": "for Christmas delivery"
+  },
+  "marquee": [["gift", "50% OFF pre-Christmas sale"], ["truck", "Free insured shipping today"], ["shield", "30-day money-back guarantee"]],
+  "trust": [["truck", "Free insured shipping"], ["shield", "30-day guarantee"], ["phone", "App + remote control"], ["snow", "Built for winter balconies"], ["gift", "The gift the whole street sees"]],
+  "fb_heading": "People keep posting about it",
+  "fb_posts": [
+    {"avatar": "sn-avatar-1.png", "name": "Melissa Grant", "time": "2d", "text": "Put this on our balcony last night and by 8pm there were kids on the sidewalk waving at Santa 😭 Best $85 I've spent on Christmas, ever.", "photo": "sn-rev-2.png", "likes": "2.4K", "comments": "381", "shares": "203"},
+    {"avatar": "sn-avatar-2.png", "name": "Mark Delaney", "time": "4d", "text": "Condo board says no inflatables, no nails, nothing. Zip ties are allowed though 😏 Took me 15 minutes. Neighbors keep asking where it's from.", "photo": "sn-rev-4.png", "likes": "1.1K", "comments": "164", "shares": "88"},
+    {"avatar": "sn-avatar-3.png", "name": "Carmen Diaz", "time": "6d", "text": "My kids pick a new design every night before bed. Tonight it was the gingerbread man. Last night penguins. I think I've created a monster 😂", "photo": "sn-rev-6.png", "likes": "3.2K", "comments": "457", "shares": "291"},
+    {"avatar": "sn-avatar-4.png", "name": "Linda Morris", "time": "1w", "text": "I'm 64 and not good with gadgets. Plugged it in, opened the app, tapped the reindeer. That's it. My grandson thinks I'm the coolest grandma on the block.", "photo": "sn-rev-1.png", "likes": "1.7K", "comments": "226", "shares": "119"}
+  ],
+  "ugc": [
+    {"image": "sn-ugc-1.png", "video_url": "https://cdn.shopify.com/s/files/1/1003/6022/5087/files/jl-ugc-video-1.mp4?v=1790962905"},
+    {"image": "sn-ugc-2.png", "video_url": "https://cdn.shopify.com/s/files/1/1003/6022/5087/files/jl-ugc-video-2.mp4?v=1790962905"},
+    {"image": "sn-ugc-3.png", "video_url": "https://cdn.shopify.com/s/files/1/1003/6022/5087/files/jl-ugc-video-3.mp4?v=1790962905"},
+    {"image": "sn-ugc-4.png", "video_url": "https://cdn.shopify.com/s/files/1/1003/6022/5087/files/jl-ugc-video-4.mp4?v=1790962905"}
+  ],
+  "comparison": {
+    "heading": "String lights vs JollyLight",
+    "left_label": "Regular string lights",
+    "rows": [["One look all season", "10,000+ designs, change anytime"], ["Tangles, sags and falls off", "Zip-tied flat to your railing"], ["Nobody notices from the street", "Pictures the whole block can see"], ["Walk outside to switch them off", "App, remote and timer"], ["Christmas only", "Halloween, birthdays, game day too"]]
+  },
+  "reviews": {
+    "heading": "See why everyone's lighting up their balcony",
+    "form_heading": "Share your JollyLight balcony",
+    "average": "4.8", "count": "2,317", "pct": [83, 12, 3, 1, 1],
+    "items": [
+      {"name": "Melissa G.", "date": "Sep 28, 2026", "title": "Kids on the sidewalk waving at Santa", "text": "We're on the 3rd floor and you can see it from the end of the street. First night up, a family stopped and the little ones waved at the Santa for five minutes. Worth every cent.", "avatar": "sn-avatar-1.png", "photo": "sn-rev-2.png"},
+      {"name": "Mark D.", "date": "Sep 24, 2026", "title": "Condo friendly, no drilling", "text": "Our building bans anything screwed in. This is just zip ties on the railing and one plug. Fifteen minutes start to finish and it sits completely flat.", "avatar": "sn-avatar-2.png", "photo": "sn-rev-4.png"},
+      {"name": "Carmen D.", "date": "Sep 20, 2026", "title": "A new design every night", "text": "The app has so many designs my kids fight over who picks tonight's. The penguins and the gingerbread man are the favorites. Brightness is adjustable too.", "avatar": "sn-avatar-3.png", "photo": "sn-rev-6.png"},
+      {"name": "Linda M.", "date": "Sep 16, 2026", "title": "Easy even for me", "text": "I'm not a tech person. Plug in, open the app, tap a picture. The remote does the basics if you don't want the phone. My grandson was speechless.", "avatar": "sn-avatar-4.png", "photo": "sn-rev-1.png"},
+      {"name": "Raj P.", "date": "Sep 12, 2026", "title": "Arrived well packed", "text": "Nice box, everything sorted inside: curtain, controller, remote, zip ties. Had it running the same evening.", "avatar": "sn-avatar-5.png", "photo": "sn-rev-5.png"},
+      {"name": "Sarah K.", "date": "Sep 8, 2026", "title": "Our cat is obsessed", "text": "Honestly the cat watches it more than we do. It looks just as good from inside the apartment through the window.", "avatar": "sn-avatar-6.png", "photo": "sn-rev-3.png"},
+      {"name": "Tom W.", "date": "Sep 4, 2026", "rating": 4, "title": "Measure your railing first", "text": "Looks amazing. My balcony is wider than one curtain so I ended up getting the 2 pack and running them side by side. Plan for that if yours is long."},
+      {"name": "Priya N.", "date": "Aug 30, 2026", "title": "Bought one for my parents too", "text": "Sent one to my parents' apartment so we can both put up the same design on Christmas Eve. The 2-pack made it easy."},
+      {"name": "Lucas F.", "date": "Aug 26, 2026", "title": "Not just for Christmas", "text": "Ran a pumpkin design for Halloween and our team logo on game day. It stays on the railing all season and I just change the picture."},
+      {"name": "Grace M.", "date": "Aug 21, 2026", "title": "Best balcony on the block", "text": "Every other balcony has a sad string of lights. Ours has a Santa sleigh flying across. People literally take photos of it."}
+    ]
+  },
+  "faq_heading": "Everything you need to know",
+  "faq": [
+    ["How does JollyLight work?", "It's a curtain of tiny smart LEDs that you zip-tie to the front of your balcony railing. Plug the controller in, open the app, and every LED works together like one big picture. Pick a design and it shows up on your balcony instantly."],
+    ["Is it easy to set up?", "Yes. Lay it along the top rail, fix it with the included zip ties, plug in the controller. Most people are done in about 15 minutes. No drilling, no tools, no electrician."],
+    ["What designs can it show?", "Over 10,000 in the app: Santa, reindeer, snowmen, trees, greetings, animations, plus Halloween, birthdays and more. You can also draw your own or type a message."],
+    ["Can I control it from my phone?", "Yes, with the free app over Bluetooth, or with the included remote. Change designs, brightness and speed, or set a timer so it switches on and off by itself."],
+    ["Can I leave it outside?", "Yes. It's made for balconies and handles rain, snow and cold. Keep the controller under cover or in a weatherproof outlet box."],
+    ["When will my order arrive?", "Orders are packed within 1 to 2 business days and arrive in 6 to 10 business days with free, insured, tracked shipping. Every order has a 30-day money-back guarantee."]
+  ],
+  "wheel": {"heading": "Spin before Christmas", "prize": "50%"},
+  "footer": {
+    "tagline": "The smart LED curtain that turns your balcony into a Christmas show. Zip-tie it on, pick a design, light up the street.",
+    "email": "support@jollylight.store",
+    "news_heading": "Light up your season",
+    "news_text": "New designs, holiday tips and member-only deals. No spam."
+  }
+}

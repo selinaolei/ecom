@@ -1,0 +1,147 @@
+{% comment %} Skynap — reviews grid with summary bars and a simple write-review form (display only) {% endcomment %}
+<section class="pt-rev" id="reviews">
+  <div class="pt-rev__head">
+    {% if section.settings.eyebrow != blank %}<span class="pt-rev__eyebrow">{{ section.settings.eyebrow }}</span>{% endif %}
+    <h2 class="pt-rev__h">{{ section.settings.heading }}</h2>
+  </div>
+  <div class="pt-rev__summary">
+    <div class="pt-rev__avg">
+      <b>{{ section.settings.average }}</b>
+      <span class="pt-rev__stars">★★★★★</span>
+      <em>{{ section.settings.count }} reviews</em>
+    </div>
+    <div class="pt-rev__bars">
+      {% for i in (1..5) %}
+        {%- assign star = 6 | minus: i -%}
+        {%- assign key = 'pct_' | append: star -%}
+        <div class="pt-rev__bar"><span>{{ star }}★</span><div class="pt-rev__barbg"><i style="width:{{ section.settings[key] }}%"></i></div><span>{{ section.settings[key] }}%</span></div>
+      {% endfor %}
+    </div>
+    <button type="button" class="pt-rev__write" data-pt-rev-write>{{ section.settings.write_label }}</button>
+  </div>
+  <form class="pt-rev__form" data-pt-rev-form hidden>
+    <h3>{{ section.settings.form_heading }}</h3>
+    <input type="text" placeholder="Your name" required>
+    <div class="pt-rev__pick" data-pt-rev-pick>
+      {% for i in (1..5) %}<button type="button" data-v="{{ i }}">★</button>{% endfor %}
+    </div>
+    <textarea rows="4" placeholder="Where did you fly, and how did you sleep?" required></textarea>
+    <button type="submit" class="pt-rev__submit">{{ section.settings.submit_label }}</button>
+    <p class="pt-rev__thanks" data-pt-rev-thanks hidden>{{ section.settings.thanks_text }}</p>
+  </form>
+  <div class="pt-rev__grid" data-pt-rev-grid>
+    {% for block in section.blocks %}
+      <article class="pt-rev__card{% if forloop.index > section.settings.per_page %} is-hidden{% endif %}" {{ block.shopify_attributes }}>
+        <div class="pt-rev__top">
+          {% if block.settings.avatar != blank %}{{ block.settings.avatar | image_url: width: 80 | image_tag: loading: 'lazy', class: 'pt-rev__avatar', alt: block.settings.name }}
+          {% else %}<span class="pt-rev__avatar pt-rev__avatar--ph">{{ block.settings.name | slice: 0 }}</span>{% endif %}
+          <span class="pt-rev__who"><strong>{{ block.settings.name }}</strong>
+          {% if block.settings.verified %}<em class="pt-rev__verified"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,13 10,19 20,6"/></svg> Verified purchase</em>{% endif %}</span>
+          <span class="pt-rev__date">{{ block.settings.date }}</span>
+        </div>
+        <span class="pt-rev__cardstars">{% for i in (1..block.settings.rating) %}★{% endfor %}</span>
+        <h4 class="pt-rev__title">{{ block.settings.title }}</h4>
+        <p class="pt-rev__text">{{ block.settings.text }}</p>
+        {% if block.settings.photo != blank %}{{ block.settings.photo | image_url: width: 560 | image_tag: loading: 'lazy', class: 'pt-rev__photo', alt: '' }}{% endif %}
+      </article>
+    {% endfor %}
+  </div>
+  {% if section.blocks.size > section.settings.per_page %}
+    <div class="pt-rev__morewrap"><button type="button" class="pt-rev__more" data-pt-rev-more>Show more reviews</button></div>
+  {% endif %}
+</section>
+<style>
+  .pt-rev{max-width:1120px;margin:0 auto;padding:44px 20px;overflow-x:hidden}
+  .pt-rev__head{text-align:center}
+  .pt-rev__eyebrow{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8B6FF0}
+  .pt-rev__h{margin:8px 0 0}
+  .pt-rev__summary{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:24px;background:#F1EDFD;border:1px solid #E6E2F6;border-radius:20px;padding:20px 24px}
+  .pt-rev__avg{text-align:center}
+  .pt-rev__avg b{font-size:40px;color:#31239E;display:block;line-height:1}
+  .pt-rev__stars{color:#F5C51C;letter-spacing:2px;font-size:15px;display:block;margin-top:4px}
+  .pt-rev__avg em{font-style:normal;font-size:12.5px;color:#5E5880}
+  .pt-rev__bars{flex:1;min-width:220px;max-width:380px;display:flex;flex-direction:column;gap:5px}
+  .pt-rev__bar{display:grid;grid-template-columns:30px 1fr 38px;gap:9px;align-items:center;font-size:12px;font-weight:700;color:#5E5880}
+  .pt-rev__barbg{height:8px;border-radius:5px;background:#E6E2F6;overflow:hidden}
+  .pt-rev__barbg i{display:block;height:100%;background:#F5C51C;border-radius:5px}
+  .pt-rev__write{padding:13px 24px;border:none;border-radius:999px;background:#5B3FE0;color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+  .pt-rev__form{max-width:560px;margin:22px auto 0;background:#fff;border:1.5px solid #E6E2F6;border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:12px}
+  .pt-rev__form h3{margin:0;color:#31239E}
+  .pt-rev__form input,.pt-rev__form textarea{border:1.5px solid #CFC8EF;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;width:100%;box-sizing:border-box;max-width:100%}
+  .pt-rev__pick{display:flex;gap:4px}
+  .pt-rev__pick button{border:none;background:none;font-size:26px;color:#CFC8EF;cursor:pointer;padding:0 2px}
+  .pt-rev__pick button.is-on{color:#F5C51C}
+  .pt-rev__submit{padding:13px;border:none;border-radius:999px;background:#5B3FE0;color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+  .pt-rev__thanks{margin:0;color:#31239E;font-weight:700;font-size:14px;text-align:center}
+  .pt-rev__grid{display:grid;gap:16px;margin-top:26px;grid-template-columns:1fr}
+  @media(min-width:750px){.pt-rev__grid{grid-template-columns:1fr 1fr}}
+  .pt-rev__card{background:#fff;border:1.5px solid #E6E2F6;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(28,21,64,.05);min-width:0}
+  .pt-rev__card.is-hidden{display:none}
+  .pt-rev__top{display:flex;align-items:center;gap:10px}
+  .pt-rev__avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0}
+  .pt-rev__avatar--ph{background:#EFE9FF;color:#5B3FE0;display:grid;place-items:center;font-weight:800}
+  .pt-rev__who strong{display:block;font-size:14px;color:#1C1540}
+  .pt-rev__verified{display:inline-flex;align-items:center;gap:4px;font-style:normal;font-size:11.5px;color:#2E9E5B;font-weight:700}
+  .pt-rev__date{margin-left:auto;font-size:12px;color:#9C96BB}
+  .pt-rev__cardstars{color:#F5C51C;letter-spacing:2px;font-size:13px;display:block;margin-top:10px}
+  .pt-rev__title{margin:6px 0 0;font-size:15.5px;color:#1C1540}
+  .pt-rev__text{margin:6px 0 0;font-size:14px;line-height:1.55;color:#403966}
+  .pt-rev__photo{width:100%;max-width:230px;aspect-ratio:1;object-fit:cover;border-radius:12px;margin-top:12px}
+  .pt-rev__morewrap{text-align:center;margin-top:22px}
+  .pt-rev__more{padding:13px 28px;border:1.5px solid #5B3FE0;border-radius:999px;background:#fff;color:#5B3FE0;font-weight:800;font-size:14px;cursor:pointer}
+</style>
+<script>
+(function(){
+  var s=document.currentScript.parentElement;
+  var w=s.querySelector('[data-pt-rev-write]'),f=s.querySelector('[data-pt-rev-form]');
+  if(w&&f)w.addEventListener('click',function(){f.hidden=!f.hidden;if(!f.hidden)f.scrollIntoView({behavior:'smooth',block:'center'})});
+  var pick=s.querySelector('[data-pt-rev-pick]');
+  if(pick)pick.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+    var v=+b.dataset.v;pick.querySelectorAll('button').forEach(function(x){x.classList.toggle('is-on',+x.dataset.v<=v)});
+  })});
+  if(f)f.addEventListener('submit',function(e){e.preventDefault();
+    f.querySelectorAll('input,textarea,button[type=submit]').forEach(function(x){x.disabled=true});
+    s.querySelector('[data-pt-rev-thanks]').hidden=false;
+  });
+  var more=s.querySelector('[data-pt-rev-more]');
+  if(more)more.addEventListener('click',function(){
+    s.querySelectorAll('.pt-rev__card.is-hidden').forEach(function(c,i){if(i<4)c.classList.remove('is-hidden')});
+    if(!s.querySelector('.pt-rev__card.is-hidden'))more.parentElement.hidden=true;
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "Skynap reviews",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What travelers say" },
+    { "type": "text", "id": "average", "label": "Average", "default": "4.8" },
+    { "type": "text", "id": "count", "label": "Count", "default": "1,286" },
+    { "type": "range", "id": "pct_5", "label": "5★ %", "min": 0, "max": 100, "step": 1, "default": 81 },
+    { "type": "range", "id": "pct_4", "label": "4★ %", "min": 0, "max": 100, "step": 1, "default": 13 },
+    { "type": "range", "id": "pct_3", "label": "3★ %", "min": 0, "max": 100, "step": 1, "default": 3 },
+    { "type": "range", "id": "pct_2", "label": "2★ %", "min": 0, "max": 100, "step": 1, "default": 2 },
+    { "type": "range", "id": "pct_1", "label": "1★ %", "min": 0, "max": 100, "step": 1, "default": 1 },
+    { "type": "range", "id": "per_page", "label": "Visible before Show more", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "text", "id": "write_label", "label": "Write button", "default": "Write a review" },
+    { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Share your Skynap flight" },
+    { "type": "text", "id": "submit_label", "label": "Submit label", "default": "Submit review" },
+    { "type": "text", "id": "thanks_text", "label": "Thanks text", "default": "Thank you! Your review is in. It appears once we approve it." }
+  ],
+  "blocks": [
+    { "type": "review", "name": "Review", "settings": [
+      { "type": "image_picker", "id": "avatar", "label": "Avatar" },
+      { "type": "text", "id": "name", "label": "Name", "default": "Alex T." },
+      { "type": "text", "id": "date", "label": "Date", "default": "Sep 14, 2026" },
+      { "type": "range", "id": "rating", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+      { "type": "checkbox", "id": "verified", "label": "Verified", "default": true },
+      { "type": "text", "id": "title", "label": "Title", "default": "Slept the whole flight" },
+      { "type": "textarea", "id": "text", "label": "Text" },
+      { "type": "image_picker", "id": "photo", "label": "Photo (optional)" }
+    ] }
+  ],
+  "presets": [{ "name": "Skynap reviews", "blocks": [{"type":"review"},{"type":"review"},{"type":"review"},{"type":"review"}] }]
+}
+{% endschema %}

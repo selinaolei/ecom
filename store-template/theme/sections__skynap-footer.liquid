@@ -1,0 +1,63 @@
+{% comment %} Skynap footer {% endcomment %}
+<footer class="pt-foot">
+  <div class="pt-foot__grid">
+    <div class="pt-foot__brand">
+      <span class="pt-foot__logo">Skynap&trade;</span>
+      <p>{{ section.settings.tagline }}</p>
+      <div class="pt-foot__pays">
+        <span class="pt-pay2">VISA</span><span class="pt-pay2">MC</span><span class="pt-pay2">AMEX</span><span class="pt-pay2">&#63743; Pay</span><span class="pt-pay2">G Pay</span><span class="pt-pay2">Shop</span>
+      </div>
+    </div>
+    <div class="pt-foot__col">
+      <b>Help</b>
+      <a href="/policies/shipping-policy">Shipping policy</a>
+      <a href="/policies/refund-policy">Refunds &amp; returns</a>
+      <a href="/policies/terms-of-service">Terms of service</a>
+      <a href="/policies/privacy-policy">Privacy policy</a>
+      <a href="mailto:{{ section.settings.email }}">Contact us</a>
+    </div>
+    <div class="pt-foot__col pt-foot__news">
+      <b>{{ section.settings.news_heading }}</b>
+      <p>{{ section.settings.news_text }}</p>
+      {% form 'customer', class: 'pt-foot__form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="email" name="contact[email]" placeholder="you@example.com" required>
+        <button type="submit">Sign up</button>
+      {% endform %}
+    </div>
+  </div>
+  <div class="pt-foot__bottom">&copy; {{ 'now' | date: '%Y' }} Skynap &middot; Free insured shipping worldwide &middot; 30-day money-back guarantee</div>
+</footer>
+<style>
+  .pt-foot{background:#1C1540;color:#fff;padding:48px 20px 26px;margin-top:30px}
+  .pt-foot__grid{max-width:1120px;margin:0 auto;display:grid;gap:34px;grid-template-columns:1fr}
+  @media(min-width:750px){.pt-foot__grid{grid-template-columns:1.2fr .8fr 1.2fr}}
+  .pt-foot__logo{font-size:26px;font-weight:800;letter-spacing:-.01em}
+  .pt-foot__brand p{color:#A99AF0;font-size:14px;line-height:1.55;margin:10px 0 16px}
+  .pt-foot__pays{display:flex;gap:5px;flex-wrap:wrap}
+  .pt-pay2{display:grid;place-items:center;min-width:38px;height:23px;padding:0 6px;border-radius:4px;background:rgba(255,255,255,.1);font-size:9px;font-weight:800;color:#fff}
+  .pt-foot__col{display:flex;flex-direction:column;gap:9px}
+  .pt-foot__col b{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#8B6FF0;margin-bottom:3px}
+  .pt-foot__col a{color:#E7E1FB;text-decoration:none;font-size:14px;width:fit-content}
+  .pt-foot__col a:hover{text-decoration:underline;text-underline-offset:3px}
+  .pt-foot__news p{color:#A99AF0;font-size:13.5px;margin:0}
+  .pt-foot__form{display:flex;gap:8px;margin-top:6px}
+  .pt-foot__form input{flex:1;min-width:0;height:44px;padding:0 15px;border-radius:999px;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;font-size:13.5px}
+  .pt-foot__form input::placeholder{color:#9C96BB}
+  .pt-foot__form button{height:44px;padding:0 20px;border:none;border-radius:999px;background:#5B3FE0;color:#fff;font-weight:800;font-size:13.5px;cursor:pointer}
+  .pt-foot__form button:hover{background:#8B6FF0}
+  .pt-foot__bottom{max-width:1120px;margin:34px auto 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:12.5px;color:#9C96BB;text-align:center}
+</style>
+{% schema %}
+{
+  "name": "Skynap footer",
+  "tag": "footer",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "The inflatable pillow that lets you sleep face-forward on the plane. Three breaths, one tray table, a full night of sleep." },
+    { "type": "text", "id": "email", "label": "Support email", "default": "support@skynap.store" },
+    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "Fly rested, land first" },
+    { "type": "text", "id": "news_text", "label": "Newsletter text", "default": "Travel sleep tips and member-only deals. No spam." }
+  ],
+  "presets": [{ "name": "Skynap footer" }]
+}
+{% endschema %}
