@@ -1,0 +1,14 @@
+{% assign product = all_products.first %}
+
+<div class="warmwear-product-page">
+  {% for section in page.sections %}
+    {% section section %}
+  {% endfor %}
+</div>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+</style>

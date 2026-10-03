@@ -1,0 +1,270 @@
+{
+  "sections": {
+    "ww_hero": {
+      "type": "ww-hero",
+      "settings": {
+        "eyebrow": "Stay warm all winter",
+        "product_name": "Warm Wear Heated Jacket",
+        "badge_text": "Hot Seller",
+        "rating": "4.9 out of 5",
+        "review_count": "485",
+        "show_proof": true,
+        "proof_text_1": "Secure checkout",
+        "proof_text_2": "30-day guarantee",
+        "price": "$149.99 CAD",
+        "compare_price": "$299.98 CAD",
+        "discount_text": "50% OFF",
+        "bundle_heading": "Choose your set",
+        "tier2_price": "$269.98 CAD",
+        "tier2_discount": "10",
+        "tier3_price": "$369.97 CAD",
+        "tier3_discount": "18",
+        "addons_heading": "Accessories",
+        "button_text": "Add to Cart",
+        "button_subtext": "Order today, ships within 48 hours"
+      },
+      "blocks": {
+        "addon1": {
+          "type": "addon",
+          "settings": {
+            "title": "Replacement batteries",
+            "description": "Extra battery pack for extended use",
+            "price": "+$29.99",
+            "default_on": false
+          }
+        },
+        "addon2": {
+          "type": "addon",
+          "settings": {
+            "title": "USB charging cable",
+            "description": "Includes Type-C and Micro-USB adapters",
+            "price": "+$14.99",
+            "default_on": false
+          }
+        }
+      },
+      "block_order": ["addon1", "addon2"]
+    },
+    "ww_social_proof": {
+      "type": "ww-social-proof",
+      "settings": {
+        "heading": "People keep using Warm Wear",
+        "subheading": "Real customers enjoying their heated jacket and gloves in cold weather"
+      },
+      "blocks": {
+        "proof1": {
+          "type": "image",
+          "settings": {
+            "caption": "Enjoying the warmth outdoors"
+          }
+        },
+        "proof2": {
+          "type": "image",
+          "settings": {
+            "caption": "Winter activities made comfortable"
+          }
+        },
+        "proof3": {
+          "type": "image",
+          "settings": {
+            "caption": "Perfect for outdoor adventures"
+          }
+        }
+      },
+      "block_order": ["proof1", "proof2", "proof3"]
+    },
+    "ww_comparison": {
+      "type": "ww-comparison",
+      "settings": {
+        "heading": "Why Choose Warm Wear?",
+        "subheading": "The most advanced heated apparel on the market"
+      },
+      "blocks": {
+        "feat1": {
+          "type": "feature",
+          "settings": {
+            "feature": "3-speed temperature control",
+            "description": "Low (35°C), Medium (45°C), High (55°C)",
+            "has_feature": true
+          }
+        },
+        "feat2": {
+          "type": "feature",
+          "settings": {
+            "feature": "USB battery powered",
+            "description": "8+ hours of continuous heating",
+            "has_feature": true
+          }
+        },
+        "feat3": {
+          "type": "feature",
+          "settings": {
+            "feature": "Waterproof design",
+            "description": "Safe for light rain and moisture",
+            "has_feature": true
+          }
+        },
+        "feat4": {
+          "type": "feature",
+          "settings": {
+            "feature": "Detachable hood",
+            "description": "Fashion and functionality combined",
+            "has_feature": true
+          }
+        },
+        "feat5": {
+          "type": "feature",
+          "settings": {
+            "feature": "Overheat protection",
+            "description": "Smart temperature management",
+            "has_feature": true
+          }
+        }
+      },
+      "block_order": ["feat1", "feat2", "feat3", "feat4", "feat5"]
+    },
+    "ww_reviews": {
+      "type": "ww-reviews",
+      "settings": {
+        "heading": "What people say about Warm Wear",
+        "subheading": "Real reviews from real customers",
+        "average_rating": "4.9",
+        "total_reviews": "485"
+      },
+      "blocks": {
+        "review1": {
+          "type": "review",
+          "settings": {
+            "name": "Sarah Johnson",
+            "rating": "5 stars",
+            "text": "Best investment for winter! Keeps me warm even in -20°C weather. The battery life is amazing and it's so comfortable to wear all day."
+          }
+        },
+        "review2": {
+          "type": "review",
+          "settings": {
+            "name": "Mike Chen",
+            "rating": "5 stars",
+            "text": "Excellent quality and fast shipping. The heating zones are perfectly placed. Already recommended to all my friends."
+          }
+        },
+        "review3": {
+          "type": "review",
+          "settings": {
+            "name": "Emily Rodriguez",
+            "rating": "5 stars",
+            "text": "The gloves work perfectly with my phone touchscreen! No more taking them off in winter. Highly satisfied!"
+          }
+        },
+        "review4": {
+          "type": "review",
+          "settings": {
+            "name": "James Wilson",
+            "rating": "4 stars",
+            "text": "Great product at fair price. Fits perfectly and the heat distribution is even throughout. Worth every penny."
+          }
+        }
+      },
+      "block_order": ["review1", "review2", "review3", "review4"]
+    },
+    "ww_faq": {
+      "type": "ww-faq",
+      "settings": {
+        "heading": "Frequently asked questions"
+      },
+      "blocks": {
+        "faq1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How do I charge the jacket?",
+            "answer": "The Warm Wear Heated Jacket uses a USB Type-C charging port for easy charging. Simply plug in any standard USB charger and the battery will fully charge in 2-3 hours. The cable is included with your purchase."
+          }
+        },
+        "faq2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does the battery last?",
+            "answer": "On a full charge, the battery provides 8+ hours of continuous heating at any of the three temperature settings. Battery life varies depending on the temperature setting you choose - higher temperatures drain the battery faster."
+          }
+        },
+        "faq3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is the jacket waterproof?",
+            "answer": "The Warm Wear Heated Jacket features water-resistant outer material perfect for light rain and moisture. The battery pack is fully waterproof and sealed for safety. However, we don't recommend submerging it in water."
+          }
+        },
+        "faq4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "We offer a 30-day happiness guarantee. If you're not completely satisfied with your Warm Wear jacket, simply return it for a full refund, no questions asked. We cover return shipping costs."
+          }
+        },
+        "faq5": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are the gloves touchscreen compatible?",
+            "answer": "Yes! Warm Wear Heated Gloves feature touchscreen-sensitive fingertips so you can use your phone or tablet without removing them. No more fumbling with your gloves in winter!"
+          }
+        },
+        "faq6": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "Currently, we offer free shipping on all orders within Canada and the United States. International shipping is available - please contact our support team for rates and delivery times."
+          }
+        }
+      },
+      "block_order": ["faq1", "faq2", "faq3", "faq4", "faq5", "faq6"]
+    },
+    "ww_footer": {
+      "type": "ww-footer",
+      "settings": {
+        "about_text": "Warm Wear creates premium heated apparel for cold weather. Our mission is to keep you comfortable and warm, no matter how cold it gets. Designed for performance and style.",
+        "newsletter_text": "Get special offers and updates delivered to your inbox",
+        "copyright": "© 2024 Warm Wear. All rights reserved.",
+        "terms": "Privacy Policy • Terms of Service • 30-Day Money Back Guarantee"
+      },
+      "blocks": {
+        "prod1": {
+          "type": "product_link",
+          "settings": {
+            "label": "Heated Jacket",
+            "link": "/products/heated-jacket"
+          }
+        },
+        "prod2": {
+          "type": "product_link",
+          "settings": {
+            "label": "Heated Gloves",
+            "link": "/products/heated-gloves"
+          }
+        },
+        "sup1": {
+          "type": "support_link",
+          "settings": {
+            "label": "Contact Us",
+            "link": "/contact"
+          }
+        },
+        "sup2": {
+          "type": "support_link",
+          "settings": {
+            "label": "Track Order",
+            "link": "/orders"
+          }
+        }
+      },
+      "block_order": ["prod1", "prod2", "sup1", "sup2"]
+    }
+  },
+  "order": [
+    "ww_hero",
+    "ww_social_proof",
+    "ww_comparison",
+    "ww_reviews",
+    "ww_faq",
+    "ww_footer"
+  ]
+}
