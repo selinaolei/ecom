@@ -1,16 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ request.locale.iso_code }}">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page_title }}</title>
-    {{ content_for_header }}
-  </head>
-
-  <body>
-    {{ content_for_layout }}
-    {% render 'cart-drawer' %}
-    {% render 'hm-cart-bridge' %}
-    {% render 'hm-cart-guard' %}
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ page_title }}</title>
+<link rel="stylesheet" href="{{ 'warmwear-responsive.css' | asset_url }}">
+{{ content_for_header }}
+</head>
+<body>
+{{ content_for_layout }}
+</body>
 </html>
