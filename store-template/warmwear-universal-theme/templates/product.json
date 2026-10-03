@@ -108,71 +108,59 @@
         "t5"
       ]
     },
-    "warmwear_reviews_carousel": {
-      "type": "warmwear-reviews-carousel",
+    "warmwear_photo_slider": {
+      "type": "warmwear-photo-slider",
       "blocks": {
-        "c1": {
-          "type": "review",
+        "p1": {
+          "type": "photo",
           "settings": {
-            "name": "Michael C.",
-            "image": "shopify://shop_images/sn-rev-2.png",
-            "text": "Spent the whole day on the slopes at -10°C. The jacket kept me toasty the entire time. The three heat settings let me dial in exactly what I need.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-1.png",
+            "alt": "Man wearing the Warm Wear heated jacket, front view"
           }
         },
-        "c2": {
-          "type": "review",
+        "p2": {
+          "type": "photo",
           "settings": {
-            "name": "Sarah W.",
-            "image": "shopify://shop_images/sn-rev-4.png",
-            "text": "My 40-minute commute through the city used to leave me shivering. Now I'm warm, and the power bank pocket charges my phone at the same time. Absolute win.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-2.png",
+            "alt": "Woman wearing the Warm Wear heated jacket, back view"
           }
         },
-        "c3": {
-          "type": "review",
+        "p3": {
+          "type": "photo",
           "settings": {
-            "name": "David T.",
-            "image": "shopify://shop_images/sn-rev-6.png",
-            "text": "Bought two jackets for my wife and me. The detachable hood is genius for different weather. We wear these constantly from October through March.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-3.png",
+            "alt": "Woman wearing the Warm Wear heated jacket, side view"
           }
         },
-        "c4": {
-          "type": "review",
+        "p4": {
+          "type": "photo",
           "settings": {
-            "name": "Jennifer L.",
-            "image": "shopify://shop_images/sn-rev-1.png",
-            "text": "Didn't think heated jackets would actually work. Tested it at -15°C on the highest setting and felt like I was standing by a campfire. Ordered one for my son too.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-4.png",
+            "alt": "Man wearing the Warm Wear heated jacket with the hood up"
           }
         },
-        "c5": {
-          "type": "review",
+        "p5": {
+          "type": "photo",
           "settings": {
-            "name": "Robert K.",
-            "image": "shopify://shop_images/sn-rev-5.png",
-            "text": "The materials feel premium. Carbon fiber heating wires are clever. After a week of use in wet weather, everything still works perfectly.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-5.png",
+            "alt": "Woman putting a power bank in the pocket of the Warm Wear heated jacket"
           }
         },
-        "c6": {
-          "type": "review",
+        "p6": {
+          "type": "photo",
           "settings": {
-            "name": "Emma S.",
-            "image": "shopify://shop_images/sn-rev-3.png",
-            "text": "I take my dog out rain or shine. This jacket has made winter walks enjoyable instead of miserable. The waterproofing is no joke.",
-            "rating": 5
+            "image": "shopify://shop_images/warmwear-wear-6.png",
+            "alt": "Man walking his dog in the Warm Wear heated jacket"
           }
         }
       },
       "block_order": [
-        "c1",
-        "c2",
-        "c3",
-        "c4",
-        "c5",
-        "c6"
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5",
+        "p6"
       ],
       "settings": {}
     },
@@ -229,6 +217,10 @@
         "r4",
         "r5"
       ]
+    },
+    "warmwear_description": {
+      "type": "warmwear-description",
+      "settings": {}
     },
     "warmwear_reviews": {
       "type": "warmwear-reviews",
@@ -460,8 +452,9 @@
   "order": [
     "warmwear_buy_box",
     "warmwear_trust",
-    "warmwear_reviews_carousel",
+    "warmwear_photo_slider",
     "warmwear_comparison",
+    "warmwear_description",
     "warmwear_faq",
     "warmwear_reviews",
     "warmwear_wheel"

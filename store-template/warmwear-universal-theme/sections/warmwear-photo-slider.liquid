@@ -1,0 +1,48 @@
+<section class="ww-slider" aria-label="People wearing the Warm Wear heated jacket">
+  <div class="ww-slider__track">
+    {%- for copy in (1..2) -%}
+      <div class="ww-slider__group"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          {%- if block.settings.image != blank -%}
+            <div class="ww-slider__item" {{ block.shopify_attributes }}>
+              {{- block.settings.image | image_url: width: 680 | image_tag: class: 'ww-slider__img', loading: 'lazy', alt: block.settings.alt, widths: '340, 680', sizes: '(min-width: 750px) 340px, 62vw' -}}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Warm Wear Photo Slider",
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "alt", "label": "Alt text", "default": "Person wearing the Warm Wear heated jacket" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Photo slider" }]
+}
+{% endschema %}
+
+<style>
+.ww-slider{width:100%;overflow:hidden;background:#fff;padding:32px 0;box-sizing:border-box}
+.ww-slider__track{display:flex;width:max-content;animation:ww-slide 45s linear infinite}
+@media (hover:hover){.ww-slider:hover .ww-slider__track{animation-play-state:paused}}
+.ww-slider__group{display:flex;gap:12px;padding-right:12px;flex-shrink:0}
+.ww-slider__item{flex-shrink:0;width:62vw;max-width:340px}
+.ww-slider__img{display:block;width:100%;aspect-ratio:4/5;height:auto;object-fit:cover;border-radius:16px;background:#f5f5f5}
+@keyframes ww-slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (min-width:750px){
+  .ww-slider{padding:48px 0}
+  .ww-slider__group{gap:16px;padding-right:16px}
+  .ww-slider__item{width:340px}
+}
+@media (prefers-reduced-motion:reduce){.ww-slider__track{animation-duration:180s}}
+</style>

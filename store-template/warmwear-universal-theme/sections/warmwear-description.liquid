@@ -1,0 +1,24 @@
+<section class="ww-desc">
+  <div class="ww-desc__grid">
+    <img class="ww-desc__img" src="{{ 'warmwear-description-1.webp' | asset_url }}" alt="Warm Wear heated jacket: LED heat control, 3 temperature settings, carbon fibre wires, detachable hood, power bank pocket and 21 heating zones" width="1024" height="1024" loading="lazy">
+    <img class="ww-desc__img" src="{{ 'warmwear-description-2.webp' | asset_url }}" alt="Warm Wear heated jacket details: LED heat control, detachable hood, power bank pocket and carbon fibre wires" width="1024" height="1024" loading="lazy">
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Warm Wear Description",
+  "settings": [],
+  "presets": [{ "name": "Product description images" }]
+}
+{% endschema %}
+
+<style>
+.ww-desc{width:100%;padding:40px 16px;box-sizing:border-box;background:#fff}
+.ww-desc__grid{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:16px}
+.ww-desc__img{display:block;width:100%;height:auto;border-radius:16px;background:#fff}
+@media (min-width:750px){
+  .ww-desc{padding:60px 24px}
+  .ww-desc__grid{grid-template-columns:1fr 1fr;gap:24px}
+}
+</style>
