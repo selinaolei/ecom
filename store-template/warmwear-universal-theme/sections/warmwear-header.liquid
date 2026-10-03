@@ -1,0 +1,111 @@
+{%- assign msgs = 'Free shipping on every order|30-day money-back guarantee|Stay warm all winter with smart heat control' | split: '|' -%}
+<div class="ww-ann" role="region" aria-label="Announcements">
+  <div class="ww-ann__track">
+    {%- for copy in (1..2) -%}
+      <div class="ww-ann__group"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+        {%- for rep in (1..2) -%}{%- for m in msgs -%}
+          <span class="ww-ann__item">{{ m }}</span><span class="ww-ann__dot"></span>
+        {%- endfor -%}{%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<header class="ww-head">
+  <div class="ww-head__side">
+    <button type="button" class="ww-head__btn" data-ww-open="menu" aria-label="Open menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+    <button type="button" class="ww-head__btn" data-ww-open="search" aria-label="Search">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+    </button>
+  </div>
+  <a class="ww-head__logo" href="{{ routes.root_url }}" aria-label="Warm Wear home">
+    <img src="{{ 'warmwear-logo.png' | asset_url }}" alt="Warm Wear" width="640" height="361">
+  </a>
+  <div class="ww-head__side ww-head__side--right">
+    <a class="ww-head__btn" href="{{ routes.account_url }}" aria-label="Account">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+    </a>
+    <a class="ww-head__btn" href="{{ routes.cart_url }}" data-ww-cart aria-label="Cart">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l1 12H5z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
+      {%- if cart.item_count > 0 -%}<span class="ww-head__count">{{ cart.item_count }}</span>{%- endif -%}
+    </a>
+  </div>
+</header>
+
+<div class="ww-drawer" data-ww-panel="menu" hidden>
+  <div class="ww-drawer__overlay" data-ww-close></div>
+  <nav class="ww-drawer__panel" aria-label="Menu">
+    <button type="button" class="ww-drawer__x" data-ww-close aria-label="Close menu">&times;</button>
+    <a href="{{ routes.root_url }}">Home</a>
+    <a href="{{ routes.root_url }}products/wormware-heated-jacket">Heated Jacket</a>
+    <a href="{{ routes.root_url }}products/wormware-heated-gloves">Heated Gloves</a>
+  </nav>
+</div>
+
+<div class="ww-drawer ww-drawer--search" data-ww-panel="search" hidden>
+  <div class="ww-drawer__overlay" data-ww-close></div>
+  <form class="ww-search" action="{{ routes.search_url }}" method="get" role="search">
+    <input type="search" name="q" placeholder="Search Warm Wear" aria-label="Search" autocomplete="off">
+    <button type="submit">Search</button>
+  </form>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  function panel(n){return document.querySelector('[data-ww-panel="'+n+'"]')}
+  function closeAll(){document.querySelectorAll('[data-ww-panel]').forEach(function(p){p.hidden=true});root.style.overflow=''}
+  document.querySelectorAll('[data-ww-open]').forEach(function(b){b.addEventListener('click',function(){
+    closeAll();var p=panel(b.dataset.wwOpen);p.hidden=false;root.style.overflow='hidden';
+    var i=p.querySelector('input');if(i)i.focus();
+  })});
+  document.querySelectorAll('[data-ww-close]').forEach(function(b){b.addEventListener('click',closeAll)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()});
+  var cart=document.querySelector('[data-ww-cart]');
+  if(cart)cart.addEventListener('click',function(e){
+    if(document.querySelector('[data-pt-cart]')){e.preventDefault();document.dispatchEvent(new CustomEvent('pt:open-cart'))}
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Warm Wear Header",
+  "settings": []
+}
+{% endschema %}
+
+<style>
+.ww-ann{background:#2b1409;color:#f6e9dc;overflow:hidden;white-space:nowrap;height:44px;display:flex;align-items:center}
+.ww-ann__track{display:flex;width:max-content;animation:ww-marq 36s linear infinite}
+.ww-ann__group{display:flex;align-items:center;flex-shrink:0}
+.ww-ann__item{font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:0 22px}
+.ww-ann__dot{width:6px;height:6px;border-radius:50%;background:#C85C2D;flex-shrink:0}
+@keyframes ww-marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ww-ann__track{animation-duration:120s}}
+
+.ww-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:#fff;border-bottom:1px solid #eadfd6;padding:8px 16px;box-sizing:border-box;width:100%}
+.ww-head__side{display:flex;align-items:center;gap:4px}
+.ww-head__side--right{justify-content:flex-end}
+.ww-head__btn{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;background:none;color:#1a1a1a;cursor:pointer;text-decoration:none}
+.ww-head__count{position:absolute;top:3px;right:1px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:#C85C2D;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}
+.ww-head__logo{display:block;line-height:0}
+.ww-head__logo img{height:56px;width:auto;display:block}
+
+.ww-drawer{position:fixed;inset:0;z-index:1000}
+.ww-drawer[hidden]{display:none}
+.ww-drawer__overlay{position:absolute;inset:0;background:rgba(20,10,4,.5)}
+.ww-drawer__panel{position:absolute;top:0;left:0;bottom:0;width:min(320px,86vw);background:#fff;padding:72px 24px 24px;box-sizing:border-box;display:flex;flex-direction:column}
+.ww-drawer__panel a{padding:16px 0;border-bottom:1px solid #eadfd6;color:#1a1a1a;font-size:18px;font-weight:600;text-decoration:none}
+.ww-drawer__x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;background:none;font-size:32px;line-height:1;cursor:pointer;color:#1a1a1a}
+.ww-search{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;background:#fff;padding:16px;box-sizing:border-box}
+.ww-search input{flex:1;min-width:0;height:44px;padding:0 14px;border:1px solid #d9c9bd;border-radius:8px;font-size:16px}
+.ww-search button{height:44px;padding:0 20px;border:0;border-radius:8px;background:#C85C2D;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+
+@media (min-width:750px){
+  .ww-head{padding:10px 32px}
+  .ww-head__logo img{height:64px}
+}
+</style>

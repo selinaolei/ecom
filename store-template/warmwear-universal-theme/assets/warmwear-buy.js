@@ -169,6 +169,7 @@
   function openCart(){
     fetch('/cart.js').then(function(r){return r.json()}).then(function(c){renderCart(c);cartEl.hidden=false;document.body.style.overflow='hidden'});
   }
+  if(cartEl)document.addEventListener('pt:open-cart',openCart);
   if(cartEl)cartEl.querySelectorAll('[data-pt-cart-close]').forEach(function(x){x.addEventListener('click',function(){cartEl.hidden=true;document.body.style.overflow=''})});
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init)}else{init()}

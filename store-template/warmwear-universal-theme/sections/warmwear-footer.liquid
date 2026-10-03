@@ -1,63 +1,111 @@
-{% comment %} Warm Wear footer {% endcomment %}
-<footer class="pt-foot">
-  <div class="pt-foot__grid">
-    <div class="pt-foot__brand">
-      <span class="pt-foot__logo">Warm Wear&trade;</span>
-      <p>{{ section.settings.tagline }}</p>
-      <div class="pt-foot__pays">
-        <span class="pt-pay2">VISA</span><span class="pt-pay2">MC</span><span class="pt-pay2">AMEX</span><span class="pt-pay2">&#63743; Pay</span><span class="pt-pay2">G Pay</span><span class="pt-pay2">Shop</span>
-      </div>
+<footer class="ww-foot">
+  <div class="ww-foot__inner">
+    <div class="ww-foot__brand">
+      <a class="ww-foot__logo" href="{{ routes.root_url }}" aria-label="Warm Wear home">
+        <img src="{{ 'warmwear-logo.png' | asset_url }}" alt="Warm Wear" width="640" height="361" loading="lazy">
+      </a>
+      <p class="ww-foot__tagline">{{ section.settings.tagline }}</p>
+      <ul class="ww-foot__perks">
+        <li>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7h12v9H1zM13 10h5l3 3v3h-8z"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+          {{ section.settings.perk_1 }}
+        </li>
+        <li>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><polyline points="8.5,12 11,14.5 15.5,9.5"/></svg>
+          {{ section.settings.perk_2 }}
+        </li>
+        <li>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          {{ section.settings.perk_3 }}
+        </li>
+      </ul>
     </div>
-    <div class="pt-foot__col">
-      <b>Help</b>
-      <a href="/policies/shipping-policy">Shipping policy</a>
-      <a href="/policies/refund-policy">Refunds &amp; returns</a>
-      <a href="/policies/terms-of-service">Terms of service</a>
-      <a href="/policies/privacy-policy">Privacy policy</a>
+
+    <div class="ww-foot__col">
+      <h3>Shop</h3>
+      <a href="{{ routes.root_url }}products/wormware-heated-jacket">Heated Jacket</a>
+      <a href="{{ routes.root_url }}products/wormware-heated-gloves">Heated Gloves</a>
+      <a href="{{ routes.root_url }}products/shipping-protection">Shipping protection</a>
+      <a href="{{ routes.root_url }}products/30-day-warranty">30-day warranty</a>
+    </div>
+
+    <div class="ww-foot__col">
+      <h3>Help</h3>
       <a href="mailto:{{ section.settings.email }}">Contact us</a>
+      <a href="{{ routes.root_url }}policies/shipping-policy">Shipping &amp; delivery</a>
+      <a href="{{ routes.root_url }}policies/refund-policy">Returns &amp; refunds</a>
     </div>
-    <div class="pt-foot__col pt-foot__news">
-      <b>{{ section.settings.news_heading }}</b>
+
+    <div class="ww-foot__col">
+      <h3>Policies</h3>
+      <a href="{{ routes.root_url }}policies/privacy-policy">Privacy policy</a>
+      <a href="{{ routes.root_url }}policies/terms-of-service">Terms of service</a>
+    </div>
+
+    <div class="ww-foot__col ww-foot__news">
+      <h3>{{ section.settings.news_heading }}</h3>
       <p>{{ section.settings.news_text }}</p>
-      {% form 'customer', class: 'pt-foot__form' %}
+      {% form 'customer', class: 'ww-foot__form' %}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <input type="email" name="contact[email]" placeholder="you@example.com" required>
-        <button type="submit">Sign up</button>
+        <input type="email" name="contact[email]" placeholder="Your email" aria-label="Your email" required>
+        <button type="submit">Join</button>
       {% endform %}
     </div>
   </div>
-  <div class="pt-foot__bottom">&copy; {{ 'now' | date: '%Y' }} Warm Wear &middot; Free insured shipping worldwide &middot; 30-day money-back guarantee</div>
+
+  <div class="ww-foot__bottom">
+    <div class="ww-foot__pays">
+      <span>VISA</span><span>MC</span><span>AMEX</span><span>&#63743; Pay</span><span>G Pay</span><span>Shop</span>
+    </div>
+    <div class="ww-foot__copy">&copy; {{ 'now' | date: '%Y' }} Warm Wear</div>
+  </div>
 </footer>
-<style>
-  .pt-foot{background:#1A1A1A;color:#fff;padding:48px 20px 26px;margin-top:30px}
-  .pt-foot__grid{max-width:1120px;margin:0 auto;display:grid;gap:34px;grid-template-columns:1fr}
-  @media(min-width:750px){.pt-foot__grid{grid-template-columns:1.2fr .8fr 1.2fr}}
-  .pt-foot__logo{font-size:26px;font-weight:800;letter-spacing:-.01em}
-  .pt-foot__brand p{color:#E1A58C;font-size:14px;line-height:1.55;margin:10px 0 16px}
-  .pt-foot__pays{display:flex;gap:5px;flex-wrap:wrap}
-  .pt-pay2{display:grid;place-items:center;min-width:38px;height:23px;padding:0 6px;border-radius:4px;background:rgba(255,255,255,.1);font-size:9px;font-weight:800;color:#fff}
-  .pt-foot__col{display:flex;flex-direction:column;gap:9px}
-  .pt-foot__col b{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#D4805B;margin-bottom:3px}
-  .pt-foot__col a{color:#F8EBE6;text-decoration:none;font-size:14px;width:fit-content}
-  .pt-foot__col a:hover{text-decoration:underline;text-underline-offset:3px}
-  .pt-foot__news p{color:#E1A58C;font-size:13.5px;margin:0}
-  .pt-foot__form{display:flex;gap:8px;margin-top:6px}
-  .pt-foot__form input{flex:1;min-width:0;height:44px;padding:0 15px;border-radius:999px;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;font-size:13.5px}
-  .pt-foot__form input::placeholder{color:#989898}
-  .pt-foot__form button{height:44px;padding:0 20px;border:none;border-radius:999px;background:#C85C2D;color:#fff;font-weight:800;font-size:13.5px;cursor:pointer}
-  .pt-foot__form button:hover{background:#D4805B}
-  .pt-foot__bottom{max-width:1120px;margin:34px auto 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:12.5px;color:#989898;text-align:center}
-</style>
+
 {% schema %}
 {
   "name": "Warm Wear footer",
-  "tag": "footer",
   "settings": [
-    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Premium heated jackets with smart power bank integration. Stay warm, stay connected, stay moving. Made for cold climates, designed for active lifestyles." },
-    { "type": "text", "id": "email", "label": "Support email", "default": "support@warmwear.store" },
-    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "Fly rested, land first" },
-    { "type": "text", "id": "news_text", "label": "Newsletter text", "default": "Shop sleep tips and member-only deals. No spam." }
+    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Heated jackets and gloves built to keep you warm all winter. Smart heat, USB power, made for the cold." },
+    { "type": "text", "id": "perk_1", "label": "Perk 1", "default": "Free shipping on every order" },
+    { "type": "text", "id": "perk_2", "label": "Perk 2", "default": "30-day money-back guarantee" },
+    { "type": "text", "id": "perk_3", "label": "Perk 3", "default": "Secure checkout" },
+    { "type": "text", "id": "email", "label": "Support email", "default": "officialfreshhat@gmail.com" },
+    { "type": "text", "id": "news_heading", "label": "Newsletter heading", "default": "Join the list" },
+    { "type": "textarea", "id": "news_text", "label": "Newsletter text", "default": "Early access to restocks, winter deals and cold-weather tips. No spam." }
   ],
   "presets": [{ "name": "Warm Wear footer" }]
 }
 {% endschema %}
+
+<style>
+.ww-foot{background:#2b1409;color:#f6e9dc;padding:40px 24px 28px;margin-top:40px;box-sizing:border-box;width:100%}
+{% if template.name == 'product' %}.ww-foot{padding-bottom:110px}{% endif %}
+.ww-foot__inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:36px}
+.ww-foot__inner>*{min-width:0}
+.ww-foot__logo{display:inline-block;background:#fff;border-radius:16px;padding:8px 18px;line-height:0}
+.ww-foot__logo img{height:56px;width:auto;display:block}
+.ww-foot__tagline{font-size:18px;line-height:1.55;margin:22px 0 20px;color:#f6e9dc}
+.ww-foot__perks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.ww-foot__perks li{display:flex;align-items:center;gap:14px;color:#f0c9a8;font-size:17px;font-weight:700}
+.ww-foot__perks svg{flex-shrink:0;color:#d9a27e}
+.ww-foot__col{display:flex;flex-direction:column}
+.ww-foot__col h3{margin:0 0 6px;font-size:15px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#d9a27e}
+.ww-foot__col a{display:block;padding:11px 0;color:#f6e9dc;text-decoration:none;font-size:18px}
+.ww-foot__col a:hover{text-decoration:underline;text-underline-offset:4px}
+.ww-foot__news p{margin:6px 0 18px;font-size:18px;line-height:1.55;color:#f6e9dc}
+.ww-foot__form{display:flex;align-items:stretch;border:2px solid #d9a27e;border-radius:999px;overflow:hidden;background:#fff}
+.ww-foot__form input{flex:1;min-width:0;height:54px;padding:0 22px;border:0;background:#fff;font-size:17px;color:#1a1a1a;outline:none}
+.ww-foot__form button{padding:0 26px;border:0;background:#d9a27e;color:#2b1409;font-size:17px;font-weight:800;cursor:pointer}
+.ww-foot__bottom{max-width:1120px;margin:36px auto 0;padding-top:24px;border-top:1px solid rgba(246,233,220,.18)}
+.ww-foot__pays{display:flex;flex-wrap:wrap;gap:8px}
+.ww-foot__pays span{display:grid;place-items:center;min-width:52px;height:32px;padding:0 10px;box-sizing:border-box;border-radius:6px;background:#fff;color:#2b1409;font-size:12px;font-weight:800}
+.ww-foot__copy{margin-top:18px;font-size:14px;color:#c9ae98}
+@media (min-width:750px){
+  .ww-foot{padding:56px 40px 32px}
+  .ww-foot__inner{grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}
+  .ww-foot__news{grid-column:1 / -1;max-width:520px}
+  .ww-foot__col a,.ww-foot__news p{font-size:16px}
+  .ww-foot__tagline{font-size:16px}
+  .ww-foot__perks li{font-size:15px}
+}
+</style>

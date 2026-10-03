@@ -58,14 +58,6 @@
         "ben3"
       ]
     },
-    "warmwear_hero_gallery": {
-      "type": "warmwear-hero-gallery",
-      "settings": {}
-    },
-    "warmwear_gallery": {
-      "type": "warmwear-gallery",
-      "settings": {}
-    },
     "warmwear_trust": {
       "type": "warmwear-trust-strip",
       "settings": {
@@ -467,8 +459,6 @@
   },
   "order": [
     "warmwear_buy_box",
-    "warmwear_hero_gallery",
-    "warmwear_gallery",
     "warmwear_trust",
     "warmwear_reviews_carousel",
     "warmwear_comparison",
