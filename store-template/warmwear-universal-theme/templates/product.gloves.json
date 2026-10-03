@@ -1,0 +1,364 @@
+{
+  "sections": {
+    "warmwear_buy_box": {
+      "type": "warmwear-buy-box",
+      "settings": {
+        "product": "wormware-heated-gloves",
+        "title": "Warm Wear Heated Gloves",
+        "rating_text": "4.9 (312 reviews)",
+        "ordered_count": "864",
+        "avatar_1": "shopify://shop_images/sn-avatar-1.png",
+        "avatar_2": "shopify://shop_images/sn-avatar-3.png",
+        "avatar_3": "shopify://shop_images/sn-avatar-6.png",
+        "addon_1": "shipping-protection",
+        "addon_1_img": "shopify://shop_images/sn-icon-ship.png",
+        "addon_2": "30-day-warranty",
+        "addon_2_img": "shopify://shop_images/sn-icon-warranty.png",
+        "stock_text": "Selling fast this season",
+        "upsell": "wormware-heated-jacket",
+        "xmas_cutoff": "2026-12-15",
+        "deadline_text": "for Christmas delivery",
+        "b1_title": "1 Pair of Heated Gloves",
+        "b1_price": "$99.99 CAD",
+        "b1_compare": "$199.98 CAD",
+        "b1_save": "50%",
+        "b1_gift": "+ Free shipping",
+        "b2_title": "2 Pairs of Heated Gloves",
+        "b2_price": "$179.98 CAD",
+        "b2_compare": "$399.96 CAD",
+        "b2_save": "55%",
+        "b2_gift": "+ Free priority shipping|+ Pair discounts"
+      },
+      "blocks": {
+        "ben1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "bolt",
+            "text": "3-speed heat: 35°C / 45°C / 55°C"
+          }
+        },
+        "ben2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "clock",
+            "text": "8+ hour USB-C rechargeable battery"
+          }
+        },
+        "ben3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "phone",
+            "text": "Touchscreen compatible & waterproof"
+          }
+        }
+      },
+      "block_order": [
+        "ben1",
+        "ben2",
+        "ben3"
+      ]
+    },
+    "warmwear_trust": {
+      "type": "warmwear-trust-strip",
+      "settings": {
+        "speed": 34
+      },
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "text": "Free insured shipping worldwide"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "text": "30-day full refund guarantee"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "plug",
+            "text": "8+ hour battery, USB-C rechargeable"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "snow",
+            "text": "Waterproof & touchscreen compatible"
+          }
+        },
+        "t5": {
+          "type": "item",
+          "settings": {
+            "icon": "gift",
+            "text": "Perfect gift for cold hands"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ]
+    },
+    "warmwear_comparison": {
+      "type": "warmwear-comparison",
+      "settings": {
+        "eyebrow": "Why Warm Wear",
+        "heading": "Regular winter gloves vs Warm Wear",
+        "left_label": "Regular gloves",
+        "right_label": "Warm Wear",
+        "cta_label": "Get my Warm Wear gloves"
+      },
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "bad": "Bulky layers, still cold fingers",
+            "good": "3-speed heating, up to 55°C"
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "bad": "Take them off to use your phone",
+            "good": "Touchscreen compatible"
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "bad": "Disposable hand warmers",
+            "good": "8+ hour USB-C rechargeable battery"
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "bad": "Soak through in snow and rain",
+            "good": "Waterproof, durable materials"
+          }
+        },
+        "r5": {
+          "type": "row",
+          "settings": {
+            "bad": "One loose, floppy size",
+            "good": "M / L / XL with adjustable wrist straps"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ]
+    },
+    "warmwear_reviews": {
+      "type": "warmwear-reviews",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "See why 312+ customers trust Warm Wear gloves",
+        "average": "4.9",
+        "count": "312",
+        "pct_5": 88,
+        "pct_4": 8,
+        "pct_3": 2,
+        "pct_2": 1,
+        "pct_1": 1,
+        "per_page": 4,
+        "write_label": "Write a review",
+        "form_heading": "Share your Warm Wear gloves story",
+        "submit_label": "Submit review",
+        "thanks_text": "Thank you! Your review is in. It appears once we approve it."
+      },
+      "blocks": {
+        "v1": {
+          "type": "review",
+          "settings": {
+            "name": "Michael C.",
+            "date": "Nov 15, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Hands stay warm on the slopes",
+            "text": "Skied all day at -10°C and my fingers were toasty the whole time. The three heat levels are exactly what I needed."
+          }
+        },
+        "v2": {
+          "type": "review",
+          "settings": {
+            "name": "Sarah W.",
+            "date": "Nov 10, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Commute saver",
+            "text": "Cycling to work in the cold used to be miserable. These gloves fixed it, and I can still use my phone with them on."
+          }
+        },
+        "v3": {
+          "type": "review",
+          "settings": {
+            "name": "David T.",
+            "date": "Nov 5, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Great gift",
+            "text": "Bought two pairs, one for me and one for my wife. The battery easily lasts a full day outside."
+          }
+        },
+        "v4": {
+          "type": "review",
+          "settings": {
+            "name": "Jennifer L.",
+            "date": "Oct 31, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Skeptic turned believer",
+            "text": "Tried High at -15°C and my hands felt like they were by a fire. Ordered a second pair for my son."
+          }
+        },
+        "v5": {
+          "type": "review",
+          "settings": {
+            "name": "Robert K.",
+            "date": "Oct 27, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Quality feel",
+            "text": "Solid construction and the wrist straps keep the fit snug. Still perfect after a week of wet weather."
+          }
+        },
+        "v6": {
+          "type": "review",
+          "settings": {
+            "name": "Emma S.",
+            "date": "Oct 23, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Winter dog walks sorted",
+            "text": "Rain or shine walks are finally comfortable. Waterproofing is the real deal."
+          }
+        },
+        "v7": {
+          "type": "review",
+          "settings": {
+            "name": "James M.",
+            "date": "Oct 19, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Pairs perfectly with the jacket",
+            "text": "Bought these to match my heated jacket. Both charge over USB-C, so it is an easy setup."
+          }
+        },
+        "v8": {
+          "type": "review",
+          "settings": {
+            "name": "Lisa P.",
+            "date": "Oct 15, 2026",
+            "rating": 5,
+            "verified": true,
+            "title": "Dad loves them",
+            "text": "He works outdoors all winter and says it changed his life. More coming for Christmas."
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8"
+      ]
+    },
+    "warmwear_faq": {
+      "type": "warmwear-faq",
+      "settings": {
+        "heading": "Everything you need to know"
+      },
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "q": "How do the gloves heat up?",
+            "a": "Charge them over USB-C, then choose between 3 heat settings: Low (35°C), Middle (45°C) and High (55°C)."
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "q": "How long does the battery last?",
+            "a": "The USB-C rechargeable battery gives you 8+ hours of runtime per charge, depending on the heat setting you choose."
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "q": "Are they waterproof?",
+            "a": "They use water-resistant materials made for snow and rain, so they hold up on the slopes and the daily commute."
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "q": "Can I use my phone with them on?",
+            "a": "Yes. The fingertips are touchscreen compatible, so you can use your phone without taking the gloves off."
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "q": "What sizes are available?",
+            "a": "Medium (palm 18-20 cm), Large (20-23 cm) and XL (23+ cm). Adjustable wrist straps help dial in the fit."
+          }
+        },
+        "q6": {
+          "type": "qa",
+          "settings": {
+            "q": "What's the 30-day guarantee?",
+            "a": "Not happy for any reason? Return them within 30 days for a full refund, no questions asked. Shipping is free and orders ship within 48 hours."
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ]
+    },
+    "warmwear_wheel": {
+      "type": "warmwear-wheel-popup",
+      "settings": {
+        "heading": "Spin and save",
+        "subheading": "One spin, one prize. Up to 50% off your Warm Wear.",
+        "prize": "50% OFF",
+        "win_heading": "You won 50% off!",
+        "win_text": "Lucky spin, the top prize. Your 50% off is locked in on every price below.",
+        "claim_label": "Claim my 50% off",
+        "delay": 5,
+        "claim_note": "Already applied to every price on this page"
+      }
+    }
+  },
+  "order": [
+    "warmwear_buy_box",
+    "warmwear_trust",
+    "warmwear_comparison",
+    "warmwear_faq",
+    "warmwear_reviews",
+    "warmwear_wheel"
+  ]
+}

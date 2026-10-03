@@ -3,7 +3,7 @@
     "warmwear_buy_box": {
       "type": "warmwear-buy-box",
       "settings": {
-        "product": "warmwear-heated-jacket-gloves",
+        "product": "wormware-heated-jacket",
         "title": "Warm Wear™",
         "rating_text": "4.9 (485 reviews)",
         "ordered_count": "1,247",
@@ -15,7 +15,7 @@
         "addon_2": "30-day-warranty",
         "addon_2_img": "shopify://shop_images/sn-icon-warranty.png",
         "stock_text": "Selling fast this season",
-        "upsell": "warmwear-heated-gloves",
+        "upsell": "wormware-heated-gloves",
         "xmas_cutoff": "2026-12-15",
         "deadline_text": "for Christmas delivery",
         "b1_title": "1 Heated Jacket",
@@ -116,115 +116,73 @@
         "t5"
       ]
     },
-    "warmwear_fb_posts": {
-      "type": "warmwear-fb-posts",
-      "settings": {
-        "eyebrow": "Straight from Facebook",
-        "heading": "People keep posting about it"
-      },
+    "warmwear_reviews_carousel": {
+      "type": "warmwear-reviews-carousel",
       "blocks": {
-        "p1": {
-          "type": "post",
+        "c1": {
+          "type": "review",
           "settings": {
-            "avatar": "shopify://shop_images/sn-avatar-1.png",
-            "name": "Michael Chen",
-            "time": "2d",
-            "text": "Finally a jacket that actually keeps me warm on the mountain. The heat settings are game-changing. Worth every penny for skiing season.",
-            "photo": "shopify://shop_images/sn-rev-2.png",
-            "likes": "3.2K",
-            "comments": "428",
-            "shares": "312"
+            "name": "Michael C.",
+            "image": "shopify://shop_images/sn-rev-2.png",
+            "text": "Spent the whole day on the slopes at -10°C. The jacket kept me toasty the entire time. The three heat settings let me dial in exactly what I need.",
+            "rating": 5
           }
         },
-        "p2": {
-          "type": "post",
+        "c2": {
+          "type": "review",
           "settings": {
-            "avatar": "shopify://shop_images/sn-avatar-2.png",
-            "name": "Sarah Williams",
-            "time": "4d",
-            "text": "My commute is 40 minutes in the cold. This jacket has saved my life. The power bank pocket means I charge my phone while staying warm. Genius design.",
-            "photo": "shopify://shop_images/sn-rev-4.png",
-            "likes": "2.8K",
-            "comments": "356",
-            "shares": "241"
+            "name": "Sarah W.",
+            "image": "shopify://shop_images/sn-rev-4.png",
+            "text": "My 40-minute commute through the city used to leave me shivering. Now I'm warm, and the power bank pocket charges my phone at the same time. Absolute win.",
+            "rating": 5
           }
         },
-        "p3": {
-          "type": "post",
+        "c3": {
+          "type": "review",
           "settings": {
-            "avatar": "shopify://shop_images/sn-avatar-3.png",
-            "name": "David Thompson",
-            "time": "6d",
-            "text": "Got two jackets - one for me, one for my wife. We wear them constantly. The detachable hood is such a smart move. Best winter investment ever made.",
-            "photo": "shopify://shop_images/sn-rev-6.png",
-            "likes": "4.1K",
-            "comments": "523",
-            "shares": "387"
+            "name": "David T.",
+            "image": "shopify://shop_images/sn-rev-6.png",
+            "text": "Bought two jackets for my wife and me. The detachable hood is genius for different weather. We wear these constantly from October through March.",
+            "rating": 5
           }
         },
-        "p4": {
-          "type": "post",
+        "c4": {
+          "type": "review",
           "settings": {
-            "avatar": "shopify://shop_images/sn-avatar-4.png",
-            "name": "Jennifer Lee",
-            "time": "1w",
-            "text": "I was skeptical about the heated technology. Tried the highest setting outside in -15°C and it was like a personal heater. Ordered a second one for my son.",
-            "photo": "shopify://shop_images/sn-rev-1.png",
-            "likes": "3.5K",
-            "comments": "472",
-            "shares": "298"
+            "name": "Jennifer L.",
+            "image": "shopify://shop_images/sn-rev-1.png",
+            "text": "Didn't think heated jackets would actually work. Tested it at -15°C on the highest setting and felt like I was standing by a campfire. Ordered one for my son too.",
+            "rating": 5
+          }
+        },
+        "c5": {
+          "type": "review",
+          "settings": {
+            "name": "Robert K.",
+            "image": "shopify://shop_images/sn-rev-5.png",
+            "text": "The materials feel premium. Carbon fiber heating wires are clever. After a week of use in wet weather, everything still works perfectly.",
+            "rating": 5
+          }
+        },
+        "c6": {
+          "type": "review",
+          "settings": {
+            "name": "Emma S.",
+            "image": "shopify://shop_images/sn-rev-3.png",
+            "text": "I take my dog out rain or shine. This jacket has made winter walks enjoyable instead of miserable. The waterproofing is no joke.",
+            "rating": 5
           }
         }
       },
       "block_order": [
-        "p1",
-        "p2",
-        "p3",
-        "p4"
-      ]
-    },
-    "warmwear_ugc": {
-      "type": "warmwear-ugc-carousel",
-      "settings": {
-        "eyebrow": "Instagram · TikTok",
-        "heading": "Seen on your feed"
-      },
-      "blocks": {
-        "u1": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/sn-ugc-1.png",
-            "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-1.mp4"
-          }
-        },
-        "u2": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/sn-ugc-2.png",
-            "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-2.mp4"
-          }
-        },
-        "u3": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/sn-ugc-3.png",
-            "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-3.mp4"
-          }
-        },
-        "u4": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/sn-ugc-4.png",
-            "video_url": "https://cdn.shopify.com/s/files/1/warmwear/warmwear-ugc-4.mp4"
-          }
-        }
-      },
-      "block_order": [
-        "u1",
-        "u2",
-        "u3",
-        "u4"
-      ]
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "settings": {}
     },
     "warmwear_comparison": {
       "type": "warmwear-comparison",
