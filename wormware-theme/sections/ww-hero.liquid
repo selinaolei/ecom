@@ -1,6 +1,4 @@
-{% stylesheet %}
-  @import url('{{ "warmwear-complete.css" | asset_url }}');
-{% endstylesheet %}
+{{ "warmwear-complete.css" | asset_url | stylesheet_tag }}
 
 <div class="ww-hero">
   <div class="ww-hero__inner">
@@ -19,9 +17,9 @@
         <div class="ww-thumbnails">
           {% for block in section.blocks %}
             {% if block.type == 'gallery_image' %}
-              <div class="ww-thumbnail" onclick="document.querySelector('.ww-main-image img').src='{{ block.settings.image | img_url: '600x600' }}'">
+              <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;" onclick="document.querySelector('.ww-main-image img').src='{{ block.settings.image | img_url: "600x600" }}'">
                 <img src="{{ block.settings.image | img_url: '80x80' }}" alt="">
-              </div>
+              </button>
             {% endif %}
           {% endfor %}
         </div>
