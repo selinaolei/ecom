@@ -3,6 +3,9 @@
   Heated gloves bundle selector with 3-speed temperature control,
   optional add-ons (batteries, charging cables, etc).
 {%- endcomment -%}
+
+{{ 'wm-product.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
   assign product = section.settings.product | default: product
   assign current_variant = product.selected_or_first_available_variant
@@ -10,6 +13,7 @@
   assign features = section.blocks | where: 'type', 'feature'
   assign addons = section.blocks | where: 'type', 'addon'
   assign trusts = section.blocks | where: 'type', 'trust'
+  assign faqs = section.blocks | where: 'type', 'faq'
 
   assign color_option = product.options_with_values | where: 'name', 'Color' | first
 
@@ -30,6 +34,33 @@
   assign wm_t3_off = wm_t3_gross | times: wm_t3_pct | divided_by: 100
   assign wm_t3_net = wm_t3_gross | minus: wm_t3_off
 -%}
+
+<style>
+  /* Make reviews clickable with scroll anchor */
+  .wmm__review-item {
+    text-decoration: none;
+  }
+
+  .wmm__review-item[href] {
+    color: inherit;
+  }
+</style>
+
+<script>
+  // Make reviews clickable - scroll to reviews section on click
+  document.addEventListener('DOMContentLoaded', function() {
+    const reviewItems = document.querySelectorAll('.wmm__review-item');
+    reviewItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        const reviewsSection = document.getElementById('wm-reviews');
+        if (reviewsSection) {
+          reviewsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+      item.style.cursor = 'pointer';
+    });
+  });
+</script>
 
 <section class="wmm" id="wm-gloves-{{ section.id }}" data-hm-product>
   <div class="wmm__inner">
