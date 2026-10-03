@@ -83,19 +83,38 @@
           <span class="ww-bundle-price">{{ section.settings.tier2_price }}</span>
         </label>
 
-        <label class="ww-bundle-option">
-          <div class="ww-bundle-info">
-            <input type="radio" name="quantity" value="3" style="display: none;">
-            <span class="ww-bundle-label">Buy 3</span>
-            <span class="ww-bundle-discount">{{ section.settings.tier3_discount }}% OFF</span>
-          </div>
-          <span class="ww-bundle-price">{{ section.settings.tier3_price }}</span>
-        </label>
       </div>
 
       <!-- Add-ons -->
       <div class="ww-addons">
         <div class="ww-addons-heading">{{ section.settings.addons_heading }}</div>
+
+        <!-- Default Add-ons with Icons -->
+        <div class="ww-addon-item">
+          <input type="checkbox" class="ww-addon-checkbox" id="addon-warranty" checked>
+          <label for="addon-warranty" class="ww-addon-label">
+            <img src="{{ 'warranty-icon.svg' | asset_url }}" alt="Warranty" class="ww-addon-icon">
+            <div>
+              <div class="ww-addon-title">30-Day Warranty</div>
+              <div class="ww-addon-description">Full replacement guarantee</div>
+            </div>
+          </label>
+          <span class="ww-addon-price">+$19.99</span>
+        </div>
+
+        <div class="ww-addon-item">
+          <input type="checkbox" class="ww-addon-checkbox" id="addon-shipping" checked>
+          <label for="addon-shipping" class="ww-addon-label">
+            <img src="{{ 'shipping-icon.svg' | asset_url }}" alt="Shipping Protection" class="ww-addon-icon">
+            <div>
+              <div class="ww-addon-title">Shipping Protection</div>
+              <div class="ww-addon-description">Covers loss and damage</div>
+            </div>
+          </label>
+          <span class="ww-addon-price">+$9.99</span>
+        </div>
+
+        <!-- Custom Add-ons from Blocks -->
         {% for block in section.blocks %}
           {% if block.type == 'addon' %}
             <div class="ww-addon-item">
@@ -209,18 +228,6 @@
       "id": "tier2_discount",
       "label": "Tier 2 discount %",
       "default": "10"
-    },
-    {
-      "type": "text",
-      "id": "tier3_price",
-      "label": "Tier 3 price (buy 3)",
-      "default": "$369.97 CAD"
-    },
-    {
-      "type": "text",
-      "id": "tier3_discount",
-      "label": "Tier 3 discount %",
-      "default": "18"
     },
     {
       "type": "text",
