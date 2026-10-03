@@ -1,0 +1,57 @@
+<div class="ww-gallery">
+  <div class="ww-gallery__container">
+    <div class="ww-gallery__section">
+      <img src="{{ 'warmwear-product-features.webp' | asset_url }}" alt="Product features and specifications" class="ww-gallery__img">
+    </div>
+    <div class="ww-gallery__section">
+      <img src="{{ 'warmwear-product-lifestyle.webp' | asset_url }}" alt="Lifestyle - wearing heated jacket in snowy mountains" class="ww-gallery__img">
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Warm Wear Gallery",
+  "settings": [],
+  "presets": [{"name": "Gallery"}]
+}
+{% endschema %}
+
+<style>
+.ww-gallery {
+  width: 100%;
+  padding: 40px 20px;
+  background: #fafafa;
+}
+
+.ww-gallery__container {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.ww-gallery__section {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ww-gallery__img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 749px) {
+  .ww-gallery {
+    padding: 24px 16px;
+  }
+
+  .ww-gallery__container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+</style>
