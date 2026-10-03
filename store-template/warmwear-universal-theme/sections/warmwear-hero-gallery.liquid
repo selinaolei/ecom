@@ -1,0 +1,75 @@
+<div class="ww-hero-gallery">
+  <div class="ww-hero-gallery__container">
+    <div class="ww-hero-gallery__item ww-hero-gallery__lifestyle">
+      <img src="{{ 'warmwear-jacket-lifestyle.webp' | asset_url }}" alt="Lifestyle - wearing heated jacket in snowy mountains" class="ww-hero-gallery__img">
+    </div>
+    <div class="ww-hero-gallery__item ww-hero-gallery__marble">
+      <img src="{{ 'warmwear-jacket-marble.webp' | asset_url }}" alt="Jacket product on marble background" class="ww-hero-gallery__img">
+    </div>
+    <div class="ww-hero-gallery__item ww-hero-gallery__features">
+      <img src="{{ 'warmwear-jacket-features.webp' | asset_url }}" alt="Jacket features and details" class="ww-hero-gallery__img">
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Warm Wear Hero Gallery",
+  "settings": [],
+  "presets": [{"name": "Hero Gallery"}]
+}
+{% endschema %}
+
+<style>
+.ww-hero-gallery {
+  width: 100%;
+  padding: 40px 20px;
+  background: #fff;
+}
+
+.ww-hero-gallery__container {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+.ww-hero-gallery__item {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.ww-hero-gallery__img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .ww-hero-gallery__container {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .ww-hero-gallery__features {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 749px) {
+  .ww-hero-gallery {
+    padding: 24px 16px;
+  }
+
+  .ww-hero-gallery__container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ww-hero-gallery__features {
+    grid-column: 1;
+  }
+}
+</style>
