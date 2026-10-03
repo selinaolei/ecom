@@ -1,0 +1,161 @@
+{% liquid
+  assign p = all_products[section.settings.product] | default: product
+  assign current_variant = p.selected_or_first_available_variant
+  assign show_payment_button = section.settings.show_payment_button
+%}
+<div class="pt-buy" data-pt-buy data-pt-styles="{{ section.blocks.size | default: 1 }}">
+  <div class="pt-buy__inner">
+    {%- assign sfm = p.media | first -%}
+    <div class="pt-buy__gallery">
+      <div class="pt-buy__main">
+        {% for media in p.media limit: 1 %}
+          <div class="pt-buy__slide" data-alt="{{ media.alt | escape }}">{{ media | image_url: width: 1100 | image_tag: loading: 'lazy', alt: media.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}</div>
+        {% endfor %}
+      </div>
+      <div class="pt-buy__thumbs">
+        {% for media in p.media limit: 4 %}
+          <button class="pt-buy__thumb">
+            {{ media | image_url: width: 200 | image_tag: loading: 'lazy', alt: '', width: 200 }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="pt-buy__content">
+      <div class="pt-buy__header">
+        <p class="pt-buy__eyebrow">{{ section.settings.eyebrow | default: 'Premium Product' }}</p>
+        <h1>{{ section.settings.title | default: p.title }}</h1>
+        <div class="pt-buy__rating">
+          <span>{{ section.settings.rating_text }}</span>
+          <span>{{ section.settings.ordered_count }} ordered in 24h</span>
+        </div>
+      </div>
+      <div class="pt-buy__avatars">
+        {% if section.settings.avatar_1 %}<img src="{{ section.settings.avatar_1 | img_url: '48x48' }}" alt="" width="48" height="48">{% endif %}
+        {% if section.settings.avatar_2 %}<img src="{{ section.settings.avatar_2 | img_url: '48x48' }}" alt="" width="48" height="48">{% endif %}
+        {% if section.settings.avatar_3 %}<img src="{{ section.settings.avatar_3 | img_url: '48x48' }}" alt="" width="48" height="48">{% endif %}
+      </div>
+      <div class="pt-buy__price">
+        <strong>{{ section.settings.b1_price }}</strong>
+        <s>{{ section.settings.b1_compare }}</s>
+        <span class="pt-buy__save">{{ section.settings.b1_save }} OFF</span>
+      </div>
+      <div class="pt-buy__benefits">
+        {% for block in section.blocks %}
+          {% if block.type == 'benefit' %}
+            <div class="pt-benefit">
+              <span class="pt-benefit__icon">
+                {% case block.settings.icon %}
+                  {% else %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></svg>
+                {% endcase %}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="pt-buy__bundles">
+        <div class="pt-bundle" data-pt-bundle data-price="{{ section.settings.b1_price }}" data-compare="{{ section.settings.b1_compare }}" data-save="{{ section.settings.b1_save }}">
+          <button data-pt-bundle-pick>
+            <span class="pt-bundle__title">{{ section.settings.b1_title }}</span>
+            <span class="pt-bundle__price">{{ section.settings.b1_price }}</span>
+          </button>
+          {% if section.settings.b1_gift != '-' %}<span class="pt-bundle__gift">{{ section.settings.b1_gift }}</span>{% endif %}
+        </div>
+        {% if section.settings.b2_title %}
+          <div class="pt-bundle" data-pt-bundle data-price="{{ section.settings.b2_price }}" data-compare="{{ section.settings.b2_compare }}" data-save="{{ section.settings.b2_save }}">
+            <button data-pt-bundle-pick>
+              <span class="pt-bundle__title">{{ section.settings.b2_title }}</span>
+              <span class="pt-bundle__price">{{ section.settings.b2_price }}</span>
+            </button>
+            {% if section.settings.b2_gift != '-' %}<span class="pt-bundle__gift">{{ section.settings.b2_gift }}</span>{% endif %}
+          </div>
+        {% endif %}
+        {% if section.settings.b3_title %}
+          <div class="pt-bundle" data-pt-bundle data-price="{{ section.settings.b3_price }}" data-compare="{{ section.settings.b3_compare }}" data-save="{{ section.settings.b3_save }}">
+            <button data-pt-bundle-pick>
+              <span class="pt-bundle__title">{{ section.settings.b3_title }}</span>
+              <span class="pt-bundle__price">{{ section.settings.b3_price }}</span>
+            </button>
+            {% if section.settings.b3_gift != '-' %}<span class="pt-bundle__gift">{{ section.settings.b3_gift }}</span>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="pt-buy__addons">
+        {% if section.settings.addon_1 %}
+          <label class="pt-addon">
+            <input type="checkbox" checked>
+            <span class="pt-addon__label">
+              {% if section.settings.addon_1_img %}<img src="{{ section.settings.addon_1_img | img_url: '40x40' }}" alt="">{% endif %}
+              <span>{{ section.settings.addon_1 | replace: '-', ' ' | capitalize }}</span>
+            </span>
+          </label>
+        {% endif %}
+        {% if section.settings.addon_2 %}
+          <label class="pt-addon">
+            <input type="checkbox" checked>
+            <span class="pt-addon__label">
+              {% if section.settings.addon_2_img %}<img src="{{ section.settings.addon_2_img | img_url: '40x40' }}" alt="">{% endif %}
+              <span>{{ section.settings.addon_2 | replace: '-', ' ' | capitalize }}</span>
+            </span>
+          </label>
+        {% endif %}
+      </div>
+      <div class="pt-buy__stock">
+        <p>{{ section.settings.stock_text }}</p>
+      </div>
+      <button class="pt-buy__atc" data-pt-atc>Add to Cart</button>
+      <p class="pt-buy__subtext">{{ section.settings.button_subtext | default: 'Ships within 48 hours' }}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Skynap Buy Box",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Premium Product" },
+    { "type": "text", "id": "title", "label": "Title" },
+    { "type": "text", "id": "rating_text", "label": "Rating", "default": "4.9 out of 5 (485)" },
+    { "type": "text", "id": "ordered_count", "label": "Ordered count", "default": "1,247" },
+    { "type": "image_picker", "id": "avatar_1", "label": "Avatar 1" },
+    { "type": "image_picker", "id": "avatar_2", "label": "Avatar 2" },
+    { "type": "image_picker", "id": "avatar_3", "label": "Avatar 3" },
+    { "type": "text", "id": "b1_title", "label": "Bundle 1 title", "default": "1 Pillow" },
+    { "type": "text", "id": "b1_price", "label": "Bundle 1 price", "default": "$84.95" },
+    { "type": "text", "id": "b1_compare", "label": "Bundle 1 compare", "default": "$169.95" },
+    { "type": "text", "id": "b1_save", "label": "Bundle 1 save", "default": "50%" },
+    { "type": "text", "id": "b1_gift", "label": "Bundle 1 gift" },
+    { "type": "text", "id": "b2_title", "label": "Bundle 2 title", "default": "2 Pillows" },
+    { "type": "text", "id": "b2_price", "label": "Bundle 2 price" },
+    { "type": "text", "id": "b2_compare", "label": "Bundle 2 compare" },
+    { "type": "text", "id": "b2_save", "label": "Bundle 2 save" },
+    { "type": "text", "id": "b2_gift", "label": "Bundle 2 gift" },
+    { "type": "text", "id": "b3_title", "label": "Bundle 3 title" },
+    { "type": "text", "id": "b3_price", "label": "Bundle 3 price" },
+    { "type": "text", "id": "b3_compare", "label": "Bundle 3 compare" },
+    { "type": "text", "id": "b3_save", "label": "Bundle 3 save" },
+    { "type": "text", "id": "b3_gift", "label": "Bundle 3 gift" },
+    { "type": "text", "id": "addon_1", "label": "Add-on 1" },
+    { "type": "image_picker", "id": "addon_1_img", "label": "Add-on 1 image" },
+    { "type": "text", "id": "addon_2", "label": "Add-on 2" },
+    { "type": "image_picker", "id": "addon_2_img", "label": "Add-on 2 image" },
+    { "type": "text", "id": "stock_text", "label": "Stock urgency text", "default": "Selling fast" },
+    { "type": "text", "id": "xmas_cutoff", "label": "Order deadline (YYYY-MM-DD, blank = off)" },
+    { "type": "text", "id": "deadline_text", "label": "Deadline text", "default": "for Christmas delivery" },
+    { "type": "text", "id": "button_subtext", "label": "Button subtext", "default": "Ships within 48 hours" },
+    { "type": "text", "id": "upsell", "label": "Upsell product handle" }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon", "default": "moon" },
+        { "type": "text", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Buy Box" }]
+}
+{% endschema %}
