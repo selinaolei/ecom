@@ -135,6 +135,8 @@
 .pt-sticky{display:none}
 @media (max-width:749px){
   .pt-buy{padding:16px 16px 44px}
+  .pt-buy__gallerywrap{max-width:none;margin:0;width:100%}
+  .pt-buy__thumbwrap{max-width:none;margin:10px 0 0}
   .pt-buy__price{font-size:24px}
   .pt-buy__bundletitle{font-size:15px;flex-wrap:wrap}
   .pt-buy__bundleprice b{font-size:16px}

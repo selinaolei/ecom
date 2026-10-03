@@ -9,7 +9,7 @@
             <div class="pt-buy__slide" data-alt="{{ media.alt | escape }}">{% if media.media_type == 'video' %}{{ media | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', class: 'pt-buy__mainimg', image_size: '1100x' }}{% else %}{{ media | image_url: width: 1100 | image_tag: loading: 'lazy', alt: media.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}{% endif %}</div>
           {% endfor %}
           {%- assign fmedia = p.media | first -%}
-          <div class="pt-buy__slide" data-clone="1" data-alt="{{ fmedia.alt | escape }}">{{ fmedia | image_url: width: 1100 | image_tag: loading: 'lazy', alt: fmedia.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}</div>
+          {% if fmedia %}<div class="pt-buy__slide" data-clone="1" data-alt="{{ fmedia.alt | escape }}">{{ fmedia | image_url: width: 1100 | image_tag: loading: 'lazy', alt: fmedia.alt, widths: '550,1100', class: 'pt-buy__mainimg' }}</div>{% endif %}
         </div>
         <button type="button" class="pt-buy__arrow pt-buy__arrow--prev" data-pt-prev aria-label="Previous image">&#8249;</button>
         <button type="button" class="pt-buy__arrow pt-buy__arrow--next" data-pt-next aria-label="Next image">&#8250;</button>
