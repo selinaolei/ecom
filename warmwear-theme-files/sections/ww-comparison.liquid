@@ -1,0 +1,89 @@
+<div class="ww-comparison">
+  <div class="ww-comparison__inner">
+    <div class="ww-section-heading">
+      <h2 class="ww-section-title">{{ section.settings.heading }}</h2>
+      <p class="ww-section-subtitle">{{ section.settings.subheading }}</p>
+    </div>
+
+    <div class="ww-comparison-content">
+      <div class="ww-comparison-list">
+        {% for block in section.blocks %}
+          {% if block.type == 'feature' %}
+            <div class="ww-comparison-item {% if block.settings.has_feature %}yes{% else %}no{% endif %}">
+              <div class="ww-comparison-icon">
+                {% if block.settings.has_feature %}✓{% else %}✗{% endif %}
+              </div>
+              <div class="ww-comparison-text">
+                <strong>{{ block.settings.feature }}</strong>
+                {% if block.settings.description %}
+                  <br>{{ block.settings.description }}
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if section.settings.comparison_image %}
+        <div class="ww-comparison-image">
+          <img src="{{ section.settings.comparison_image | img_url: '500x500' }}" alt="">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Choose Warm Wear?"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The most advanced heated apparel on the market"
+    },
+    {
+      "type": "image_picker",
+      "id": "comparison_image",
+      "label": "Comparison image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature name",
+          "default": "3-speed temperature control"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "checkbox",
+          "id": "has_feature",
+          "label": "Warm Wear has this feature",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,300 @@
+{{ "warmwear-responsive.css" | asset_url | stylesheet_tag }}
+
+<div class="ww-hero">
+  <div class="ww-hero__inner">
+    <!-- Gallery Section -->
+    <div class="ww-gallery">
+      <div class="ww-main-image">
+        {% if section.settings.main_image %}
+          <img src="{{ section.settings.main_image | img_url: '600x600' }}" alt="{{ section.settings.product_name }}">
+        {% else %}
+          <img src="{{ 'warmwear-product.webp' | asset_url }}" alt="{{ section.settings.product_name }}" style="width: 100%; height: auto; border-radius: 8px;">
+        {% endif %}
+        <div class="ww-badge">{{ section.settings.badge_text }}</div>
+      </div>
+
+      <div class="ww-thumbnails">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'gallery_image' %}
+              <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+                <img src="{{ block.settings.image | img_url: '100x100' }}" alt="">
+              </button>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <!-- Default gallery images -->
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-product.webp' | asset_url }}" alt="Product view" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-lifestyle.webp' | asset_url }}" alt="Lifestyle view" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-features.webp' | asset_url }}" alt="Features detail" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="ww-details">
+      <div class="ww-eyebrow">{{ section.settings.eyebrow }}</div>
+      <h1 class="ww-title">{{ section.settings.product_name }}</h1>
+
+      <div class="ww-rating">
+        <span class="ww-stars">★★★★★</span>
+        <span>{{ section.settings.rating }} ({{ section.settings.review_count }} reviews)</span>
+      </div>
+
+      <!-- Proof Bar -->
+      {% if section.settings.show_proof %}
+        <div class="ww-proof">
+          <div class="ww-proof-item">{{ section.settings.proof_text_1 }}</div>
+          <div class="ww-proof-item">{{ section.settings.proof_text_2 }}</div>
+        </div>
+      {% endif %}
+
+      <!-- Pricing -->
+      <div class="ww-pricing">
+        <span class="ww-price">{{ section.settings.price }}</span>
+        <span class="ww-compare-price">{{ section.settings.compare_price }}</span>
+        <span class="ww-discount">{{ section.settings.discount_text }}</span>
+      </div>
+
+      <!-- Bundle Tiers -->
+      <div class="ww-bundles">
+        <div class="ww-bundle-heading">{{ section.settings.bundle_heading }}</div>
+
+        <label class="ww-bundle-option selected">
+          <div class="ww-bundle-info">
+            <input type="radio" name="quantity" value="1" checked style="display: none;">
+            <span class="ww-bundle-label">Buy 1</span>
+          </div>
+          <span class="ww-bundle-price">{{ section.settings.price }}</span>
+        </label>
+
+        <label class="ww-bundle-option">
+          <div class="ww-bundle-info">
+            <input type="radio" name="quantity" value="2" style="display: none;">
+            <span class="ww-bundle-label">Buy 2</span>
+            <span class="ww-bundle-discount">{{ section.settings.tier2_discount }}% OFF</span>
+          </div>
+          <span class="ww-bundle-price">{{ section.settings.tier2_price }}</span>
+        </label>
+
+      </div>
+
+      <!-- Add-ons -->
+      <div class="ww-addons">
+        <div class="ww-addons-heading">{{ section.settings.addons_heading }}</div>
+
+        <!-- Default Add-ons with Icons -->
+        <div class="ww-addon-item">
+          <input type="checkbox" class="ww-addon-checkbox" id="addon-warranty" checked>
+          <label for="addon-warranty" class="ww-addon-label">
+            <img src="{{ 'warranty-icon.svg' | asset_url }}" alt="Warranty" class="ww-addon-icon">
+            <div>
+              <div class="ww-addon-title">30-Day Warranty</div>
+              <div class="ww-addon-description">Full replacement guarantee</div>
+            </div>
+          </label>
+          <span class="ww-addon-price">+$19.99</span>
+        </div>
+
+        <div class="ww-addon-item">
+          <input type="checkbox" class="ww-addon-checkbox" id="addon-shipping" checked>
+          <label for="addon-shipping" class="ww-addon-label">
+            <img src="{{ 'shipping-icon.svg' | asset_url }}" alt="Shipping Protection" class="ww-addon-icon">
+            <div>
+              <div class="ww-addon-title">Shipping Protection</div>
+              <div class="ww-addon-description">Covers loss and damage</div>
+            </div>
+          </label>
+          <span class="ww-addon-price">+$9.99</span>
+        </div>
+
+        <!-- Custom Add-ons from Blocks -->
+        {% for block in section.blocks %}
+          {% if block.type == 'addon' %}
+            <div class="ww-addon-item">
+              <input type="checkbox" class="ww-addon-checkbox" id="addon-{{ block.id }}" {% if block.settings.default_on %}checked{% endif %}>
+              <label for="addon-{{ block.id }}" class="ww-addon-label">
+                <div class="ww-addon-title">{{ block.settings.title }}</div>
+                <div class="ww-addon-description">{{ block.settings.description }}</div>
+              </label>
+              <span class="ww-addon-price">{{ block.settings.price }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- CTA Button -->
+      <button class="ww-button">{{ section.settings.button_text }}</button>
+      <div class="ww-button-subtext">{{ section.settings.button_subtext }}</div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Warm Wear Hero Product",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Premium Heated Apparel"
+    },
+    {
+      "type": "text",
+      "id": "product_name",
+      "label": "Product name",
+      "default": "Warm Wear Heated Jacket"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main product image"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Hot Seller"
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Rating",
+      "default": "4.9 out of 5"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review count",
+      "default": "485"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_proof",
+      "label": "Show proof bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "proof_text_1",
+      "label": "Proof text 1",
+      "default": "Secure checkout"
+    },
+    {
+      "type": "text",
+      "id": "proof_text_2",
+      "label": "Proof text 2",
+      "default": "30-day guarantee"
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Current price",
+      "default": "$149.99 CAD"
+    },
+    {
+      "type": "text",
+      "id": "compare_price",
+      "label": "Compare price",
+      "default": "$299.98 CAD"
+    },
+    {
+      "type": "text",
+      "id": "discount_text",
+      "label": "Discount badge",
+      "default": "50% OFF"
+    },
+    {
+      "type": "text",
+      "id": "bundle_heading",
+      "label": "Bundle heading",
+      "default": "Choose your set"
+    },
+    {
+      "type": "text",
+      "id": "tier2_price",
+      "label": "Tier 2 price (buy 2)",
+      "default": "$269.98 CAD"
+    },
+    {
+      "type": "text",
+      "id": "tier2_discount",
+      "label": "Tier 2 discount %",
+      "default": "10"
+    },
+    {
+      "type": "text",
+      "id": "addons_heading",
+      "label": "Add-ons heading",
+      "default": "Accessories"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "button_subtext",
+      "label": "Button subtext",
+      "default": "Order today, ships within 48 hours"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Gallery image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Add-on",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Replacement batteries"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Extra battery pack for extended use"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "+$29.99"
+        },
+        {
+          "type": "checkbox",
+          "id": "default_on",
+          "label": "Pre-checked",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Warm Wear Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,121 @@
+<footer class="ww-footer">
+  <div class="ww-footer__inner">
+    <div class="ww-footer-content">
+      <div class="ww-footer-section">
+        <h3>About</h3>
+        <div class="ww-footer-links">
+          <p style="font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 12px;">{{ section.settings.about_text }}</p>
+        </div>
+      </div>
+
+      <div class="ww-footer-section">
+        <h3>Products</h3>
+        <div class="ww-footer-links">
+          {% for block in section.blocks %}
+            {% if block.type == 'product_link' %}
+              <a href="{{ block.settings.link }}">{{ block.settings.label }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="ww-footer-section">
+        <h3>Support</h3>
+        <div class="ww-footer-links">
+          {% for block in section.blocks %}
+            {% if block.type == 'support_link' %}
+              <a href="{{ block.settings.link }}">{{ block.settings.label }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="ww-footer-section">
+        <h3>Newsletter</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 12px;">{{ section.settings.newsletter_text }}</p>
+        <div class="ww-newsletter">
+          <input type="email" placeholder="your@email.com" style="color: var(--text-dark);">
+          <button>Subscribe</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ww-footer-bottom">
+      <p>{{ section.settings.copyright }}</p>
+      <p>{{ section.settings.terms }}</p>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "about_text",
+      "label": "About text",
+      "default": "Warm Wear creates premium heated apparel for cold weather. Designed for comfort and performance."
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_text",
+      "label": "Newsletter text",
+      "default": "Get special offers and updates delivered to your inbox"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright text",
+      "default": "© 2024 Warm Wear. All rights reserved."
+    },
+    {
+      "type": "text",
+      "id": "terms",
+      "label": "Terms text",
+      "default": "Privacy Policy • Terms of Service • 30-Day Money Back Guarantee"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_link",
+      "name": "Product Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Heated Jacket"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "support_link",
+      "name": "Support Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Contact Us"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer"
+    }
+  ]
+}
+{% endschema %}

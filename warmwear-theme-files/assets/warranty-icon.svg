@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield shape for warranty -->
+  <path d="M 50 10 L 75 25 L 75 50 C 75 70 50 85 50 85 C 50 85 25 70 25 50 L 25 25 Z" fill="#d4af86" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Checkmark -->
+  <path d="M 38 52 L 48 62 L 62 38" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

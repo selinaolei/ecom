@@ -1,0 +1,67 @@
+<div class="ww-faq">
+  <div class="ww-faq__inner">
+    <div class="ww-section-heading" style="margin-bottom: 40px;">
+      <h2 class="ww-section-title">{{ section.settings.heading }}</h2>
+    </div>
+
+    <div class="ww-faq-list">
+      {% for block in section.blocks %}
+        {% if block.type == 'faq_item' %}
+          <div class="ww-faq-item" data-faq="{{ block.id }}">
+            <button class="ww-faq-button" onclick="toggleFAQ(this)">
+              <span>{{ block.settings.question }}</span>
+              <div class="ww-faq-toggle">▼</div>
+            </button>
+            <div class="ww-faq-answer">{{ block.settings.answer }}</div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleFAQ(button) {
+    const item = button.closest('.ww-faq-item');
+    item.classList.toggle('open');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How do I charge the jacket?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "The Warm Wear Heated Jacket uses a USB Type-C charging port. Simply plug in any standard USB charger and the battery will fully charge in 2-3 hours."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ"
+    }
+  ]
+}
+{% endschema %}
