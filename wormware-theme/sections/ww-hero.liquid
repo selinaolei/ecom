@@ -17,7 +17,7 @@
         <div class="ww-thumbnails">
           {% for block in section.blocks %}
             {% if block.type == 'gallery_image' %}
-              <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;" onclick="document.querySelector('.ww-main-image img').src='{{ block.settings.image | img_url: "600x600" }}'">
+              <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
                 <img src="{{ block.settings.image | img_url: '80x80' }}" alt="">
               </button>
             {% endif %}
@@ -100,7 +100,7 @@
       </div>
 
       <!-- CTA Button -->
-      <button class="ww-button" onclick="alert('Added to cart!')">{{ section.settings.button_text }}</button>
+      <button class="ww-button">{{ section.settings.button_text }}</button>
       <div class="ww-button-subtext">{{ section.settings.button_subtext }}</div>
     </div>
   </div>
