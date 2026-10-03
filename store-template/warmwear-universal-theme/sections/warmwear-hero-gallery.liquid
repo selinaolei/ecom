@@ -28,29 +28,34 @@
 }
 
 .ww-hero-gallery__container {
-  max-width: 1120px;
-  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
+  gap: 16px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .ww-hero-gallery__item {
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   background: #f5f5f5;
+  aspect-ratio: 1;
 }
 
 .ww-hero-gallery__img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: cover;
 }
 
 @media (max-width: 1024px) {
   .ww-hero-gallery__container {
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 12px;
   }
 
   .ww-hero-gallery__features {
@@ -60,12 +65,17 @@
 
 @media (max-width: 749px) {
   .ww-hero-gallery {
-    padding: 24px 16px;
+    padding: 20px 0;
   }
 
   .ww-hero-gallery__container {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .ww-hero-gallery__item {
+    border-radius: 8px;
   }
 
   .ww-hero-gallery__features {
