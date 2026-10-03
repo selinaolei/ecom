@@ -8,13 +8,13 @@
         {% if section.settings.main_image %}
           <img src="{{ section.settings.main_image | img_url: '600x600' }}" alt="{{ section.settings.product_name }}">
         {% else %}
-          <div style="width: 100%; height: 500px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #999; border-radius: 8px;">Main Product Image</div>
+          <img src="{{ 'warmwear-product.webp' | asset_url }}" alt="{{ section.settings.product_name }}" style="width: 100%; height: auto; border-radius: 8px;">
         {% endif %}
         <div class="ww-badge">{{ section.settings.badge_text }}</div>
       </div>
 
-      {% if section.blocks.size > 0 %}
-        <div class="ww-thumbnails">
+      <div class="ww-thumbnails">
+        {% if section.blocks.size > 0 %}
           {% for block in section.blocks %}
             {% if block.type == 'gallery_image' %}
               <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
@@ -22,8 +22,19 @@
               </button>
             {% endif %}
           {% endfor %}
-        </div>
-      {% endif %}
+        {% else %}
+          <!-- Default gallery images -->
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-product.webp' | asset_url }}" alt="Product view" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-lifestyle.webp' | asset_url }}" alt="Lifestyle view" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+          <button class="ww-thumbnail" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="{{ 'warmwear-features.webp' | asset_url }}" alt="Features detail" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+          </button>
+        {% endif %}
+      </div>
     </div>
 
     <!-- Details Section -->
