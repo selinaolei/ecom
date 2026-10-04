@@ -72,13 +72,11 @@
       </ul>
 
       <div class="pt-buy__bundles">
-        {% for b in (1..3) %}
+        {% for b in (1..2) %}
           {%- if b == 1 -%}
             {%- assign btitle = section.settings.b1_title -%}{%- assign bsave = section.settings.b1_save -%}{%- assign bprice = section.settings.b1_price -%}{%- assign bcomp = section.settings.b1_compare -%}{%- assign bgift = section.settings.b1_gift -%}
-          {%- elsif b == 2 -%}
-            {%- assign btitle = section.settings.b2_title -%}{%- assign bsave = section.settings.b2_save -%}{%- assign bprice = section.settings.b2_price -%}{%- assign bcomp = section.settings.b2_compare -%}{%- assign bgift = section.settings.b2_gift -%}
           {%- else -%}
-            {%- assign btitle = section.settings.b3_title -%}{%- assign bsave = section.settings.b3_save -%}{%- assign bprice = section.settings.b3_price -%}{%- assign bcomp = section.settings.b3_compare -%}{%- assign bgift = section.settings.b3_gift -%}
+            {%- assign btitle = section.settings.b2_title -%}{%- assign bsave = section.settings.b2_save -%}{%- assign bprice = section.settings.b2_price -%}{%- assign bcomp = section.settings.b2_compare -%}{%- assign bgift = section.settings.b2_gift -%}
           {%- endif -%}
           <div class="pt-buy__bundle{% if b == 1 %} is-selected{% endif %}" data-pt-bundle="{{ b }}" data-price="{{ bprice }}" data-compare="{{ bcomp }}" data-save="{{ bsave }}">
             {% if b == 2 %}<span class="pt-buy__popular">Most popular</span>{% endif %}
@@ -197,12 +195,6 @@
     { "type": "text", "id": "b2_compare", "label": "Compare at", "default": "$219.90" },
     { "type": "text", "id": "b2_save", "label": "Save", "default": "55%" },
     { "type": "text", "id": "b2_gift", "label": "Gift strip (- = none)", "default": "+ Free priority dispatch" },
-    { "type": "header", "content": "Bundle 3" },
-    { "type": "text", "id": "b3_title", "label": "Title", "default": "3 Heated Jackets" },
-    { "type": "text", "id": "b3_price", "label": "Price", "default": "$128.95" },
-    { "type": "text", "id": "b3_compare", "label": "Compare at", "default": "$329.85" },
-    { "type": "text", "id": "b3_save", "label": "Save", "default": "61%" },
-    { "type": "text", "id": "b3_gift", "label": "Gift strip (- = none)", "default": "-" },
     { "type": "header", "content": "Add-ons" },
     { "type": "product", "id": "addon_1", "label": "Add-on 1" },
     { "type": "image_picker", "id": "addon_1_img", "label": "Add-on 1 icon" },
